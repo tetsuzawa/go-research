@@ -1,0 +1,14 @@
+__chche__
+*chche*
+__pycache__
+*.wav
+*.DDA
+*.DDB
+*.DSB
+*.csv
+*.dba
+.*
+venv
+.ipynb_checkpoints
+*.png
+*.jpg
