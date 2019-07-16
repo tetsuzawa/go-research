@@ -99,20 +99,20 @@ def plot_3charts(N, y, fs=48000, start_sec=0, window_func_name="hamming"):
     '''
 
     ax1 = fig.add_subplot(321)
-    ax1.plot(t, y_db, ".", markersize=1)
+    ax1.plot(t, y_db, "-", markersize=1)
     ax1.axis([start_sec, (N+start_pos) * dt, np.amin(y_db), np.amax(y_db)+10])
     ax1.set_xlabel("Time [sec]")
-    ax1.set_ylabel("Amplitude [dB")
+    ax1.set_ylabel("Amplitude [dB]")
 
     ax2 = fig.add_subplot(322)
     ax2.set_xscale('log')
     ax2.axis([10, fs/2, np.amin(decibelSpectrum), np.amax(decibelSpectrum)+10])
-    ax2.plot(freqList, decibelSpectrum, '.', markersize=1)
+    ax2.plot(freqList, decibelSpectrum, '-', markersize=1)
     ax2.set_xlabel("Frequency [Hz]")
     ax2.set_ylabel("Amplitude [dB]")
 
     ax3 = fig.add_subplot(323)
-    ax3.plot(freqList, decibelSpectrum, '.', markersize=1)
+    ax3.plot(freqList, decibelSpectrum, '-', markersize=1)
     ax3.axis([0, fs/2, np.amin(decibelSpectrum), np.amax(decibelSpectrum)+10])
     ax3.set_xlabel("Frequency [Hz]")
     ax3.set_ylabel("Amplitude [dB]")
@@ -121,19 +121,19 @@ def plot_3charts(N, y, fs=48000, start_sec=0, window_func_name="hamming"):
     ax4.set_xscale('log')
     ax4.axis([10, fs/2, -180, 180])
     ax4.set_yticks(np.linspace(-180, 180, 9))
-    ax4.plot(freqList, phaseSpectrum, '.', markersize=1)
+    ax4.plot(freqList, phaseSpectrum, '-', markersize=1)
     ax4.set_xlabel("Frequency [Hz]")
     ax4.set_ylabel("Phase [deg]")
 
     ax5 = fig.add_subplot(325)
-    ax5.plot(t, y, ".", markersize=1)
+    ax5.plot(t, y, "-", markersize=1)
     ax5.axis([start_sec, (N+start_pos)*dt, np.amin(y)*0.9, np.amax(y)*1.1])
     ax5.set_xlabel("Time [sec]")
     ax5.set_ylabel("Amplitude")
 
     ax6 = fig.add_subplot(326)
     ax6.axis([10, fs/2, np.amin(amplitudeSpectrum)*0.9, np.amax(amplitudeSpectrum)*1.1])
-    ax6.plot(freqList, amplitudeSpectrum, '.', markersize=1)
+    ax6.plot(freqList, amplitudeSpectrum, '-', markersize=1)
     ax6.set_xlabel("Frequency [Hz]")
     ax6.set_ylabel("Amplitude")
 
