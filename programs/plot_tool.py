@@ -83,10 +83,12 @@ def plot_3charts(N, y, fs=48000, start_sec=0, window_func_name="hamming"):
 
     # amplitudeSpectrum = [np.sqrt(c.real ** 2  + c.imag ** 2 ) for c in Y]
     # phaseSpectrum     = [np.arctan2(np.float64(c.imag),np.float64(c.real)) for c in Y]
-    amplitudeSpectrum = np.abs(Y)
-    amplitudeSpectrum = np.abs(Y) / np.max(amplitudeSpectrum)
+    # Adjust the amplitude to the original signal.
+    amplitudeSpectrum = np.abs(Y) / N * 2 
+    amplitudeSpectrum[0] = amplitudeSpectrum[0] / 2 
+    # amplitudeSpectrum = np.abs(Y) / np.max(amplitudeSpectrum)
     phaseSpectrum = np.rad2deg(np.angle(Y))
-    decibelSpectrum = 20.0*np.log10(amplitudeSpectrum)
+    decibelSpectrum = 20.0*np.log10(amplitudeSpectrum / np.max(amplitudeSpectrum))
 
     fig = plt.figure(figsize=(11, 8))
 
