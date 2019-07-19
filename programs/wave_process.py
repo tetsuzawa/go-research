@@ -28,10 +28,15 @@ class wave_proccess():
         # load wave data
         self.amp = (2**8) ** self.width / 2
         data = wf.readframes(self.chunk_size)   # バイナリ読み込み
-        data = np.frombuffer(data, 'int16')  # intに変換
+        data = np.frombuffer(data, 'int16')     # intに変換
         data = data / self.amp                  # 振幅正規化
-        self.data = data[::self.ch]
-        wf.close()
+        self.data = data[::self.ch]             # dateを1chに限定
+        wf.close()    # 結果表示
+
+        print("分析対象ファイル：", self.filename)
+        print("チャンネル数：", self.ch)
+        print("wavファイルのサンプリング周波数：", self.fr)
+        print("wavファイルのデータ個数：", len(self.data))
 
         return
 

@@ -15,6 +15,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 from collections import OrderedDict
 from scipy import signal
 import time
+from stft import stft 
 
 
 plt.rcParams['font.family'] = 'IPAPGothic'  # 使用するフォント
@@ -33,7 +34,7 @@ plt.rcParams['figure.dpi'] = 100  # dpiの設定
 plt.rcParams['figure.subplot.hspace'] = 0.3  # 図と図の幅
 plt.rcParams['figure.subplot.wspace'] = 0.3  # 図と図の幅
 
-fig = plt.figure(figsize=(8, 11))
+#fig = plt.figure(figsize=(8, 11))
 # plt.gca().xaxis.set_major_formatter(plt.FormatStrFormatter('%.3f'))#y軸小数点以下3桁表示
 # plt.gca().yaxis.set_major_formatter(plt.FormatStrFormatter('%.3f'))#y軸小数点以下3桁表示
 # plt.gca().xaxis.get_major_formatter().set_useOffset(False)
@@ -53,10 +54,11 @@ def define_window_function(name, N, kaiser_para=5):
     elif name == "blackman":
         return np.blackman(M=N)
     elif name == "kaiser":
+        kaiser_para = input("Parameter of Kaiser Window : ")
         return np.kaiser(N=N, beta=kaiser_para)
 
 
-def plot_3charts(N, y, fs=48000, start_sec=0, window_func_name="hamming"):
+def plot_3charts(N, y, fs=44100, start_sec=0, window_func_name="hamming"):
     # Period
     dt = 1/fs
     # Define start sec
@@ -64,9 +66,9 @@ def plot_3charts(N, y, fs=48000, start_sec=0, window_func_name="hamming"):
     # Redefine y
     y = y[start_pos: N+start_pos]
     # Window function
-    hamming_win = define_window_function(name=window_func_name, N=N)
+    window_func = define_window_function(name=window_func_name, N=N)
     # Fourier transform
-    Y = np.fft.fft(hamming_win * y)
+    Y = np.fft.fft(window_func * y)
     # Find a list of frequencies
     freqList = np.fft.fftfreq(N, d=dt)
     # Find the time for y
@@ -84,11 +86,12 @@ def plot_3charts(N, y, fs=48000, start_sec=0, window_func_name="hamming"):
     # amplitudeSpectrum = [np.sqrt(c.real ** 2  + c.imag ** 2 ) for c in Y]
     # phaseSpectrum     = [np.arctan2(np.float64(c.imag),np.float64(c.real)) for c in Y]
     # Adjust the amplitude to the original signal.
-    amplitudeSpectrum = np.abs(Y) / N * 2 
-    amplitudeSpectrum[0] = amplitudeSpectrum[0] / 2 
+    amplitudeSpectrum = np.abs(Y) / N * 2
+    amplitudeSpectrum[0] = amplitudeSpectrum[0] / 2
     # amplitudeSpectrum = np.abs(Y) / np.max(amplitudeSpectrum)
     phaseSpectrum = np.rad2deg(np.angle(Y))
-    decibelSpectrum = 20.0*np.log10(amplitudeSpectrum / np.max(amplitudeSpectrum))
+    decibelSpectrum = 20.0 * \
+        np.log10(amplitudeSpectrum / np.max(amplitudeSpectrum))
 
     fig = plt.figure(figsize=(11, 8))
 
@@ -134,7 +137,8 @@ def plot_3charts(N, y, fs=48000, start_sec=0, window_func_name="hamming"):
     ax5.set_ylabel("Amplitude")
 
     ax6 = fig.add_subplot(326)
-    ax6.axis([10, fs/2, np.amin(amplitudeSpectrum)*0.9, np.amax(amplitudeSpectrum)*1.1])
+    ax6.axis([10, fs/2, np.amin(amplitudeSpectrum)
+              * 0.9, np.amax(amplitudeSpectrum)*1.1])
     ax6.plot(freqList, amplitudeSpectrum, '-', markersize=1)
     ax6.set_xlabel("Frequency [Hz]")
     ax6.set_ylabel("Amplitude")
@@ -150,3 +154,93 @@ def plot_3charts(N, y, fs=48000, start_sec=0, window_func_name="hamming"):
         plt.show()
     finally:
         plt.close()
+
+
+def spectrogram(N, y, fs=44100, window_func_name="hamming"):
+    # The degree of frame overlap when the window is shifted
+    OVERLAP = N / 2
+    # Length of wav
+    frame_length = len(y)
+    # Time per sample
+    dt = 1/fs
+    # Time per wav_file
+    time_of_file = frame_length * dt
+
+    # Define execute time
+    start = OVERLAP * dt
+    stop = time_of_file
+    step = (N - OVERLAP) * dt
+    time_ruler = np.arange(start, stop, step)
+
+    # Window function
+    Window_func = define_window_function(name=window_func_name, N=N)
+
+    # Definition initialization in transposition state
+    spec = np.zeros([len(time_ruler), 1 + int(N / 2)])
+    pos = 0
+
+    """
+    stft_test(N=N, y=y, window_func=Window_func, OVERLAP=OVERLAP)
+    """
+
+    for fft_index in range(len(time_ruler)):
+        # Frame cut out
+        frame = y[pos:pos+N]
+        # Frame cut out determination
+        if len(frame) == N:
+            # Multiply window function
+            windowed_data = Window_func * frame
+            # FFT for only real demention
+            fft_result = np.fft.rfft(windowed_data)
+            # Find power spectrum
+            fft_data = np.log(np.abs(fft_result) ** 2)
+            # fft_data = np.log(np.abs(fft_result))
+            # fft_data = np.abs(fft_result) ** 2
+            # fft_data = np.abs(fft_result)
+            # Assign to spec
+            for i in range(len(spec[fft_index])):
+                spec[fft_index][-i-1] = fft_data[i]
+
+            # Shift the window and execute the next frame.
+            pos += (N - OVERLAP)
+
+        # ============  plot  =============
+        plt.imshow(spec.T, extent=[0, time_of_file,
+                                   0, fs/2], aspect="auto", cmap="inferno")
+        plt.xlabel("time[sec]")
+        plt.ylabel("frequency[Hz]")
+        # cm = plt.pcolormesh(X,Y,z, cmap='inferno')
+        # plt.colorbar(, orientation="vertical")
+        plt.colorbar()
+        plt.show()
+
+
+def stft_test(N, y, window_func, OVERLAP):
+    spectrogram = abs(signal.stft(y, window_func, OVERLAP)[:, : N / 2 + 1]).T
+
+    # 表示
+    fig = plt.figure()
+    fig.patch.set_alpha(0.)
+    imshow_sox(spectrogram)
+    plt.tight_layout()
+    plt.show()
+
+
+def imshow_sox(spectrogram, rm_low=0.1):
+    max_value = spectrogram.max()
+    # amp to dbFS
+    db_spec = log10(spectrogram / float(max_value)) * 20
+    # カラーマップの上限と下限を計算
+    hist, bin_edges = histogram(db_spec.flatten(), bins=1000, normed=True)
+    hist /= float(hist.sum())
+    plt.hist(hist)
+    plt.show()
+    S = 0
+    ii = 0
+    while S < rm_low:
+        S += hist[ii]
+        ii += 1
+    vmin = bin_edges[ii]
+    vmax = db_spec.max()
+    plt.imshow(db_spec, origin="lower", aspect="auto",
+               cmap="hot", vmax=vmax, vmin=vmin)

@@ -18,7 +18,7 @@ def play(stream,data):  #再生用関数、ストリームと波形データを�
 
 
 #def createData(freqList = [440], start_pos=0): #オシレーター
-def createData(freqList = [100], start_pos=0): #オシレーター
+def createData(freqList = [800], start_pos=0): #オシレーター
     data = []
     amp = 1.0 / len(freqList)    #使用時は波形データにampを乗算する
 
@@ -27,7 +27,7 @@ def createData(freqList = [100], start_pos=0): #オシレーター
         s = 0.0                        #波形データをゼロクリア
         for f in freqList:
             s += amp * np.sin(2 * np.pi * f * n / 44100)
-       # 振幅が大きい時はクリッピング
+        # 振幅が大きい時はクリッピング
         if s > 1.0:  s = 1.0
         if s < -1.0: s = -1.0
         data.append(s) #末尾に追加
