@@ -15,7 +15,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 from collections import OrderedDict
 from scipy import signal
 import time
-from stft import stft 
+from stft import stft
 
 
 plt.rcParams['font.family'] = 'IPAPGothic'  # 使用するフォント
@@ -59,6 +59,18 @@ def define_window_function(name, N, kaiser_para=5):
 
 
 def plot_3charts(N, y, fs=44100, start_sec=0, window_func_name="hamming"):
+    """
+    Arguments:
+        N : FFT length
+        y : Data for analysis
+        fs : Sampling freqency
+        start_sec : Start sec
+        window_func_name: window_func_name
+
+    Usage example:
+        plot_3charts(N=N, y=data, fs=fs, start_sec=3, window_func_name="hamming")
+    """
+
     # Period
     dt = 1/fs
     # Define start sec
