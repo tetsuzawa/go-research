@@ -34,7 +34,7 @@ plt.rcParams['figure.dpi'] = 100  # dpiの設定
 plt.rcParams['figure.subplot.hspace'] = 0.3  # 図と図の幅
 plt.rcParams['figure.subplot.wspace'] = 0.3  # 図と図の幅
 
-#fig = plt.figure(figsize=(8, 11))
+# fig = plt.figure(figsize=(8, 11))
 # plt.gca().xaxis.set_major_formatter(plt.FormatStrFormatter('%.3f'))#y軸小数点以下3桁表示
 # plt.gca().yaxis.set_major_formatter(plt.FormatStrFormatter('%.3f'))#y軸小数点以下3桁表示
 # plt.gca().xaxis.get_major_formatter().set_useOffset(False)
@@ -43,7 +43,7 @@ plt.rcParams['figure.subplot.wspace'] = 0.3  # 図と図の幅
 
 
 def define_window_function(name, N, kaiser_para=5):
-    if name == None:
+    if name is None:
         return 1
     elif name == "hamming":
         return np.hamming(M=N)
@@ -60,15 +60,27 @@ def define_window_function(name, N, kaiser_para=5):
 
 def plot_3charts(N, y, fs=44100, start_sec=0, window_func_name="hamming"):
     """
-    Arguments:
-        N : FFT length
-        y : Data for analysis
-        fs : Sampling freqency
-        start_sec : Start sec
-        window_func_name: window_func_name
+    Parameters
+    -----------------
+    N : int
+        FFT length
+    y : list(int)
+        Data for analysis
+    fs : int
+        Sampling freqency
+    start_sec : float64
+        Start sec
+    window_func_name: str
+        window_func_name :
+            "hamming"
+            "hanning"
+            "bartlett"
+            "blackman"
+            "kaiser"
 
-    Usage example:
-        plot_3charts(N=N, y=data, fs=fs, start_sec=3, window_func_name="hamming")
+    Usage example
+    -----------------
+    plot_3charts(N=N, y=data, fs=fs, start_sec=3, window_func_name="hamming")
     """
 
     # Period
@@ -92,7 +104,7 @@ def plot_3charts(N, y, fs=44100, start_sec=0, window_func_name="hamming"):
     for u_0 in u_0_list:
         y_abs[u_0] = (y_abs[u_0-1] + y_abs[u_0+1]) / 2
 
-    # y decivel desplay
+    # y decibel desplay
     y_db = 20.0*np.log10(y_abs)
 
     # amplitudeSpectrum = [np.sqrt(c.real ** 2  + c.imag ** 2 ) for c in Y]
@@ -241,9 +253,9 @@ def stft_test(N, y, window_func, OVERLAP):
 def imshow_sox(spectrogram, rm_low=0.1):
     max_value = spectrogram.max()
     # amp to dbFS
-    db_spec = log10(spectrogram / float(max_value)) * 20
+    db_spec = np.log10(spectrogram / float(max_value)) * 20
     # カラーマップの上限と下限を計算
-    hist, bin_edges = histogram(db_spec.flatten(), bins=1000, normed=True)
+    hist, bin_edges = np.histogram(db_spec.flatten(), bins=1000, normed=True)
     hist /= float(hist.sum())
     plt.hist(hist)
     plt.show()
