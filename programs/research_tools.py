@@ -11,6 +11,7 @@ import numpy as np
 # import pandas as pd
 # import wave
 import matplotlib.pyplot as plt
+from matplotlib.colors import Normalize
 # import matplotlib.ticker as ticker
 # from matplotlib.backends.backend_pdf import PdfPages
 # from collections import OrderedDict
@@ -230,9 +231,6 @@ class ResearchTools(object):
                 # self.acf = np.real(np.fft.ifft(np.abs(self.Y
                 # Find power spectrum
                 fft_data = 10 * np.log10(np.abs(fft_result) ** 2)
-                # fft_data = np.log(np.abs(fft_result))
-                # fft_data = np.abs(fft_result) ** 2
-                # fft_data = np.abs(fft_result)
                 # Assign to spec
                 for i in range(len(spec[fft_index])):
                     spec[fft_index][-i-1] = fft_data[i]
@@ -242,29 +240,41 @@ class ResearchTools(object):
                 pos += (self.stft_N - OVERLAP)
 
         # ============  plot  =============
-        plt.imshow(spec.T, extent=[0, time_of_file,
-                                   0, self.fs/2],
-                   aspect="auto",
-                   cmap="inferno",
-                   interpolation="nearest")
-        plt.yticks.direction = "out"
-        plt.xticks.direction = "out"
-        plt.xlabel("time[sec]")
-        plt.ylabel("frequency[Hz]")
-        plt.title("STFT")
-        plt.colorbar()
+        fig = plt.figure()
+        ax1 = fig.add_subplot(111)
+        im = ax1.imshow(spec.T, extent=[0, time_of_file,
+                                        0, self.fs/2],
+                        aspect="auto",
+                        cmap="inferno",
+                        interpolation="nearest",
+                        norm=Normalize(vmin=-80, vmax=0))
+        ax1.set_xlabel("time[sec]")
+        ax1.set_ylabel("frequency[Hz]")
+        ax1.set_title("STFT")
+        pp1 = fig.colorbar(im, ax=ax1, orientation="vertical")
+        # pp1.set_clim(-80, 0)
+        pp1.set_label("power")
         plt.show()
 
         # ============  plot  =============
-        plt.imshow(st_acf.T, extent=[0, time_of_file,
-                                     0, self.fs/2],
-                   aspect="auto",
-                   cmap="inferno",
-                   interpolation="nearest")
-        plt.xlabel("time[sec]")
-        plt.ylabel("frequency[Hz]")
-        plt.title("Autocrration Function")
-        plt.colorbar()
+        fig = plt.figure()
+        ax2 = fig.add_subplot(111)
+        im2 = ax2.imshow(st_acf.T, extent=[0, time_of_file,
+                                           0, self.fs/2],
+                         aspect="auto",
+                         cmap="inferno",
+                         interpolation="nearest",
+                         norm=Normalize(vmin=0, vmax=1.00))
+
+        ax2.set_xlabel("time[sec]")
+        ax2.set_ylabel("frequency[Hz]")
+        ax2.set_title("Short Time Autocorrelation Function")
+
+        # mappable0 = ax1.pcolormesh(X,Y,z, cmap='coolwarm', norm=Normalize(vmin=-4, vmax=4)) # ここがポイント！
+        pp2 = fig.colorbar(im2, ax=ax2, orientation="vertical")
+        # pp.set_clim(-80, 0)
+        pp2.set_label("power")
+
         plt.show()
 
 
