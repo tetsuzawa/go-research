@@ -45,11 +45,13 @@ class ResearchTools(object):
             under_0list = np.where(data_array <= 0)
             for under_0 in under_0list:
                 try:
-                    data_array[under_0] = (
-                        data_array[under_0-1] + data_array[under_0+1]) / 2
+                    data_array[under_0] = 1e-8
+                    # 抜け値など、平均を取りたい場合コメントアウトを外す
+                    # data_array[under_0] = (
+                    #     data_array[under_0-1] + data_array[under_0+1]) / 2
                 except IndexError as identifier:
                     print(identifier)
-                    data_array[under_0] = 0.0000000001
+                    data_array[under_0] = 1e-8
                 return data_array
 
         if "start_pos" in kwargs:
@@ -131,6 +133,7 @@ class ResearchTools(object):
                   self.dt, np.amin(self.y)-10, np.amax(self.y)+10])
         ax1.set_xlabel("Time [sec]")
         ax1.set_ylabel("Amplitude")
+        ax1.set_title("Amplitude - Time")
         plt.show()
 
     def plot_freq_analysis_log(self):
@@ -142,6 +145,7 @@ class ResearchTools(object):
         ax1.plot(self.freq_list, self.gain_spectrum, '-', markersize=1)
         ax1.set_xlabel("Frequency [Hz]")
         ax1.set_ylabel("Amplitude [dB]")
+        ax1.set_title("Amplitude spectrum")
 
         ax2 = fig.add_subplot(212)
         ax2.set_xscale('log')
@@ -150,6 +154,7 @@ class ResearchTools(object):
         ax2.plot(self.freq_list, self.phase_spectrum, '-', markersize=1)
         ax2.set_xlabel("Frequency [Hz]")
         ax2.set_ylabel("Phase [deg]")
+        ax2.set_title("Phase spectrum")
         plt.show()
 
     def plot_freq_analysis(self):
@@ -160,6 +165,7 @@ class ResearchTools(object):
                   self.dt, np.amin(self.y)*1.2, np.amax(self.y)*1.2])
         ax1.set_xlabel("Time [sec]")
         ax1.set_ylabel("Amplitude")
+        ax1.set_title("Amplitude - Time")
 
         ax2 = fig.add_subplot(212)
         ax2.axis([10, self.fs/2, np.amin(self.amp_spectrum)
@@ -167,6 +173,7 @@ class ResearchTools(object):
         ax2.plot(self.freq_list, self.amp_spectrum, '-', markersize=1)
         ax2.set_xlabel("Frequency [Hz]")
         ax2.set_ylabel("Amplitude")
+        ax2.set_title("Amplitude - Frequdency")
         plt.show()
 
     def plot_power_gain_spectrum(self):
@@ -178,6 +185,7 @@ class ResearchTools(object):
         ax1.plot(self.freq_list, self.gain_spectrum, '-', markersize=1)
         ax1.set_xlabel("Frequency [Hz]")
         ax1.set_ylabel("power")
+        ax1.set_title("Power spectrum")
         plt.show()
 
     def plot_acf(self):
@@ -188,6 +196,7 @@ class ResearchTools(object):
         ax1.plot(list(range(self.fft_N)), self.acf, '-', markersize=1)
         ax1.set_xlabel("sample number")
         ax1.set_ylabel("Correlation")
+        ax1.set_title("Autocorrelation Function")
         plt.show()
 
     def plot_spectrogram_acf(self):
@@ -270,12 +279,22 @@ class ResearchTools(object):
         ax2.set_ylabel("frequency[Hz]")
         ax2.set_title("Short Time Autocorrelation Function")
 
-        # mappable0 = ax1.pcolormesh(X,Y,z, cmap='coolwarm', norm=Normalize(vmin=-4, vmax=4)) # ここがポイント！
+        # ここがポイント！
+        # mappable0 = ax1.pcolormesh(X,Y,z, cmap='coolwarm',
+        # norm=Normalize(vmin=-4, vmax=4))
         pp2 = fig.colorbar(im2, ax=ax2, orientation="vertical")
         # pp.set_clim(-80, 0)
         pp2.set_label("power")
 
         plt.show()
+
+    def plot_all(self):
+        self.plot_y_time()
+        self.plot_freq_analysis()
+        self.plot_freq_analysis_log()
+        self.plot_power_gain_spectrum
+        self.plot_acf()
+        self.plot_spectrogram_acf()
 
 
 class WindowNameNotFoundError(Exception):
