@@ -287,6 +287,7 @@ class ResearchTools(object):
         pp2.set_label("power")
 
         plt.show()
+    
 
     def plot_all(self):
         self.plot_y_time()
