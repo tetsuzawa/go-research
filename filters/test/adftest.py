@@ -31,6 +31,7 @@ try:
     import adaptive_filters
     import adaptive_filters_v2
     import wave_process
+    import AP_Algorithm.Affine_projection_algorithm
 except ModuleNotFoundError as err:
     print(err)
     sys.path.append( str(current_dir) + '/programs' )
@@ -41,6 +42,7 @@ except ModuleNotFoundError as err:
     import plot_tools
     import adaptive_filters
     import wave_process
+    import filters.test.AP_Algorithm.Affine_projection_algorithm
 
 
 
@@ -53,10 +55,18 @@ except ModuleNotFoundError as err:
 N = 2**17  # サンプル数 528244
 wav= wave_process.wave_process("../../sample_wav/fuku_white_noise.wav")
 wav_noise = wav.data
-wav_noise = np.array(wav_noise).reshape(len(wav_noise), 1)
-adf_N = 8
+# wav_noise = np.array(wav_noise).reshape(len(wav_noise), 1)
+# for AP
+wav_noise = np.array(wav_noise, dtype=np.float32).reshape(1, len(wav_noise))
+adf_N = 8192
+""" LMS
 ADF_out = decorators.stop_watch(
                                 adaptive_filters_v2.nlms_agm_on)(
                                     alpha=0.7, update_count=1, threshold=0.01, d=wav_noise, adf_N=adf_N)
+"""
+"""AP"""
+adf_ort = decorators.stop_watch(
+                                AP_Algorithm.Affine_projection_algorithm.ap_main)(
+                                    mu=0.5, alpha=3, update_count=8, d=wav_noise[:, :adf_N], adf_N=adf_N)
 
 
