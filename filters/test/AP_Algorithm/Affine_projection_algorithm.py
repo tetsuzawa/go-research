@@ -1,50 +1,61 @@
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Module Name:Affine projection algorithm
 # Author:  m_tsutsui
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
-#Library_Import###############
+# Library_Import###############
 import numpy as np
-from numpy import*
+from numpy import *
 import matplotlib.pyplot as plt
-#Library_Import_end##################
 
-def APA(myu,arufa,UC):
+
+# Library_Import_end##################
+
+def ap_algorithm(mu, alpha, update_count):
     """
-    APA function
+    ap_algorithm function
 
-	myu:step size,	arufa:regularisation  const
-
-	UC:Update count
+    :parameter
+	    mu:step size,	alpha:regularisation  const
+	    update_count:Update count
     """
-    for i in arange(1,UC+1,1):
-        global w_ini
-        e=matrix(d)-matrix(w_ini).T*matrix(X)   #error vector
-        w_ini=w_ini+myu*matrix(X)*(arufa*np.eye(d_size,d_size)+matrix(X).T*matrix(X)).I*matrix(e).T
+    # nonlocal w
+    # nonlocal d
+    # nonlocal x
+    global w
+    global d
+    global x
 
-    y_opt=matrix(w_ini).T*matrix(X)  #filter out
+    for _ in arange(1, update_count + 1, 1):
+        e = np.dot(d - w.T, x)  # error vector
+        w = w + mu * np.dot(x, alpha * np.eye(adf_N, adf_N)) + np.dot(x.T, np.dot(np.linalg.inv(x), e.T))
+
+    y_opt = np.dot(w.T, x)  # filter out
 
     return y_opt
 
 
-
 if __name__ == '__main__':
+    adf_N = 64  # data size
 
-    d_size=80   #data size
+    w = np.random.rand(adf_N, 1)  # initial coefficient
 
-    w_ini=np.random.rand(d_size,1) #initial coefficient
+    d = np.random.rand(1, adf_N)  # desired signal
 
-    d=np.random.rand(1,d_size)  #desired signal
+    x = np.dot(w, d)  # input vector shape:(adf_N, adf_N)
 
-    X=matrix(w_ini)*matrix(d)   #input vector
+    adf_out = ap_algorithm(mu=0.5, alpha=3, update_count=8)
 
-    APA_out=APA(0.5,3,8)
-
-#plot_command############################
+    # plot_command############################
     plt.figure(facecolor='w')
-    plt.plot(d.T)
-    plt.plot(APA_out.T,"r--")
+    plt.plot(d.T, "c--")
+    plt.plot(adf_out.T, "r--")
     plt.grid()
-    plt.legend(('desired signal','APA'))
-    plt.title('Affine projection algorithm',fontsize=20)
+    plt.legend(('desired signal', 'APA'))
+    plt.title('Affine projection algorithm', fontsize=20)
+
+    plt.plot(d.T - adf_out.T, "g--")
+    plt.grid()
+    plt.legend(('desired signal', 'APA'))
+    plt.title('Affine projection algorithm', fontsize=20)
     plt.show()
