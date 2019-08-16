@@ -31,6 +31,11 @@ def Kalman_filer2(x, y, gyro, c, b, q, r, P, Ts, Tri):
     g = get_Kalamgain(P_, c, r)
     return x_ + np.dot(g, y - np.dot(c, x_)), get_Variance(g, c, P_)
 
+def get_Variance(g, c, P_):
+    I = np.identity(len(c[0]))
+    P = (I - g @ c ) @ P_
+    return P
+
 
 def Jacobian_forprocessvariance2(Tri):
     return np.array([[0, Tri[1, 0], -Tri[1, 1]], [1, Tri[1, 1] * Tri[0, 2], Tri[1, 0] * Tri[0, 2]]])
