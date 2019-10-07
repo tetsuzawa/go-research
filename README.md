@@ -3,6 +3,7 @@
 Including fir_filter programs with scipy  
 Please see the reference below
 
+- MindMeister
 - slack
 - MS Word
 

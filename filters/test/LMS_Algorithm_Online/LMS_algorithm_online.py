@@ -5,7 +5,6 @@
 
 # Library_Import#############################
 # from numpy import *
-import math
 import numpy as np
 import matplotlib.pyplot as plt
 # Library_Import_end##########################
