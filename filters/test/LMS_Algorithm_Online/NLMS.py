@@ -20,6 +20,8 @@ def lms():
     """
 
     mu = 0.1
+    # mu = 1.0
+    # mu = 1.9
 
     # 1 w(0). random value. use as vector
     n_max = 32  # ideal value is infinity
