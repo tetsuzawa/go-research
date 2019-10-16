@@ -44,7 +44,8 @@ def lms():
     input = np.random.randn()  # input signal (random signal). use as scalar. time
     y = 0
 
-    while True:
+    # while True:
+    for n in range(n_max * 200):
         try:
             print(i)
             i += 1
@@ -79,7 +80,7 @@ def lms():
             y_buf.append(y)
             e_buf.append(e)
 
-            time.sleep(0.01)
+            time.sleep(0.0001)
 
         except KeyboardInterrupt:
             break
