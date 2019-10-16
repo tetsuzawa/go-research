@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def blms():
-    """Block LMS Algorithm
+def bnlms():
+    """Block Normalized LMS Algorithm
     :arg:
     input u(n)
     desired d(n)
@@ -17,9 +17,10 @@ def blms():
     :return:
     """
 
-    mu = 0.001
+    mu = 0.00001
     # mu = 0.100
-    L = 64
+    # mu = 1.0
+    L = 512
 
     # 1 w(0). random value. use as vector
     k_max = L  # ideal value is infinity
@@ -37,9 +38,14 @@ def blms():
     input = np.random.randn()  # input signal (random signal). use as scalar. time
     y = 0
 
-    phi = np.zeros(shape=L, dtype=np.float64, order='C')
 
     # 2 Iterate for k = 0, 1, 2, 3, ..., k_max (k is the block index)
+
+    # 2.0 Initialize phi = 0s
+    phi = np.zeros(shape=L, dtype=np.float64, order='C')
+
+    u = np.zeros(L)
+    print(u)
 
     try:
         # for k in range(k_max):
@@ -47,9 +53,6 @@ def blms():
             i += 1
             j = 1
 
-            # 2.0 Initialize phi = 0s
-
-            u = np.zeros(L)
 
             # 2.1 Iterate for i = 0, 1, 2, 3, ..., L-1 (k is the block index)
             for j in range(L):
@@ -63,6 +66,7 @@ def blms():
 
                 u = np.delete(u, 0)
                 u = np.append(u, input)
+                u_norm = np.dot(u.T, u)
 
                 # desired signal scalar
                 # d = input + 0.1 * np.random.randn()
@@ -76,16 +80,16 @@ def blms():
                 e = d - y  # scalar
 
                 # 2.3 parameter adaption. calc w(n+1)
-                phi = phi + mu * u * e  # [n_max, 0]
+                phi = phi + mu * u * e / (1e-8 + u_norm)  # [n_max, 0]
 
                 u_buf.append(input)
                 d_buf.append(d)
                 y_buf.append(y)
                 e_buf.append(e)
 
-                time.sleep(0.001)
+                # time.sleep(0.001)
 
-            w = w + phi / L
+            w = w + phi
 
     except KeyboardInterrupt:
         pass
@@ -103,7 +107,7 @@ def blms():
 
 
 def main():
-    blms()
+    bnlms()
 
 
 if __name__ == '__main__':

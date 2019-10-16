@@ -19,8 +19,8 @@ def lms():
     :return: 
     """
 
-    mu = 0.1
-    # mu = 1.0
+    # mu = 0.1
+    mu = 1.0
     # mu = 1.9
 
     # 1 w(0). random value. use as vector
@@ -46,7 +46,8 @@ def lms():
     input = np.random.randn()  # input signal (random signal). use as scalar. time
     y = 0
 
-    while True:
+    # while True:
+    for n in range(1000 * n_max):
         try:
             print(i)
             i += 1
@@ -82,7 +83,7 @@ def lms():
             y_buf.append(y)
             e_buf.append(e)
 
-            time.sleep(0.01)
+            time.sleep(0.0001)
 
         except KeyboardInterrupt:
             break
