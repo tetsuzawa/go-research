@@ -13,3 +13,5 @@ venv
 *.png
 *.jpg
 *.code-workspace
+*.aup
+
