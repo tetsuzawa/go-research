@@ -1,13 +1,11 @@
 package main
 
 import (
-	"encoding/binary"
 	"fmt"
-	"github.com/takuyaohashi/go-wav"
+	"github.com/tetsuzawa/converter"
 	"github.com/urfave/cli"
 	"io/ioutil"
 	"os"
-	"reflect"
 	"strings"
 )
 
@@ -25,9 +23,14 @@ func main() {
 	app.Action = action
 
 	app.Flags = []cli.Flag{
-		cli.BoolFlag{
-			Name:  "conv, c",
-			Usage: "convert .wav to .DXB",
+		cli.IntFlag{
+			Name:  "channel, c",
+			Usage: "output channel num",
+			Value: 1,
+		},
+		cli.StringFlag{
+			Name:  "outname, o",
+			Usage: "designate output file name",
 		},
 	}
 }
@@ -38,8 +41,16 @@ func action(ctx *cli.Context) error {
 	}
 
 	fileName := ctx.Args().Get(0)
+	fmt.Println("filename: ", fileName)
 	nameParts := strings.Split(fileName, ".")
-	name, ex := nameParts[0], nameParts[1]
+	var name string
+	fmt.Println("ctx: ", ctx.Int("channel"), ctx.String("outname"))
+	if ctx.String("o") != "" {
+		name = ctx.String("o")
+	} else {
+		name = nameParts[0]
+	}
+	ex := nameParts[1]
 
 	f, err := os.Open(fileName)
 	if err != nil {
@@ -47,57 +58,16 @@ func action(ctx *cli.Context) error {
 	}
 	defer f.Close()
 
-	var data interface{}
-
 	switch ex {
 	case "wav":
-		w, err := wav.NewReader(f)
-		//w, err := wav2.New(f)
-		if err != nil {
-			return cli.NewExitError(err, 3)
-		}
-		data, err = w.ReadSamples(int(w.GetSubChunkSize())/int(w.GetNumChannels()))
-		//sc := w.GetSubChunkSize()
-		//fmt.Println(sc)
-		//data, err = w.ReadSamples(1024)
-		if err != nil {
-			return cli.NewExitError(err, 3)
-		}
-		//fmt.Printf("%T, %v\n", data)
-		if reflect.TypeOf(data) != reflect.TypeOf([]int16{0,}) {
-			return cli.NewExitError(err, 4)
-		}
-		fmt.Println("name: ", name)
-		fmt.Println("type: ", reflect.TypeOf(data))
-		fmt.Println("ex: ", ex)
-		if value, ok := data.([]int16); ok {
-
-			fw, err := os.Create(name + ".DSB")
-			if err != nil {
-				return cli.NewExitError(err, 3)
-			}
-			fmt.Println("len of value: ", len(value))
-			defer fw.Close()
-			//for i := 0; i < len(value); i++ {
-			for _, v := range value{
-				//idx := i * 2
-				buf := make([]byte, 2)
-				ui := Int16ToUint16(v)
-				binary.LittleEndian.PutUint16(buf, ui)
-				_, err := fw.Write(buf)
-				if err != nil {
-					return cli.NewExitError(err, 3)
-				}
-			}
-		}
-		fmt.Println("end!!")
+		return wtod(ctx, f, name)
 
 	case "DSB":
 		buff, err := ioutil.ReadAll(f)
 		if err != nil {
 			return cli.NewExitError(err, 3)
 		}
-		data := bytesToInt16s(buff)
+		data := converter.BytesToInt16s(buff)
 		fmt.Println(data)
 
 	case "DDB":
@@ -105,7 +75,7 @@ func action(ctx *cli.Context) error {
 		if err != nil {
 			return cli.NewExitError(err, 3)
 		}
-		data := bytesToFloat64s(buff)
+		data := converter.BytesToFloat64s(buff)
 		fmt.Println(data)
 	default:
 		return cli.NewExitError("Unknown extention. Want: .wav, .DSB or .DDB. Got: "+ex, 2)
