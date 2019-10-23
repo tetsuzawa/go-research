@@ -3,3 +3,6 @@
 2019/10/23 17:13:37 fdaf.go:141: open /Users/tetsu/personal_files/Research/filters/test/FDAF_wav//tmp/dr_level_01_R_voice_mu-%!s(float64=0.001)_L-%!s(int=128).wav: no such file or directory
 2019/10/23 17:16:51 fdaf.go:138: open /Users/tetsu/personal_files/Research/filters/test/FDAF_wav//tmp/dr_level_01_R_voice_mu-%!s(float64=0.001)_L-%!s(int=128).wav: no such file or directory
 2019/10/23 17:18:00 fdaf.go:138: open /Users/tetsu/personal_files/Research/filters/test/FDAF_wav//tmp/dr_level_01_R_voice_mu-0.001000_L-128.wav: no such file or directory
+2019/10/23 18:09:32 fdaf.go:127: strconv.ParseFloat: parsing "": invalid syntax
+2019/10/23 18:40:52 fdaf.go:118: open : no such file or directory
+2019/10/23 19:00:19 fdaf.go:128: strconv.ParseFloat: parsing "": invalid syntax

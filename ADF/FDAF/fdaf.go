@@ -56,6 +56,7 @@ FDAF:
 			// 2.1.0 Read/generate a new data pair
 			in := data[idx]
 			if idx == len(data)-1 {
+				//fmt.Println(w[:L])
 				fmt.Printf("\nAdaptation completed!!\n")
 				break FDAF
 			}
@@ -99,8 +100,8 @@ FDAF:
 		}
 
 		// Judge divergence
-		if e[0] > 10000000000000{
-			log.Fatalln("ERROR: filter divergence occur. \n Please reconsider stepsize:mu and filter length:L.")
+		if e[0] > 100000 {
+			log.Fatalln("ERROR: filter divergence occur. \nPlease reconsider stepsize:mu and filter length:L.")
 		}
 		err_buf = append(err_buf, e...)
 	}
@@ -132,13 +133,24 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	fmt.Printf("Filter stepsize mu: %v, Filter length L: %v\n", mu, L)
+
 	w, err := wav.NewReader(f)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
+	fmt.Println("Analize following file:", fileName)
+	fmt.Println("Channels:", w.GetNumChannels())
+	fmt.Println("Bits per samples:", w.GetBitsPerSample())
+	fmt.Println("Block align:", w.GetBlockAlign())
+	fmt.Println("Data chunk size:", w.GetSubChunkSize())
+	fmt.Println("Audio format:", w.GetAudioFormat().String())
+	fmt.Println("Byte rate:", w.GetByteRate())
+	fmt.Println("Sample rate:", w.GetSampleRate())
+
 	var data interface{}
-	data, err = w.ReadSamples(int(w.GetSubChunkSize()) / int(w.GetNumChannels()) / int(w.GetBitsPerSample()) * 8)
+	data, err = w.ReadSamples(int(w.GetSubChunkSize()) / int(w.GetNumChannels()) / int(w.GetBlockAlign()))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -148,6 +160,7 @@ func main() {
 	}
 
 	value, ok := data.([]int16)
+	fmt.Println("len", len(value))
 	if !ok {
 		log.Fatalln("Data type is not valid")
 	}
@@ -174,6 +187,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	defer ww.Close()
 	ww.WriteSamples(converter.Float64sToInt16s(estErr))
 
 	b := make([]byte, 2)
@@ -192,6 +206,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Printf("\n\n")
+	fmt.Printf("\n")
+	fmt.Println("Filtered data is saved at:", wav_out_dir+wav_out_name)
 	fmt.Println("end!!")
 }
