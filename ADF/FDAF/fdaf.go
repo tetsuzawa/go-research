@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/binary"
+	"flag"
 	"fmt"
 	"github.com/mjibson/go-dsp/fft"
 	"github.com/takuyaohashi/go-wav"
@@ -12,11 +13,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-)
-
-const (
-	mu = 0.001
-	L  = 128
+	"strconv"
 )
 
 func ExtractFileName(path string) string {
@@ -31,7 +28,8 @@ func unset(s []float64, i int) []float64 {
 	return append(s[:i], s[i+1:]...)
 }
 
-func fdaf(data []float64) []float64 {
+func fdaf(data []float64, mu float64, L int) []float64 {
+
 	// 1 w(o). random value. use as vector.
 	var w = make([]float64, 2*L)
 	// output buffer
@@ -93,7 +91,7 @@ FDAF:
 		aux1 = fft.FFT(converter.Float64sToComplex128s(append(w[:L], zeros...)))
 		aux2 = fft.FFT(append(phi, converter.Float64sToComplex128s(zeros)...))
 		for i := 0; i < 2*L; i++ {
-			W[i] = aux1[i] + mu*aux2[i]
+			W[i] = aux1[i] + complex(mu, 0)*aux2[i]
 		}
 		aux3 := fft.IFFT(W)
 		for i := 0; i < 2*L; i++ {
@@ -108,12 +106,26 @@ FDAF:
 func main() {
 	utils.LoggingSettings("fdaf.log")
 
-	fileName := os.Args[1]
+	flag.Parse()
+	fileName := flag.Arg(0)
 	f, err := os.Open(fileName)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer f.Close()
+
+	// ADF Parameter
+	var mu float64
+	var L int
+	mu, err = strconv.ParseFloat(flag.Arg(1), 64)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	L, err = strconv.Atoi(flag.Arg(2))
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	w, err := wav.NewReader(f)
 	if err != nil {
@@ -135,7 +147,7 @@ func main() {
 		log.Fatalln("Data type is not valid")
 	}
 
-	estErr := fdaf(converter.Int16sToFloat64s(value))
+	estErr := fdaf(converter.Int16sToFloat64s(value), mu, L)
 
 	inFileName := ExtractFileName(fileName)
 	wav_out_dir := "/Users/tetsu/personal_files/Research/filters/test/FDAF_wav/"
