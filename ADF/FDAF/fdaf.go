@@ -97,6 +97,11 @@ FDAF:
 		for i := 0; i < 2*L; i++ {
 			w[i] = real(aux3[i])
 		}
+
+		// Judge divergence
+		if e[0] > 10000000000000{
+			log.Fatalln("ERROR: filter divergence occur. \n Please reconsider stepsize:mu and filter length:L.")
+		}
 		err_buf = append(err_buf, e...)
 	}
 
