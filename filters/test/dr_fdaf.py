@@ -14,7 +14,7 @@ from research_tools.wave_handler_multi_ch import WaveHandler
 
 input_filename = sys.argv[1]
 input_name_list = input_filename.split(".")
-mu = 0.018
+mu = 0.001
 L = 64
 
 
@@ -32,7 +32,7 @@ def fdaf(data):
     :return:
     """
 
-    # mu = 0.100
+    # mu = 0.001
 
     # 1 w(0). random value. use as vector
     k_max = L  # ideal value is infinity
@@ -106,6 +106,7 @@ def fdaf(data):
 
             # 3 update the parameters of the filter
             W = np.fft.fft(np.concatenate([w[:L], zeros])) + mu * np.fft.fft(np.concatenate([phi, zeros]))
+            print("w: ", len(w), "W: ", len(W))
             w = np.fft.ifft(W)
 
             u_buf.extend(u[L:])
