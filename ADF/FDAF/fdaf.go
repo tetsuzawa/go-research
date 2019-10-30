@@ -7,7 +7,7 @@ import (
 	"github.com/mjibson/go-dsp/fft"
 	"github.com/takuyaohashi/go-wav"
 	"github.com/tetsuzawa/converter"
-	"github.com/tetsuzawa/go-3daudio/utils"
+	utils2 "github.com/tetsuzawa/go-3daudio/web-app/utils"
 	"log"
 	"math/cmplx"
 	"os"
@@ -110,7 +110,7 @@ FDAF:
 }
 
 func main() {
-	utils.LoggingSettings("fdaf.log")
+	utils2.LoggingSettings("fdaf.log")
 
 	flag.Parse()
 	fileName := flag.Arg(0)
