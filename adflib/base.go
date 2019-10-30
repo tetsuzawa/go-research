@@ -2,11 +2,22 @@ package adflib
 
 import (
 	"errors"
+	"fmt"
 	"github.com/tetsuzawa/go-research/adflib/misc"
 	"gonum.org/v1/gonum/floats"
 	"math/rand"
 	"time"
 )
+
+type ADFInterface interface {
+	InitWeights() error
+	Predict() float64
+	PreTrainedRun() ([]float64, []float64, []float64)
+	Run() ([]float64, []float64, []float64)
+	ExploreLearning() ([]float64, error)
+	CheckFloatParam() (float64, error)
+	CheckIntParam() (int, error)
+}
 
 type AdaptiveFilter struct {
 	w  []float64
@@ -106,4 +117,21 @@ func (af *AdaptiveFilter) ExploreLearning(d, x []float64, muStart, muEnd float64
 		}
 	}
 	return es, nil
+}
+
+func (af *AdaptiveFilter) CheckFloatParam(p, low, high float64, name string) (float64, error) {
+	if low <= p && p <= high {
+		return p, nil
+	}else {
+		err := fmt.Errorf("Parameter %v is not in range <%v, %v>")
+		return 0, err
+	}
+}
+func (af *AdaptiveFilter) CheckIntParam(p, low, high int, name string) (int, error) {
+	if low <= p && p <= high {
+		return p, nil
+	}else {
+		err := fmt.Errorf("Parameter %v is not in range <%v, %v>")
+		return 0, err
+	}
 }
