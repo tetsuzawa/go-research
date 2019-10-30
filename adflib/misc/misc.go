@@ -13,13 +13,20 @@ func ElmAbs(fs []float64) []float64 {
 	return fs
 }
 
-func MAE(x1, x2 []float64) float64 {
-	e := GetValidError()
+func MAE(x1, x2 []float64) (float64, error){
+	e, err := GetValidError(x1, x2)
+	if err != nil{
+		return 0, err
+	}
 	return floats.Sum(ElmAbs(e)) / float64((len(e)))
 }
 
-func MSE(x1, x2 []float64) float64 {
-	e := GetValidError()
+
+func MSE(x1, x2 []float64) (float64, error){
+	e, err := GetValidError(x1, x2)
+	if err != nil{
+		return 0, err
+	}
 	return floats.Dot(e, e) / float64(len(e))
 }
 
@@ -47,7 +54,8 @@ func GetMeanError(x1, x2 []float64, fn string) (float64, error) {
 	case "RMSE":
 		return RMSE(x1, x2), nil
 	default:
-		err := errors.New("")
-		return 0,
+		err := errors.New(`The provided error function (fn) is not known.
+								Use "MAE", "MSE" or "RMSE"`)
+		return 0, err
 	}
 }
