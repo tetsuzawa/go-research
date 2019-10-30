@@ -2,12 +2,13 @@ package adflib
 
 import (
 	"errors"
+
 	"github.com/gonum/floats"
 )
 
 type FiltLMS struct {
 	AdaptiveFilter
-	kind string
+	kind     string
 	wHistory [][]float64
 }
 
@@ -47,11 +48,11 @@ func (af *FiltLMS) Run(d []float64, x [][]float64) ([]float64, []float64, [][]fl
 	y := make([]float64, N)
 	e := make([]float64, N)
 	//adaptation loop
-	for i:=0;i< N;i++{
+	for i := 0; i < N; i++ {
 		af.wHistory[i] = d
 		y[i] = floats.Dot(af.w, x[i])
 		e[i] = d[i] - y[i]
-		for j:=0;j<af.n;j++{
+		for j := 0; j < af.n; j++ {
 			af.w[j] = af.mu * e[i] * x[i][j]
 		}
 	}

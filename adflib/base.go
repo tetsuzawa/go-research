@@ -1,12 +1,20 @@
+/*
+This package is designed to simplify adaptive signal processing tasks
+within golang (filtering, prediction, reconstruction, classification).
+For code optimisation, this library uses gonum/floats for array operations.
+
+This package is created with reference to https://github.com/matousc89/padasip.
+*/
 package adflib
 
 import (
 	"errors"
 	"fmt"
-	"github.com/tetsuzawa/go-research/adflib/misc"
-	"gonum.org/v1/gonum/floats"
 	"math/rand"
 	"time"
+
+	"github.com/tetsuzawa/go-research/adflib/misc"
+	"gonum.org/v1/gonum/floats"
 )
 
 type ADFInterface interface {
@@ -72,7 +80,7 @@ func (af *AdaptiveFilter) InitWeights(w interface{}, n int) error {
 			w := make([]float64, n)
 			af.w = w
 		} else {
-			return errors.New("Impossible to understand the w")
+			return errors.New("impossible to understand the w")
 		}
 	case []float64:
 		if len(v) != n {
@@ -101,11 +109,11 @@ func (af *AdaptiveFilter) Predict(x []float64) float64 {
 //          This number describes how many times the training will be repeated
 //          on dedicated part of data.
 func (af *AdaptiveFilter) PreTrainedRun(d, x []float64, nTrain float64, epochs int) (y, e, w []float64) {
-	var Ntrain = int(float64(len(d)) * nTrain)
+	var nTrainI = int(float64(len(d)) * nTrain)
 	for i := 0; i < epochs; i++ {
-		af.Run(d[:Ntrain], x[:Ntrain])
+		af.Run(d[:nTrainI], x[:nTrainI])
 	}
-	y, e, w = af.Run(d[:Ntrain], x[:Ntrain])
+	y, e, w = af.Run(d[:nTrainI], x[:nTrainI])
 	return y, e, w
 }
 
@@ -115,6 +123,25 @@ func (af *AdaptiveFilter) Run(d, x []float64) (y, e, w []float64) {
 	return nil, nil, nil
 }
 
+//ExploreLearning tests what learning rate is the best.
+//
+//* `d` : desired value.
+//* `x` : input matrix.
+//* `muStart` : starting learning rate.
+//* `muEnd` : final learning rate.
+//* `steps` : how many learning rates should be tested between `muStart`
+//			  and `muEnd`.
+//* `nTrain` : train to test ratio , default value is 0.5.
+//			   (that means 50% of data is used for training)
+//* `epochs` : number of training epochs , default value is 1.
+//			   This number describes how many times the training will be repeated
+//			   on dedicated part of data.
+//* `criteria` : how should be measured the mean error,
+//				 default value is "MSE".
+//* `target_w` : target weights, default value is False.
+//				 If False, the mean error is estimated from prediction error.
+//				 If an array is provided, the error between weights and `target_w`
+//				 is used.
 func (af *AdaptiveFilter) ExploreLearning(d, x []float64, muStart, muEnd float64, steps int,
 	nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, error) {
 	mus := linspace(muStart, muEnd, steps)
@@ -137,19 +164,23 @@ func (af *AdaptiveFilter) ExploreLearning(d, x []float64, muStart, muEnd float64
 	return es, nil
 }
 
+//CheckFloatParam check if the value of the given parameter
+//is in the given range and a float.
 func (af *AdaptiveFilter) CheckFloatParam(p, low, high float64, name string) (float64, error) {
 	if low <= p && p <= high {
 		return p, nil
 	} else {
-		err := fmt.Errorf("Parameter %v is not in range <%v, %v>")
+		err := fmt.Errorf("parameter %v is not in range <%v, %v>", name, low, high)
 		return 0, err
 	}
 }
+//CheckIntParam check if the value of the given parameter
+//is in the given range and a int.
 func (af *AdaptiveFilter) CheckIntParam(p, low, high int, name string) (int, error) {
 	if low <= p && p <= high {
 		return p, nil
 	} else {
-		err := fmt.Errorf("Parameter %v is not in range <%v, %v>")
+		err := fmt.Errorf("parameter %v is not in range <%v, %v>", name, low, high)
 		return 0, err
 	}
 }
