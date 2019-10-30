@@ -23,12 +23,14 @@ func main() {
 	var v = make([]float64, n)
 	//desired value
 	var d = make([]float64, n)
+	var xRow = make([]float64, 4)
 	for i := 0; i < n; i++ {
-		for j := 0; i < 4; j++ {
-			x[i][j] = rand.NormFloat64()
+		for j := 0; j < 4; j++ {
+			xRow[j] = rand.NormFloat64()
 		}
+		x[i] = xRow
 		v[i] = rand.NormFloat64() * 0.1
-		d[i] = 1.5*x[i][0] + 0.8*x[i][1] + 2*x[i][3] + 0.4*x[i][4] + v[i]
+		d[i] = 1.5*x[i][0] + 0.8*x[i][1] + 2*x[i][2] + 0.4*x[i][3] + v[i]
 	}
 
 	//identification
