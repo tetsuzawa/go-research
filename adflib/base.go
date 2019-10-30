@@ -2,6 +2,7 @@ package adflib
 
 import (
 	"errors"
+	"github.com/tetsuzawa/go-research/adflib/misc"
 	"gonum.org/v1/gonum/floats"
 	"math/rand"
 	"time"
@@ -70,7 +71,7 @@ func (af *AdaptiveFilter) Predict(x []float64) float64 {
 	return y
 }
 
-func (af *AdaptiveFilter) PreTrainedRun(d, x []float64, ntrain float64, epochs int) (y, e float64, w []float64) {
+func (af *AdaptiveFilter) PreTrainedRun(d, x []float64, ntrain float64, epochs int) (y, e, w []float64) {
 	var Ntrain = int(float64(len(d)) * ntrain)
 	for i := 0; i < epochs; i++ {
 		af.Run(d[:Ntrain], x[:Ntrain])
@@ -80,25 +81,29 @@ func (af *AdaptiveFilter) PreTrainedRun(d, x []float64, ntrain float64, epochs i
 }
 
 //Override to use this func.
-func (af *AdaptiveFilter) Run(d, x []float64) (y, e float64, w []float64) {
+func (af *AdaptiveFilter) Run(d, x []float64) (y, e, w []float64) {
 	//TODO
-	return 0, 0, nil
+	return nil, nil, nil
 }
 
 func (af *AdaptiveFilter) ExploreLearning(d, x []float64, muStart, muEnd float64, steps int,
-	nTrain float64, epochs int, criteria string, targetW bool) error {
+	nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, error) {
 	mus := linspace(muStart, muEnd, steps)
+	es := make([]float64, len(mus))
+	zeros := make([]float64, len(mus))
 	for i, mu := range mus {
 		//init
 		err := af.InitWeghts("zeros", 0)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		af.mu = mu
 		//run
-		y, e, w := af.PreTrainedRun(d, x, nTrain, epochs)
-
+		_, e, _ := af.PreTrainedRun(d, x, nTrain, epochs)
+		es[i], err = misc.GetMeanError(e, zeros, criteria)
+		if err != nil {
+			return nil, err
+		}
 	}
+	return es, nil
 }
-
-
