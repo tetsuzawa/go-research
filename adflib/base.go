@@ -19,6 +19,8 @@ type ADFInterface interface {
 	CheckIntParam() (int, error)
 }
 
+//AdaptiveFilter is base struct for adaptive filter structs.
+//It puts together some functions used by all adaptive filters.
 type AdaptiveFilter struct {
 	w  []float64
 	n  int
@@ -47,7 +49,14 @@ func linspace(start, end float64, n int) ([]float64) {
 	return res
 }
 
-func (af *AdaptiveFilter) InitWeghts(w interface{}, n int) error {
+//InitWeights initialises the adaptive weights of the filter.
+//
+//`w`: initial weights of filter. Possible values are
+//* "random": create random weights
+//* "zeros": create zero value weights
+//
+//`n`: size of filter (int) - number of filter coefficients.
+func (af *AdaptiveFilter) InitWeights(w interface{}, n int) error {
 	if n <= 0 {
 		n = af.n
 	}
@@ -76,14 +85,23 @@ func (af *AdaptiveFilter) InitWeghts(w interface{}, n int) error {
 	return nil
 }
 
+//Predict calculates the new output value `y` from input array `x`.
 func (af *AdaptiveFilter) Predict(x []float64) float64 {
 	var y float64
 	y = floats.Dot(af.w, x)
 	return y
 }
 
-func (af *AdaptiveFilter) PreTrainedRun(d, x []float64, ntrain float64, epochs int) (y, e, w []float64) {
-	var Ntrain = int(float64(len(d)) * ntrain)
+//PreTrainedRun sacrifices part of the data for few epochs of learning.
+//`d`: desired value
+//`x`: input matrix (samples x input arrays)
+//`nTrain`: train to test ratio (float), default value is 0.5
+//          (that means 50% of data is used for training)
+//`epochs`: number of training epochs (int), default value is 1.
+//          This number describes how many times the training will be repeated
+//          on dedicated part of data.
+func (af *AdaptiveFilter) PreTrainedRun(d, x []float64, nTrain float64, epochs int) (y, e, w []float64) {
+	var Ntrain = int(float64(len(d)) * nTrain)
 	for i := 0; i < epochs; i++ {
 		af.Run(d[:Ntrain], x[:Ntrain])
 	}
@@ -104,7 +122,7 @@ func (af *AdaptiveFilter) ExploreLearning(d, x []float64, muStart, muEnd float64
 	zeros := make([]float64, len(mus))
 	for i, mu := range mus {
 		//init
-		err := af.InitWeghts("zeros", 0)
+		err := af.InitWeights("zeros", 0)
 		if err != nil {
 			return nil, err
 		}
@@ -122,7 +140,7 @@ func (af *AdaptiveFilter) ExploreLearning(d, x []float64, muStart, muEnd float64
 func (af *AdaptiveFilter) CheckFloatParam(p, low, high float64, name string) (float64, error) {
 	if low <= p && p <= high {
 		return p, nil
-	}else {
+	} else {
 		err := fmt.Errorf("Parameter %v is not in range <%v, %v>")
 		return 0, err
 	}
@@ -130,7 +148,7 @@ func (af *AdaptiveFilter) CheckFloatParam(p, low, high float64, name string) (fl
 func (af *AdaptiveFilter) CheckIntParam(p, low, high int, name string) (int, error) {
 	if low <= p && p <= high {
 		return p, nil
-	}else {
+	} else {
 		err := fmt.Errorf("Parameter %v is not in range <%v, %v>")
 		return 0, err
 	}

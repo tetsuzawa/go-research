@@ -13,6 +13,18 @@ func ElmAbs(fs []float64) []float64 {
 	return fs
 }
 
+func LogSE(x1, x2 []float64) ([]float64, error) {
+	e, err := GetValidError(x1, x2)
+	if err != nil {
+		return nil, err
+	}
+	for i := 0; i < len(e); i++ {
+		e[i] = 10 * math.Log10(math.Pow(e[i], 2))
+	}
+	return e, nil
+
+}
+
 func MAE(x1, x2 []float64) (float64, error) {
 	e, err := GetValidError(x1, x2)
 	if err != nil {

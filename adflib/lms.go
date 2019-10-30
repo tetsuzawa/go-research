@@ -20,7 +20,7 @@ func NewFiltLMS(n int, mu float64, w interface{}) (*FiltLMS, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = p.InitWeghts(w, n)
+	err = p.InitWeights(w, n)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (af *FiltLMS) adapt(d float64, x []float64) {
 }
 
 func (af *FiltLMS) Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error) {
-	//measure the data and check if the dimmension agree
+	//measure the data and check if the dimension agree
 	N := len(x)
 	if len(d) != N {
 		return nil, nil, nil, errors.New("The length of slice d and x must agree.")
