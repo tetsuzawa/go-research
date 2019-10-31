@@ -2,26 +2,33 @@ package adflib
 
 import (
 	"errors"
-
 	"github.com/gonum/floats"
 )
 
-type FiltNLMS struct {
+type FiltAP struct {
 	AdaptiveFilter
 	kind     string
+	order    int
 	eps      float64
 	wHistory [][]float64
+	xMem     [][]float64
+	dMem     [][]float64
+	yMem     [][]float64
+	eMem     [][]float64
+	epsIDE   [][]float64
+	ide      [][]float64
 }
 
-func NewFiltNLMS(n int, mu float64, eps float64, w interface{}) (*FiltNLMS, error) {
+func NewAP(n int, mu float64, order int, eps float64, w interface{}) (*FiltAP, error) {
 	var err error
-	p := new(FiltNLMS)
-	p.kind = "NLMS filter"
+	p := new(FiltAP)
+	p.kind = "AP filter"
 	p.n = n
 	p.mu, err = p.CheckFloatParam(mu, 0, 1000, "mu")
 	if err != nil {
 		return nil, err
 	}
+	p.order = order
 	p.eps, err = p.CheckFloatParam(eps, 0, 1000, "eps")
 	if err != nil {
 		return nil, err
@@ -30,10 +37,25 @@ func NewFiltNLMS(n int, mu float64, eps float64, w interface{}) (*FiltNLMS, erro
 	if err != nil {
 		return nil, err
 	}
+	p.xMem = make([][]float64, n)
+	p.dMem = make([][]float64, order)
+
+	p.epsIDE = make([][]float64, order)
+	var epss = make([]float64, order)
+	for i := 0; i < order; i++ {
+		epss[i] = p.eps
+		p.epsIDE[i] = epss
+	}
+	p.ide = make([][]float64, order)
+	var ide = make([]float64, order)
+	for i := 0; i < order; i++ {
+		ide[i] = 1
+		p.ide[i] = ide
+	}
 	return p, nil
 }
 
-func (af *FiltNLMS) Adapt(d float64, x []float64) {
+func (af *FiltAP) Adapt(d float64, x []float64) {
 	y := floats.Dot(af.w, x)
 	e := d - y
 	nu := af.mu / (af.eps + floats.Dot(x, x))
