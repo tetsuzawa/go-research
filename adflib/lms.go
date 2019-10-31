@@ -27,7 +27,7 @@ func NewFiltLMS(n int, mu float64, w interface{}) (*FiltLMS, error) {
 	return p, nil
 }
 
-func (af *FiltLMS) adapt(d float64, x []float64) {
+func (af *FiltLMS) Adapt(d float64, x []float64) {
 	y := floats.Dot(af.w, x)
 	e := d - y
 	for i := 0; i < len(x); i++ {
