@@ -2,7 +2,6 @@ package adflib
 
 import (
 	"errors"
-
 	"github.com/gonum/floats"
 )
 
@@ -43,13 +42,13 @@ func (af *FiltLMS) Run(d []float64, x [][]float64) ([]float64, []float64, [][]fl
 		return nil, nil, nil, errors.New("The length of slice d and x must agree.")
 	}
 	af.n = len(x[0])
-	af.wHistory = make([][]float64, af.n)
+	af.wHistory = make([][]float64, N)
 
 	y := make([]float64, N)
 	e := make([]float64, N)
 	//adaptation loop
 	for i := 0; i < N; i++ {
-		af.wHistory[i] = d
+		af.wHistory[i] = af.w
 		y[i] = floats.Dot(af.w, x[i])
 		e[i] = d[i] - y[i]
 		for j := 0; j < af.n; j++ {
