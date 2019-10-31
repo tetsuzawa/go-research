@@ -23,7 +23,7 @@ const (
 	//step size of filter
 	mu = 0.1
 	//length of filter
-	L = 64
+	L = 8
 )
 
 func main() {
@@ -33,9 +33,8 @@ func main() {
 	//input value
 	var x = make([]float64, L)
 	//noise
-	//var v = make([]float64, L)
+	var v float64
 	//desired value
-	//var d = make([]float64, L)
 	var d float64
 	//output value
 	var y float64
@@ -54,7 +53,8 @@ func main() {
 	for i := 0; i < n; i++ {
 		x = unset(x, 0)
 		x = append(x, rand.NormFloat64())
-		d = x[L-1]
+		v = 0.1 * rand.NormFloat64()
+		d = x[L-1] + v
 		f.Adapt(d, x)
 		y = f.Predict(x)
 		e = d-y
@@ -65,9 +65,7 @@ func main() {
 
 
 
-
-
-	name := fmt.Sprintf("lms_ex_mu-%v_L-%v.png", mu, L)
+	name := fmt.Sprintf("lms_ex_on_mu-%v_L-%v.csv", mu, L)
 	fw, err := os.Create(name)
 	if err != nil{
 		log.Fatalln(err)
