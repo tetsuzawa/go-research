@@ -31,32 +31,40 @@ func main() {
 	//number of samples
 	n := 512
 	//input value
-	var x = make([][]float64, n)
+	var x = make([]float64, L)
 	//noise
-	var v = make([]float64, n)
+	//var v = make([]float64, L)
 	//desired value
-	var d = make([]float64, n)
-	var xRow = make([]float64, L)
-	for i := 0; i < n; i++ {
-		xRow = unset(xRow, 0)
-		xRow = append(xRow, rand.NormFloat64())
-		x[i] = xRow
-		v[i] = rand.NormFloat64() * 0.1
-		d[i] = x[i][0]
-	}
+	//var d = make([]float64, L)
+	var d float64
+	//output value
+	var y float64
+	//error
+	var e float64
+	var dBuf = make([]float64, 0)
+	var yBuf = make([]float64, 0)
+	var eBuf = make([]float64, 0)
 
-	//identification
 	f, err := adflib.NewFiltLMS(L, mu, "zeros")
+	//identification
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	f.
-
-	y, e, _, err := f.Run(d, x)
-	if err != nil {
-		log.Fatalln(err)
+	for i := 0; i < n; i++ {
+		x = unset(x, 0)
+		x = append(x, rand.NormFloat64())
+		d = x[L-1]
+		f.Adapt(d, x)
+		y = f.Predict(x)
+		e = d-y
+		dBuf = append(dBuf, d)
+		yBuf = append(yBuf, y)
+		eBuf = append(eBuf, e)
 	}
+
+
+
 
 
 	name := fmt.Sprintf("lms_ex_mu-%v_L-%v.png", mu, L)
@@ -66,7 +74,7 @@ func main() {
 	}
 	defer fw.Close()
 	for i:=0; i<n; i++ {
-		_, err = fw.Write([]byte(fmt.Sprintf("%f,%f,%f\n", d[i], y[i], e[i])))
+		_, err = fw.Write([]byte(fmt.Sprintf("%f,%f,%f\n", dBuf[i], yBuf[i], eBuf[i])))
 		if err != nil{
 			log.Fatalln(err)
 		}
