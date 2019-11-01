@@ -3,6 +3,7 @@ package adflib
 import (
 	"errors"
 	"github.com/gonum/floats"
+	"gonum.org/v1/gonum/mat"
 )
 
 type FiltAP struct {
@@ -10,13 +11,13 @@ type FiltAP struct {
 	kind     string
 	order    int
 	eps      float64
-	wHistory [][]float64
-	xMem     [][]float64
-	dMem     []float64
-	yMem     float64
-	eMem     float64
-	epsIDE   [][]float64
-	ide      [][]float64
+	wHistory *mat.Dense
+	xMem     *mat.Dense
+	dMem     *mat.Dense
+	yMem     *mat.Dense
+	eMem     *mat.Dense
+	epsIDE   *mat.Dense
+	ide      *mat.Dense
 }
 
 func NewAP(n int, mu float64, order int, eps float64, w interface{}) (*FiltAP, error) {
@@ -37,21 +38,24 @@ func NewAP(n int, mu float64, order int, eps float64, w interface{}) (*FiltAP, e
 	if err != nil {
 		return nil, err
 	}
-	p.xMem = make([][]float64, n)
-	p.dMem = make([]float64, order)
+	p.xMem = mat.NewDense(n, order, nil)
+	p.dMem = mat.NewDense(1, order, nil)
 
-	p.epsIDE = make([][]float64, order)
-	var epss = make([]float64, order)
+	elmNum := order * order
+
+	//make diagonal matrix
+	diaMat := make([]float64, elmNum)
 	for i := 0; i < order; i++ {
-		epss[i] = p.eps
-		p.epsIDE[i] = epss
+		diaMat[i*(order+1)] = eps
 	}
-	p.ide = make([][]float64, order)
-	var ide = make([]float64, order)
+	p.epsIDE = mat.NewDense(order, order, diaMat)
+
 	for i := 0; i < order; i++ {
-		ide[i] = 1
-		p.ide[i] = ide
+		diaMat[i*(order+1)] = 1
 	}
+	p.ide = mat.NewDense(order, order, diaMat)
+	p.wHistory = mat.NewDense(n, order, nil)
+
 	return p, nil
 }
 
@@ -71,35 +75,58 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 		return nil, nil, nil, errors.New("the length of slice d and x must agree.")
 	}
 	af.n = len(x[0])
-	af.wHistory = make([][]float64, N)
+	//af.wHistory = make([][]float64, N)
 
 	y := make([]float64, N)
 	e := make([]float64, N)
+
+	xr, _ := af.xMem.Dims()
+	xCol := make([]float64, xr)
+	dr, _ := af.xMem.Dims()
+	dCol := make([]float64, dr)
 	//adaptation loop
 	for i := 0; i < N; i++ {
-		af.wHistory[i] = af.w
+		//af.wHistory[i] = af.w
+		af.wHistory.SetRow(i, af.w)
+
 		// create input matrix and target vector
-		for j:=0; j<N;j++{
-			af.xMem[j] = unset(af.xMem[j], af.order)
-			af.xMem[j] = set(af.xMem[j], 0, x[i][j])
-
+		// shift column
+		for i := af.order - 1; i > 0; i-- {
+			mat.Col(xCol, i-1, af.xMem)
+			af.xMem.SetCol(i, xCol)
+			mat.Col(dCol, i-1, af.dMem)
+			af.dMem.SetCol(i, dCol)
 		}
-		af.dMem = unset(af.dMem, af.order)
-		af.dMem = set(af.dMem, 0, d[i])
+
 		// estimate output and error
-		af.yMem =
+		wd := mat.NewDense(1, len(af.w), af.w)
+		af.yMem.Mul(wd, af.xMem.T())
+		af.eMem.Sub(af.dMem, af.yMem)
+		y[i] = af.yMem.At(0, 0)
+		e[i] = af.eMem.At(0, 0)
 
-
-		y[i] = floats.Dot(af.w, x[i])
-		e[i] = d[i] - y[i]
-		nu := af.mu / (af.eps + floats.Dot(x[i], x[i]))
-		for j := 0; j < af.n; j++ {
-			af.w[j] = nu * e[i] * x[i][j]
+		// update
+		dw1 := mat.NewDense(af.order, af.order, nil)
+		dw1.Mul(af.xMem.T(), af.xMem)
+		dw1.Add(dw1, af.epsIDE)
+		dw2 := mat.NewDense(af.order, af.order, nil)
+		err := dw2.Solve(dw1, af.ide)
+		if err != nil {
+			return nil, nil, nil, err
 		}
+		dw3 := mat.NewDense(1, af.order, nil)
+		dw3.Mul(af.eMem, dw2)
+		dw := mat.NewDense(1, af.n, nil)
+		floats.Add(af.w, dw.RawRowView(0))
 	}
-	return y, e, af.wHistory, nil
+	wHistory := make([][]float64, af.n)
+	for i := 0; i < af.n; i++ {
+		wHistory[i] = af.wHistory.RawRowView(i)
+	}
+	return y, e, wHistory, nil
 }
 
+/*
 func unset(s []float64, i int) []float64 {
 	if i >= len(s) {
 		return s
@@ -114,3 +141,4 @@ func set(s []float64, i int, n float64) []float64 {
 	return append(append(s[:i], n), s[i+1:]...)
 
 }
+*/
