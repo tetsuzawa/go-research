@@ -23,9 +23,9 @@ const (
 	//step size of filter
 	mu = 1
 	//length of filter
-	L = 16
+	L = 64
 	//number of order
-	order = 8
+	order = 1
 	//eps
 	eps = 0.001
 )
