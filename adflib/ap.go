@@ -20,7 +20,7 @@ type FiltAP struct {
 	ide      *mat.Dense
 }
 
-func NewAP(n int, mu float64, order int, eps float64, w interface{}) (*FiltAP, error) {
+func NewFiltAP(n int, mu float64, order int, eps float64, w interface{}) (*FiltAP, error) {
 	var err error
 	p := new(FiltAP)
 	p.kind = "AP filter"
