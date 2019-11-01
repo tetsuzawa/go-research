@@ -23,7 +23,7 @@ const (
 	//step size of filter
 	mu = 1
 	//length of filter
-	L = 8
+	L = 16
 	//number of order
 	order = 8
 	//eps
@@ -37,7 +37,7 @@ func main() {
 	//input value
 	var x = make([]float64, L)
 	//noise
-	var v float64
+	//var v float64
 	//desired value
 	var d float64
 	//output value
@@ -57,9 +57,13 @@ func main() {
 	for i := 0; i < n; i++ {
 		x = unset(x, 0)
 		x = append(x, rand.NormFloat64())
-		v = 0.1 * rand.NormFloat64()
-		d = x[L-1] + v
-		f.Adapt(d, x)
+		//v = 0.1 * rand.NormFloat64()
+		//d = x[L-1] + v
+		d = x[L-1]
+		err = f.Adapt(d, x)
+		if err != nil {
+			log.Fatalln(err)
+		}
 		y = f.Predict(x)
 		e = d - y
 		dBuf = append(dBuf, d)
@@ -67,7 +71,7 @@ func main() {
 		eBuf = append(eBuf, e)
 	}
 
-	name := fmt.Sprintf("nlms_ex_on_mu-%v_L-%v.csv", mu, L)
+	name := fmt.Sprintf("ap_ex_on_mu-%v_L-%v_order-%v.csv", mu, L, order)
 	fw, err := os.Create(name)
 	if err != nil {
 		log.Fatalln(err)

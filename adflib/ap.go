@@ -2,6 +2,7 @@ package adflib
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gonum/floats"
 	"gonum.org/v1/gonum/mat"
 )
@@ -18,6 +19,11 @@ type FiltAP struct {
 	eMem     *mat.Dense
 	epsIDE   *mat.Dense
 	ide      *mat.Dense
+}
+
+func matPrint(X mat.Matrix) {
+	fa := mat.Formatted(X, mat.Prefix(""), mat.Squeeze())
+	fmt.Printf("%v\n", fa)
 }
 
 func NewFiltAP(n int, mu float64, order int, eps float64, w interface{}) (*FiltAP, error) {
@@ -55,6 +61,8 @@ func NewFiltAP(n int, mu float64, order int, eps float64, w interface{}) (*FiltA
 	}
 	p.ide = mat.NewDense(order, order, diaMat)
 	p.wHistory = mat.NewDense(n, order, nil)
+	p.yMem = mat.NewDense(1, order, nil)
+	p.eMem = mat.NewDense(1, order, nil)
 
 	return p, nil
 }
@@ -62,7 +70,7 @@ func NewFiltAP(n int, mu float64, order int, eps float64, w interface{}) (*FiltA
 func (af *FiltAP) Adapt(d float64, x []float64) error {
 	xr, _ := af.xMem.Dims()
 	xCol := make([]float64, xr)
-	dr, _ := af.xMem.Dims()
+	dr, _ := af.dMem.Dims()
 	dCol := make([]float64, dr)
 	// create input matrix and target vector
 	// shift column
@@ -72,9 +80,12 @@ func (af *FiltAP) Adapt(d float64, x []float64) error {
 		mat.Col(dCol, i-1, af.dMem)
 		af.dMem.SetCol(i, dCol)
 	}
+	af.xMem.SetCol(0, x)
+	af.dMem.Set(0, 0, d)
+
 	// estimate output and error
 	wd := mat.NewDense(1, len(af.w), af.w)
-	af.yMem.Mul(wd, af.xMem.T())
+	af.yMem.Mul(wd, af.xMem)
 	af.eMem.Sub(af.dMem, af.yMem)
 
 	// update
@@ -89,8 +100,11 @@ func (af *FiltAP) Adapt(d float64, x []float64) error {
 	dw3 := mat.NewDense(1, af.order, nil)
 	dw3.Mul(af.eMem, dw2)
 	dw := mat.NewDense(1, af.n, nil)
+	dw.Mul(dw3, af.xMem.T())
 	dw.Scale(af.mu, dw)
-	floats.Add(af.w, dw.RawRowView(0))
+	w := make([]float64, len(af.w))
+	floats.Add(w, dw.RawRowView(0))
+	af.w = w
 	return nil
 }
 
@@ -108,7 +122,7 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 
 	xr, _ := af.xMem.Dims()
 	xCol := make([]float64, xr)
-	dr, _ := af.xMem.Dims()
+	dr, _ := af.dMem.Dims()
 	dCol := make([]float64, dr)
 	//adaptation loop
 	for i := 0; i < N; i++ {
@@ -123,6 +137,8 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 			mat.Col(dCol, i-1, af.dMem)
 			af.dMem.SetCol(i, dCol)
 		}
+		af.xMem.SetCol(0, x[i])
+		af.dMem.Set(0, 0, d[i])
 
 		// estimate output and error
 		wd := mat.NewDense(1, len(af.w), af.w)
@@ -144,7 +160,9 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 		dw3.Mul(af.eMem, dw2)
 		dw := mat.NewDense(1, af.n, nil)
 		dw.Scale(af.mu, dw)
-		floats.Add(af.w, dw.RawRowView(0))
+		w := make([]float64, len(af.w))
+		floats.Add(w, dw.RawRowView(0))
+		af.w = w
 	}
 	wHistory := make([][]float64, af.n)
 	for i := 0; i < af.n; i++ {
