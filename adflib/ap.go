@@ -59,13 +59,39 @@ func NewAP(n int, mu float64, order int, eps float64, w interface{}) (*FiltAP, e
 	return p, nil
 }
 
-func (af *FiltAP) Adapt(d float64, x []float64) {
-	y := floats.Dot(af.w, x)
-	e := d - y
-	nu := af.mu / (af.eps + floats.Dot(x, x))
-	for i := 0; i < len(x); i++ {
-		af.w[i] += nu * e * x[i]
+func (af *FiltAP) Adapt(d float64, x []float64) error {
+	xr, _ := af.xMem.Dims()
+	xCol := make([]float64, xr)
+	dr, _ := af.xMem.Dims()
+	dCol := make([]float64, dr)
+	// create input matrix and target vector
+	// shift column
+	for i := af.order - 1; i > 0; i-- {
+		mat.Col(xCol, i-1, af.xMem)
+		af.xMem.SetCol(i, xCol)
+		mat.Col(dCol, i-1, af.dMem)
+		af.dMem.SetCol(i, dCol)
 	}
+	// estimate output and error
+	wd := mat.NewDense(1, len(af.w), af.w)
+	af.yMem.Mul(wd, af.xMem.T())
+	af.eMem.Sub(af.dMem, af.yMem)
+
+	// update
+	dw1 := mat.NewDense(af.order, af.order, nil)
+	dw1.Mul(af.xMem.T(), af.xMem)
+	dw1.Add(dw1, af.epsIDE)
+	dw2 := mat.NewDense(af.order, af.order, nil)
+	err := dw2.Solve(dw1, af.ide)
+	if err != nil {
+		return  err
+	}
+	dw3 := mat.NewDense(1, af.order, nil)
+	dw3.Mul(af.eMem, dw2)
+	dw := mat.NewDense(1, af.n, nil)
+	dw.Scale(af.mu, dw)
+	floats.Add(af.w, dw.RawRowView(0))
+	return nil
 }
 
 func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error) {
@@ -117,6 +143,7 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 		dw3 := mat.NewDense(1, af.order, nil)
 		dw3.Mul(af.eMem, dw2)
 		dw := mat.NewDense(1, af.n, nil)
+		dw.Scale(af.mu, dw)
 		floats.Add(af.w, dw.RawRowView(0))
 	}
 	wHistory := make([][]float64, af.n)
@@ -126,19 +153,3 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 	return y, e, wHistory, nil
 }
 
-/*
-func unset(s []float64, i int) []float64 {
-	if i >= len(s) {
-		return s
-	}
-	return append(s[:i], s[i+1:]...)
-}
-
-func set(s []float64, i int, n float64) []float64 {
-	if i >= len(s) {
-		return s
-	}
-	return append(append(s[:i], n), s[i+1:]...)
-
-}
-*/
