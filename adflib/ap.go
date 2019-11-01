@@ -12,9 +12,9 @@ type FiltAP struct {
 	eps      float64
 	wHistory [][]float64
 	xMem     [][]float64
-	dMem     [][]float64
-	yMem     [][]float64
-	eMem     [][]float64
+	dMem     []float64
+	yMem     float64
+	eMem     float64
 	epsIDE   [][]float64
 	ide      [][]float64
 }
@@ -38,7 +38,7 @@ func NewAP(n int, mu float64, order int, eps float64, w interface{}) (*FiltAP, e
 		return nil, err
 	}
 	p.xMem = make([][]float64, n)
-	p.dMem = make([][]float64, order)
+	p.dMem = make([]float64, order)
 
 	p.epsIDE = make([][]float64, order)
 	var epss = make([]float64, order)
@@ -64,11 +64,11 @@ func (af *FiltAP) Adapt(d float64, x []float64) {
 	}
 }
 
-func (af *FiltNLMS) Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error) {
+func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error) {
 	//measure the data and check if the dimension agree
 	N := len(x)
 	if len(d) != N {
-		return nil, nil, nil, errors.New("The length of slice d and x must agree.")
+		return nil, nil, nil, errors.New("the length of slice d and x must agree.")
 	}
 	af.n = len(x[0])
 	af.wHistory = make([][]float64, N)
@@ -78,6 +78,18 @@ func (af *FiltNLMS) Run(d []float64, x [][]float64) ([]float64, []float64, [][]f
 	//adaptation loop
 	for i := 0; i < N; i++ {
 		af.wHistory[i] = af.w
+		// create input matrix and target vector
+		for j:=0; j<N;j++{
+			af.xMem[j] = unset(af.xMem[j], af.order)
+			af.xMem[j] = set(af.xMem[j], 0, x[i][j])
+
+		}
+		af.dMem = unset(af.dMem, af.order)
+		af.dMem = set(af.dMem, 0, d[i])
+		// estimate output and error
+		af.yMem =
+
+
 		y[i] = floats.Dot(af.w, x[i])
 		e[i] = d[i] - y[i]
 		nu := af.mu / (af.eps + floats.Dot(x[i], x[i]))
@@ -86,4 +98,19 @@ func (af *FiltNLMS) Run(d []float64, x [][]float64) ([]float64, []float64, [][]f
 		}
 	}
 	return y, e, af.wHistory, nil
+}
+
+func unset(s []float64, i int) []float64 {
+	if i >= len(s) {
+		return s
+	}
+	return append(s[:i], s[i+1:]...)
+}
+
+func set(s []float64, i int, n float64) []float64 {
+	if i >= len(s) {
+		return s
+	}
+	return append(append(s[:i], n), s[i+1:]...)
+
 }

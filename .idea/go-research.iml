@@ -4,6 +4,7 @@
     <content url="file://$MODULE_DIR$/../SPGraphDrawer" />
     <content url="file://$MODULE_DIR$/../converter" />
     <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$/../playground" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
