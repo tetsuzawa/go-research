@@ -70,8 +70,16 @@ func (ica *ICA) whiten() (*mat.Dense, error) {
 		DhSl[i*(ica.sigNum+1)] = math.Pow(D[i], -1/2)
 	}
 	Dh := mat.NewDense(ica.sigNum, ica.sigNum, DhSl)
-	retMat := produ
+	rMat := mat.NewDense(ica.sigNum, ica.sigNum, nil)
+	rMat.MulElem(V, Dh)
+	rMat.MulElem(rMat, V.T())
 
+	return rMat, nil
+}
 
-
+func (ica *ICA) normalize() {
+	if mat.Sum(ica.xMat) < 0 {
+		ica.xMat.Scale(-1, ica.xMat)
+	}
+	ica.xMat.Scale(mat.Norm(ica.xMat, 1), ica.xMat)
 }
