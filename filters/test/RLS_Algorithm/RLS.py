@@ -1,12 +1,10 @@
-# %%
 import time
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-# %%
-def nlms():
-    """NLMS Algorithm
+def rls():
+    """LMS Algorithm
     :arg:
     input u(n)
     desired d(n)
@@ -15,17 +13,16 @@ def nlms():
     error d(n) - y(n)
     num_taps, I, E, M
     update param mu
-    
-    :return: 
+
+    :return:
     """
 
-    # mu = 0.1
-    # mu = 0.7
-    mu = 1.0
-    # mu = 1.9
+    mu = 0.1
+    sigma = 1.0
+    P_0 = 100
 
     # 1 w(0). random value. use as vector
-    n_max = 32  # ideal value is infinity
+    n_max = 32 * 256 # ideal value is infinity
     w = np.zeros(shape=n_max, dtype=np.float64, order='C')
 
     # 2 iterate for n = 0, 1, 2, ... n_max
@@ -47,23 +44,25 @@ def nlms():
     input = np.random.randn()  # input signal (random signal). use as scalar. time
     y = 0
 
+    P = np.zeros(shape=n_max, dtype=np.float64, order='C')
+
     # while True:
-    for n in range(1000 * n_max):
+    for n in range(n_max):
         try:
             print(i)
             i += 1
 
-            # 2.0 Read/generate a new data pair
-            # input = np.random.randn()  # input signal (random signal). use as scalar. time
             input = np.sin(2 * np.pi * 5000 * 1 / 48000) + 0.3 * np.sin(
                 2 * np.pi * 3000 * 1 / 48000) + 0.1 * np.random.randn()
-
             u = np.delete(u, 0)
             u = np.append(u, input)
-            un = np.dot(u, u.T)
 
-            # if idx == n-1: idx = 0
-            # else: idx += 1
+            # 2.1
+            pi = np.dot(u.T , P)
+
+            # 2.2
+            gamma = lambda1 + pi * u
+
 
             # desired signal scalar
             # d = input + 0.1 * np.random.randn()
@@ -77,7 +76,7 @@ def nlms():
             e = d - y  # scalar
 
             # 2.3 parameter adaption. calc w(n+1)
-            w = w + mu / (1e-8 + un) * u * e  # [n_max, 1]
+            w = w + mu * u * e  # [n_max, 1]
 
             u_buf.append(input)
             d_buf.append(d)
@@ -101,10 +100,8 @@ def nlms():
 
 
 def main():
-    nlms()
+    rls()
 
 
 if __name__ == '__main__':
     main()
-
-# %%
