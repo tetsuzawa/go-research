@@ -83,3 +83,29 @@ func (ica *ICA) normalize() {
 	}
 	ica.xMat.Scale(mat.Norm(ica.xMat, 1), ica.xMat)
 }
+
+
+func (ica *ICA) analyze(z *mat.Dense) {
+	c := ica.sigNum
+	W := make([]float64, c)
+
+	// aux matrix
+	aMat := mat.NewDense()
+	// execute analysis for count of observations
+	for i:=0;i<c;i++{
+		//wSl := NewRandSlice(c)
+		wVec := NewRandVector(c)
+		//wSl = floats.Norm(wSl, )
+		wVec = NormalizeMat(wVec)
+
+		for {
+			z.MulElem(z, wVec.T())
+			z.MulElem(z,z)
+			z.MulElem(z,z)
+			wVec.T
+			wVecPre := wVec
+			wVec =
+		}
+	}
+
+}
