@@ -94,8 +94,7 @@ func (af *AdaptiveFilter) InitWeights(w interface{}, n int) error {
 }
 
 //Predict calculates the new output value `y` from input array `x`.
-func (af *AdaptiveFilter) Predict(x []float64) float64 {
-	var y float64
+func (af *AdaptiveFilter) Predict(x []float64) (y float64){
 	y = floats.Dot(af.w, x)
 	return y
 }
