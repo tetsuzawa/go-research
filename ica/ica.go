@@ -19,10 +19,10 @@ func NewICA(x [][]float64) *ICA {
 	x1d := make([]float64, len(x)*len(x[0]))
 	for i, inSl := range x {
 		for j, v := range inSl {
-			x1d[len(x)*i+j] = v
+			x1d[len(x)*j+i] = v
 		}
 	}
-	ica.xMat = mat.NewDense(len(x), len(x[0]), x1d)
+	ica.xMat = mat.NewDense(len(x[0]), len(x), x1d)
 	ica.sampNum, ica.sigNum = ica.xMat.Dims()
 	return ica
 }
@@ -33,7 +33,11 @@ func (ica *ICA) CalcICA() ([][]float64, error) {
 	if err != nil {
 		return nil, err
 	}
-	y := ica.analyze(z)
+	yMat := ica.analyze(z)
+	y := make([][]float64, ica.sigNum)
+	for i := 0; i < ica.sigNum; i++ {
+		mat.Col(y[i], i, yMat)
+	}
 	return y, nil
 }
 
@@ -63,18 +67,22 @@ func (ica *ICA) whiten() (*mat.Dense, error) {
 
 	// eigenvectors of sigma
 	var V *mat.Dense
-	eigsym.VectorsTo(V)
+	V = eigsym.VectorsTo(nil)
 
 	DhSl := make([]float64, ica.sigNum*ica.sigNum)
 	for i := 0; i < ica.sigNum; i++ {
-		DhSl[i*(ica.sigNum+1)] = math.Pow(D[i], -1/2)
+		//TODO tmp val
+		tmp := math.Pow(D[i], -1./2.)
+		DhSl[i*(ica.sigNum+1)] = tmp
 	}
 	Dh := mat.NewDense(ica.sigNum, ica.sigNum, DhSl)
-	rMat := mat.NewDense(ica.sigNum, ica.sigNum, nil)
-	rMat.MulElem(V, Dh)
-	rMat.MulElem(rMat, V.T())
+	z := mat.NewDense(ica.sigNum, ica.sampNum, nil)
+	V.Product(V, Dh, V.T())
+	z.Mul(V, ica.xMat.T())
+	zt := z.T()
+	zt := mat.NewDense(ica.sampNum, ica.sigNum, z.T())
 
-	return rMat, nil
+	return z, nil
 }
 
 func (ica *ICA) normalize() {
@@ -83,29 +91,40 @@ func (ica *ICA) normalize() {
 	}
 	ica.xMat.Scale(mat.Norm(ica.xMat, 1), ica.xMat)
 }
-
-
-func (ica *ICA) analyze(z *mat.Dense) {
+func (ica *ICA) analyze(z *mat.Dense) *mat.Dense {
 	c := ica.sigNum
-	W := make([]float64, c)
+	//TODO
+	//W := make([]float64, c)
 
 	// aux matrix
-	aMat := mat.NewDense()
+	aMat := mat.NewDense(ica.sigNum, ica.sigNum, nil)
 	// execute analysis for count of observations
-	for i:=0;i<c;i++{
+	for i := 0; i < c; i++ {
 		//wSl := NewRandSlice(c)
-		wVec := NewRandVector(c)
+		wVec := NewRandVector(c) //(1, 3)
 		//wSl = floats.Norm(wSl, )
 		wVec = NormalizeMat(wVec)
+		//wDia := NewDiagMat(wVec.RawRowView(0), c)
+		//means := make([][]float64, c)
 
 		for {
-			z.MulElem(z, wVec.T())
-			z.MulElem(z,z)
-			z.MulElem(z,z)
-			wVec.T
-			wVecPre := wVec
-			wVec =
+			aMat.Copy(z)
+			aMat.Mul(z, wVec.T())
+			aMat.MulElem(aMat, aMat)
+			aMat.MulElem(aMat, aMat)
+			break
+
+			//TODO
+			//for j := 0; j < c; j++ {
+			//	means[j] = cVec.
+			//}
+			//
+			//wVec.T
+			//wVecPre := wVec
+			//wVec =
 		}
 	}
-
+	y := mat.NewDense(ica.sampNum, ica.sigNum, nil)
+	//y.Mul(W,z)
+	return y
 }
