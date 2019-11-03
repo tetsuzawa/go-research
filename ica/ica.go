@@ -79,8 +79,8 @@ func (ica *ICA) whiten() (*mat.Dense, error) {
 	z := mat.NewDense(ica.sigNum, ica.sampNum, nil)
 	V.Product(V, Dh, V.T())
 	z.Mul(V, ica.xMat.T())
-	zt := z.T()
-	zt := mat.NewDense(ica.sampNum, ica.sigNum, z.T())
+	//zt := z.T()
+	//zt := mat.NewDense(ica.sampNum, ica.sigNum, z.T())
 
 	return z, nil
 }

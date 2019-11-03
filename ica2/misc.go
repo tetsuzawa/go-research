@@ -1,6 +1,7 @@
 package ica
 
 import (
+	"fmt"
 	"gonum.org/v1/gonum/mat"
 	"math/rand"
 	"time"
@@ -49,3 +50,7 @@ func NormalizeMat(x *mat.Dense) *mat.Dense {
 	return x
 }
 
+func matPrint(X mat.Matrix) {
+	fa := mat.Formatted(X, mat.Prefix(""), mat.Squeeze())
+	fmt.Printf("%v\n", fa)
+}

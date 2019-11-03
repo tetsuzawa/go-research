@@ -27,10 +27,10 @@ func center(x *mat.Dense) *mat.Dense {
 	return mat.NewDense(r, 1, xMeans)
 }
 
-func whitening(x *mat.Dense) (*mat.Dense, error) {
+func Whitening(x *mat.Dense) (*mat.Dense, error) {
 	r, c := x.Dims()
 	cov := mat.NewSymDense(r, nil)
-	stat.CorrelationMatrix(cov, x, nil)
+	stat.CovarianceMatrix(cov, x.T(), nil)
 	var eigsym mat.EigenSym
 	ok := eigsym.Factorize(cov, true)
 	if !ok {
@@ -52,4 +52,5 @@ func whitening(x *mat.Dense) (*mat.Dense, error) {
 	var XWhiten = mat.NewDense(r, c, nil)
 	XWhiten.Product(E, DInv, E.T(), x)
 	return XWhiten, err
+
 }

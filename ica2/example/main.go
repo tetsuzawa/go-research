@@ -1,16 +1,38 @@
 package main
 
 import (
-	"errors"
-	"github.com/takuyaohashi/go-wav"
-	"github.com/tetsuzawa/converter"
-	"github.com/tetsuzawa/go-research/ica"
+	"github.com/tetsuzawa/go-research/ica2"
+	"gonum.org/v1/gonum/mat"
 	"log"
-	"os"
-	"reflect"
 )
 
 func main() {
+	type args struct {
+		x *mat.Dense
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *mat.Dense
+		wantErr bool
+	}{
+		{
+			name:    "same as python ica2",
+			args:    args{x: mat.NewDense(3, 6, []float64{-0.47124246477273457, -0.3296166082003148, -0.9546932599222407, 1.9544307540042851, 1.5602673603288046, -1.7591457814378, -0.3189545657197007, -1.1481416374334907, -1.8606799632944537, 3.19388204366881, 2.5968003468310688, -2.4629062240522335, -1.1235303638257683, 0.18890842103286143, -1.148706556550028, 2.814979464339762, 1.82373437382654, -2.555385338823366,})},
+			want:    mat.NewDense(3, 6, []float64{0.07346330684499848, -0.16266386346933273, 0.6183995645355771, -0.4969371346445325, 1.456665495096312, -1.4889273683630337, 0.4698717643162649, -1.1824477251366896, -1.1726003085478844, 1.224782595853268, 0.7096003882015676, -0.049206714686523594, -1.1543270002269619, 1.0997098202708755, -0.266104962484705, 1.2893650136691885, -0.12671900817333798, -0.8419238630550545,}),
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		_, err := ica.Whitening(tt.args.x)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+}
+
+/*
+func m() {
 	f1, err := os.Open("mix_1.wav")
 	if err != nil {
 		log.Fatalln(err)
@@ -122,3 +144,5 @@ func main() {
 	w3.WriteSamples(converter.Float64sToInt16s(y[2]))
 
 }
+
+ */

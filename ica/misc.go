@@ -10,6 +10,7 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
+
 func NewRandSlice(n int) []float64 {
 	rs := make([]float64, n)
 	for i := 0; i < n; i++ {
