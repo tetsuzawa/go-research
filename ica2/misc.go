@@ -2,6 +2,7 @@ package ica
 
 import (
 	"fmt"
+	"gonum.org/v1/gonum/floats"
 	"gonum.org/v1/gonum/mat"
 	"math/rand"
 	"time"
@@ -53,4 +54,30 @@ func NormalizeMat(x *mat.Dense) *mat.Dense {
 func matPrint(X mat.Matrix) {
 	fa := mat.Formatted(X, mat.Prefix(""), mat.Squeeze())
 	fmt.Printf("%v\n", fa)
+}
+
+// if isCol = true, return	[ ],
+//							[ ],
+//							[ ]
+// else return 			[ , , ,]
+func ColMeanVector(X *mat.Dense) *mat.Dense {
+	r, c := X.Dims()
+	var xs = make([]float64, c)
+	var xMeans = make([]float64, r)
+	for i := 0; i < r; i++ {
+		xs = X.RawRowView(i)
+		xMeans[i] = floats.Sum(xs) / float64(c)
+	}
+	return mat.NewDense(r, 1, xMeans)
+}
+
+func RowMeanVector(X *mat.Dense) *mat.Dense {
+	r, c := X.Dims()
+	var xs = make([]float64, r)
+	var xMeans = make([]float64, c)
+	for i := 0; i < c; i++ {
+		mat.Col(xs, i, X)
+		xMeans[i] = floats.Sum(xs) / float64(r)
+	}
+	return mat.NewDense(1, c, xMeans)
 }
