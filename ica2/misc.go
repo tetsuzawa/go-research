@@ -87,3 +87,14 @@ func RowMeanVector(X *mat.Dense) *mat.Dense {
 func SliceMean(fs []float64) float64 {
 	return floats.Sum(fs) / float64(len(fs))
 }
+
+func ElemSum(X *mat.Dense) float64 {
+	r, c := X.Dims()
+	var s float64
+	for i := 0; i < r; i++ {
+		for j := 0; j < c; j++ {
+			s += X.At(i, j)
+		}
+	}
+	return s
+}

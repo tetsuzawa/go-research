@@ -8,7 +8,8 @@ import (
 )
 
 func main() {
-	calcNewWEx()
+	//calcNewWEx()
+	ExICA()
 }
 
 func calcNewWEx() {
@@ -58,6 +59,47 @@ func whiteningEx() {
 		_, err := ica.Whitening(tt.args.x)
 		if err != nil {
 			log.Fatalln(err)
+		}
+	}
+}
+func ExICA() {
+	type args struct {
+		X         *mat.Dense
+		iter      int
+		tolerance float64
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *mat.Dense
+		wantErr bool
+	}{
+		{
+			name: "same as python ica2",
+			args: args{
+				X: mat.NewDense(3, 6, []float64{
+					-1.0, -0.8583741434275802, -1.4834507951495062, 1.4256732187770198, 1.031509825101539, -2.2879033166650653,
+					-1.0, -1.82918707171379, -2.541725397574753, 2.5128366093885104, 1.9157549125507696, -3.143951658332533,
+					-2.0, -0.6875612151413701, -2.0251761927242597, 1.9385098281655302, 0.9472647376523085, -3.4318549749975977,
+				}),
+				iter:      1000,
+				tolerance: 1e-5},
+			want: mat.NewDense(3, 6, []float64{
+				-0.1195232895154406, -0.13695939213469, 0.25336466042164585, 0.13255584827759057, 1.4968211161532372, -1.6262589432023518,
+				0.37608121950301976, 0.1446355752912923, 1.218168432335386, -1.829777924611693, 0.046902947757951625, 0.04398974972403464,
+				-1.1448585547570456, 1.5568784779575202, 0.5111648717750966, 0.20006227927267833, -0.610400384720045, -0.5128466895282026,
+			}),
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		got, err := ica.ICA(tt.args.X, tt.args.iter, tt.args.tolerance)
+		if (err != nil) != tt.wantErr {
+			log.Fatalf("ICA() error = %v, wantErr %v", err, tt.wantErr)
+			return
+		}
+		if !reflect.DeepEqual(got, tt.want) {
+			log.Fatalf("ICA() got = %v, want %v", got, tt.want)
 		}
 	}
 }

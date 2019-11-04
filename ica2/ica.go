@@ -19,12 +19,15 @@ func gDer(x float64) float64 {
 func center(X *mat.Dense) *mat.Dense {
 	r, c := X.Dims()
 	var xs = make([]float64, c)
-	var xMeans = make([]float64, r)
+	//var XMeans = make([]float64, r)
 	for i := 0; i < r; i++ {
 		xs = X.RawRowView(i)
-		xMeans[i] = floats.Sum(xs) / float64(c)
+		//XMeans[i] = floats.Sum(xs) / float64(c)
+		floats.AddConst(-(floats.Sum(xs) / float64(c)), xs)
 	}
-	return mat.NewDense(r, 1, xMeans)
+	//XMeanMat := mat.NewDense(r, 1, XMeans)
+	//X.RawRowView(i)
+	return X
 }
 
 func Whitening(X *mat.Dense) (*mat.Dense, error) {
@@ -69,7 +72,6 @@ func CalcNewW(w, X *mat.Dense) *mat.Dense {
 		auxSl2[i] = gDer(row1[i])
 	}
 	// diagonal matrix
-	//aux2 := mat.NewDense(1, c, auxSl1)
 	aux2 := NewDiagMat(auxSl1, c)
 	aux3 := mat.NewDense(r, c, nil)
 	aux3.Mul(X, aux2)
@@ -80,41 +82,56 @@ func CalcNewW(w, X *mat.Dense) *mat.Dense {
 	//aux5 := NewDiagMat(auxSl2, c)
 	//aux6 is scalar
 	aux6 := SliceMean(auxSl2)
-	//aux6 := RowMeanVector(aux5)
 	aux7 := mat.NewDense(1, r, nil)
 	aux7.Scale(aux6, w)
 	wNew := mat.NewDense(1, r, nil)
 	wNew.Sub(aux4.T(), aux7)
 	aux8 := make([]float64, 3)
 	copy(aux8, wNew.RawRowView(0))
-	for i, v := range aux8{
+	for i, v := range aux8 {
 		aux8[i] = v * v
 	}
-	//aux8.Pow(wNew, 2)
-	//aux8 := mat.NewDense(1, r, row2)
 	wNew.Scale(1/math.Sqrt(floats.Sum(aux8)), wNew)
 	return wNew
+}
 
-	/* 行列と間違えた
-	var auxSl1 = make([]float64, r*c)
-	var auxSl2 = make([]float64, r*c)
-	aux1 := mat.NewDense(1, c, nil)
-	aux1.Mul(w.T(), X)
-	for i := 0; i < r; i++ {
-		row1 := aux1.RawRowView(i)
-		for j := 0; j < c; j++ {
-			auxSl1[c*i+j] = g(row1[j])
-			auxSl2[c*i+j] = gDer(row1[j])
-		}
+func ICA(X *mat.Dense, iter int, tolerance float64) (*mat.Dense, error) {
+	X = center(X)
+	X, err := Whitening(X)
+	if err != nil {
+		return nil, err
 	}
-	aux2 := mat.NewDense(r, c, auxSl1)
-	aux3 := mat.NewDense(r, c, nil)
-	aux3.Mul(X, aux2)
-	aux4 := ColMeanVector(aux3)
-	aux5 := mat.NewDense(r, c, auxSl2)
-	aux6 := RowMeanVector(aux5)
-	aux7 :=
-		fmt.Println(aux4)
-	//wNew :=
-	*/
+	componentsNR, _ := X.Dims()
+	W := mat.NewDense(componentsNR, componentsNR, nil)
+
+	var w = mat.NewDense(1, componentsNR, nil)
+	var wNew = mat.NewDense(1, componentsNR, nil)
+	// aux
+	var aMat1 = mat.NewDense(1, componentsNR, nil)
+	var aMat2 = mat.NewDense(1, componentsNR, nil)
+	//var matSum float64
+	var distance float64
+	for i := 0; i < componentsNR; i++ {
+		w = NewRandVector(componentsNR)
+
+		for j := 0; j < iter; j++ {
+			wNew = CalcNewW(w, X)
+			if i >= 1 {
+				aMat1.Product(wNew, W.Slice(0, i, 0, componentsNR))
+				wNew.Sub(wNew, aMat1)
+			}
+			aMat2.MulElem(w, wNew)
+			distance = math.Abs(math.Abs(ElemSum(aMat2) - 1))
+			w = wNew
+
+			if distance < tolerance {
+				break
+			}
+		}
+		W.SetRow(i, w.RawRowView(0))
+	}
+
+	S := mat.NewDense(3, 6, nil)
+	S.Mul(W, X)
+	return S, nil
 }

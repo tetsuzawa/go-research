@@ -57,15 +57,31 @@ func Test_center(t *testing.T) {
 		args args
 		want *mat.Dense
 	}{
-		{name: "arange 1to9", args: args{X: mat.NewDense(3, 3, []float64{1, 2, 3, 4, 5, 6, 7, 8, 9})}, want: mat.NewDense(3, 1, []float64{2, 5, 8})},
-		{name: "arange 1to9 with minus", args: args{X: mat.NewDense(3, 3, []float64{1, -2, -3, 4, 5, -6, 7, -8, 9})}, want: mat.NewDense(3, 1, []float64{-4. / 3., 1., 8. / 3.})},
+		{
+			name: "same as python ica2",
+			args: args{
+				X: mat.NewDense(3, 6, []float64{
+					-1.0, -0.8583741434275802, -1.4834507951495062, 1.4256732187770198, 1.031509825101539, -2.2879033166650653,
+					-1.0, -1.82918707171379, -2.541725397574753, 2.5128366093885104, 1.9157549125507696, -3.143951658332533,
+					-2.0, -0.6875612151413701, -2.0251761927242597, 1.9385098281655302, 0.9472647376523085, -3.4318549749975977,
+				})},
+			want: mat.NewDense(3, 6, []float64{
+				-0.47124246477273457, -0.3296166082003148, -0.9546932599222407, 1.9544307540042851, 1.5602673603288046, -1.7591457814378,
+				-0.3189545657197007, -1.1481416374334907, -1.8606799632944537, 3.19388204366881, 2.5968003468310688, -2.4629062240522335,
+				-1.1235303638257683, 0.18890842103286143, -1.148706556550028, 2.814979464339762, 1.82373437382654, -2.555385338823366,
+			}),
+		},
+
+		//{name: "arange 1to9", args: args{X: mat.NewDense(3, 3, []float64{1, 2, 3, 4, 5, 6, 7, 8, 9})}, want: mat.NewDense(3, 1, []float64{2, 5, 8})},
+		//{name: "arange 1to9 with minus", args: args{X: mat.NewDense(3, 3, []float64{1, -2, -3, 4, 5, -6, 7, -8, 9})}, want: mat.NewDense(3, 1, []float64{-4. / 3., 1., 8. / 3.})},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := center(tt.args.X); !reflect.DeepEqual(got, tt.want) {
-				fgot := mat.Formatted(got, mat.Prefix(""), mat.Squeeze())
-				fwant := mat.Formatted(tt.want, mat.Prefix(""), mat.Squeeze())
-				t.Errorf("center() = %v, want %v", fgot, fwant)
+				//fgot := mat.Formatted(got, mat.Prefix(""), mat.Squeeze())
+				//fwant := mat.Formatted(tt.want, mat.Prefix(""), mat.Squeeze())
+				//t.Errorf("center() = %v, want %v", fgot, fwant)
+				t.Errorf("CalcNewW() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -128,6 +144,50 @@ func Test_CalcNewW(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := CalcNewW(tt.args.w, tt.args.X); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("CalcNewW() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestICA(t *testing.T) {
+	type args struct {
+		X         *mat.Dense
+		iter      int
+		tolerance float64
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *mat.Dense
+		wantErr bool
+	}{
+		{
+			name: "same as python ica2",
+			args: args{
+				X: mat.NewDense(3, 6, []float64{
+					-1.0, -0.8583741434275802, -1.4834507951495062, 1.4256732187770198, 1.031509825101539, -2.2879033166650653,
+					-1.0, -1.82918707171379, -2.541725397574753, 2.5128366093885104, 1.9157549125507696, -3.143951658332533,
+					-2.0, -0.6875612151413701, -2.0251761927242597, 1.9385098281655302, 0.9472647376523085, -3.4318549749975977,
+				}),
+				iter:      1000,
+				tolerance: 1e-5},
+			want: mat.NewDense(3, 6, []float64{
+				-0.1195232895154406, -0.13695939213469, 0.25336466042164585, 0.13255584827759057, 1.4968211161532372, -1.6262589432023518,
+				0.37608121950301976, 0.1446355752912923, 1.218168432335386, -1.829777924611693, 0.046902947757951625, 0.04398974972403464,
+				-1.1448585547570456, 1.5568784779575202, 0.5111648717750966, 0.20006227927267833, -0.610400384720045, -0.5128466895282026,
+			}),
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ICA(tt.args.X, tt.args.iter, tt.args.tolerance)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ICA() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ICA() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

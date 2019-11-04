@@ -77,3 +77,37 @@ func TestSliceMean(t *testing.T) {
 		})
 	}
 }
+
+func TestElemSum(t *testing.T) {
+	type args struct {
+		X *mat.Dense
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		{
+			name: "matrix 3x3",
+			args: args{X: mat.NewDense(3, 3, []float64{1, 2, 3, 4, 5, 6, 7, 8, 9})},
+			want: 45.0,
+		},
+		{
+			name: "vector 3x1",
+			args: args{X: mat.NewDense(3, 1, []float64{5, 2, 3})},
+			want: 10.0,
+		},
+		{
+			name: "vector 1x3",
+			args: args{X: mat.NewDense(1, 3, []float64{9, -4, 3})},
+			want: 8.0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ElemSum(tt.args.X); got != tt.want {
+				t.Errorf("ElemSum() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
