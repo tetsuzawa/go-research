@@ -56,10 +56,10 @@ func matPrint(X mat.Matrix) {
 	fmt.Printf("%v\n", fa)
 }
 
-// if isCol = true, return	[ ],
-//							[ ],
-//							[ ]
-// else return 			[ , , ,]
+// ColMeanVector returns a means of matrix row
+//	[ ],
+//	[ ],
+//	[ ]
 func ColMeanVector(X *mat.Dense) *mat.Dense {
 	r, c := X.Dims()
 	var xs = make([]float64, c)
@@ -71,6 +71,8 @@ func ColMeanVector(X *mat.Dense) *mat.Dense {
 	return mat.NewDense(r, 1, xMeans)
 }
 
+// RowMeanVector returns a means of matrix col
+// 	[ , , ,]
 func RowMeanVector(X *mat.Dense) *mat.Dense {
 	r, c := X.Dims()
 	var xs = make([]float64, r)
@@ -80,4 +82,8 @@ func RowMeanVector(X *mat.Dense) *mat.Dense {
 		xMeans[i] = floats.Sum(xs) / float64(r)
 	}
 	return mat.NewDense(1, c, xMeans)
+}
+
+func SliceMean(fs []float64) float64 {
+	return floats.Sum(fs) / float64(len(fs))
 }

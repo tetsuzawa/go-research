@@ -4,9 +4,40 @@ import (
 	"github.com/tetsuzawa/go-research/ica2"
 	"gonum.org/v1/gonum/mat"
 	"log"
+	"reflect"
 )
 
 func main() {
+	calcNewWEx()
+}
+
+func calcNewWEx() {
+	type args struct {
+		w *mat.Dense
+		X *mat.Dense
+	}
+	tests := []struct {
+		name string
+		args args
+		want *mat.Dense
+	}{
+		{
+			name: "same as python ica2",
+			args: args{
+				w: mat.NewDense(1, 3, []float64{0.5488135039273248, 0.7151893663724195, 0.6027633760716439}),
+				X: mat.NewDense(3, 6, []float64{0.07346330684499848, -0.16266386346933273, 0.6183995645355771, -0.4969371346445325, 1.456665495096312, -1.4889273683630337, 0.4698717643162649, -1.1824477251366896, -1.1726003085478844, 1.224782595853268, 0.7096003882015676, -0.049206714686523594, -1.1543270002269619, 1.0997098202708755, -0.266104962484705, 1.2893650136691885, -0.12671900817333798, -0.8419238630550545}),
+			},
+			want: mat.NewDense(1, 3, []float64{0.0003703279502838618, 0.040517027640052605, 0.0005756545563130041}),
+		},
+	}
+	for _, tt := range tests {
+		if got := ica.CalcNewW(tt.args.w, tt.args.X); !reflect.DeepEqual(got, tt.want) {
+			log.Fatalf("calcNewW() = %v, want %v", got, tt.want)
+		}
+	}
+}
+
+func whiteningEx() {
 	type args struct {
 		x *mat.Dense
 	}
@@ -145,4 +176,4 @@ func m() {
 
 }
 
- */
+*/

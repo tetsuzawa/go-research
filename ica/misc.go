@@ -49,3 +49,7 @@ func NormalizeMat(x *mat.Dense) *mat.Dense {
 	x.Scale(mat.Norm(x, 1), x)
 	return x
 }
+
+func ColMeanVector(dst *mat.Dense)  {
+
+}

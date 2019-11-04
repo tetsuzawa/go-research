@@ -50,19 +50,19 @@ func Test_gDer(t *testing.T) {
 
 func Test_center(t *testing.T) {
 	type args struct {
-		x *mat.Dense
+		X *mat.Dense
 	}
 	tests := []struct {
 		name string
 		args args
 		want *mat.Dense
 	}{
-		{name: "arange 1to9", args: args{x: mat.NewDense(3, 3, []float64{1, 2, 3, 4, 5, 6, 7, 8, 9})}, want: mat.NewDense(3, 1, []float64{2, 5, 8})},
-		{name: "arange 1to9 with minus", args: args{x: mat.NewDense(3, 3, []float64{1, -2, -3, 4, 5, -6, 7, -8, 9})}, want: mat.NewDense(3, 1, []float64{-4. / 3., 1., 8. / 3.})},
+		{name: "arange 1to9", args: args{X: mat.NewDense(3, 3, []float64{1, 2, 3, 4, 5, 6, 7, 8, 9})}, want: mat.NewDense(3, 1, []float64{2, 5, 8})},
+		{name: "arange 1to9 with minus", args: args{X: mat.NewDense(3, 3, []float64{1, -2, -3, 4, 5, -6, 7, -8, 9})}, want: mat.NewDense(3, 1, []float64{-4. / 3., 1., 8. / 3.})},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := center(tt.args.x); !reflect.DeepEqual(got, tt.want) {
+			if got := center(tt.args.X); !reflect.DeepEqual(got, tt.want) {
 				fgot := mat.Formatted(got, mat.Prefix(""), mat.Squeeze())
 				fwant := mat.Formatted(tt.want, mat.Prefix(""), mat.Squeeze())
 				t.Errorf("center() = %v, want %v", fgot, fwant)
@@ -73,7 +73,7 @@ func Test_center(t *testing.T) {
 
 func Test_whitening(t *testing.T) {
 	type args struct {
-		x *mat.Dense
+		X *mat.Dense
 	}
 	tests := []struct {
 		name    string
@@ -83,14 +83,14 @@ func Test_whitening(t *testing.T) {
 	}{
 		{
 			name:    "same as python ica2",
-			args:    args{x: mat.NewDense(3, 6, []float64{-0.47124246477273457, -0.3296166082003148, -0.9546932599222407, 1.9544307540042851, 1.5602673603288046, -1.7591457814378, -0.3189545657197007, -1.1481416374334907, -1.8606799632944537, 3.19388204366881, 2.5968003468310688, -2.4629062240522335, -1.1235303638257683, 0.18890842103286143, -1.148706556550028, 2.814979464339762, 1.82373437382654, -2.555385338823366,})},
+			args:    args{X: mat.NewDense(3, 6, []float64{-0.47124246477273457, -0.3296166082003148, -0.9546932599222407, 1.9544307540042851, 1.5602673603288046, -1.7591457814378, -0.3189545657197007, -1.1481416374334907, -1.8606799632944537, 3.19388204366881, 2.5968003468310688, -2.4629062240522335, -1.1235303638257683, 0.18890842103286143, -1.148706556550028, 2.814979464339762, 1.82373437382654, -2.555385338823366,})},
 			want:    mat.NewDense(3, 6, []float64{0.07346330684488667, - 0.16266386346927497, 0.6183995645352338, -0.49693713464409583, 1.4566654950959261, -1.488927368362683, 0.4698717643163002, -1.1824477251367067, -1.17260030854777, 1.2247825958531244, 0.7096003882016977, -0.049206714686642616, -1.154327000226922, 1.0997098202708528, -0.2661049624845879, 1.2893650136690384, -0.1267190081732057, -0.8419238630551718,}),
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Whitening(tt.args.x)
+			got, err := Whitening(tt.args.X)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Whitening() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -100,6 +100,34 @@ func Test_whitening(t *testing.T) {
 				//fwant := mat.Formatted(tt.want, mat.Prefix(""), mat.Squeeze())
 				t.Errorf("Whitening() got = %v, want %v", got, tt.want)
 				//t.Errorf("Whitening() got = \n%v\n, want \n%v\n", fgot, fwant)
+			}
+		})
+	}
+}
+
+func Test_CalcNewW(t *testing.T) {
+	type args struct {
+		w *mat.Dense
+		X *mat.Dense
+	}
+	tests := []struct {
+		name string
+		args args
+		want *mat.Dense
+	}{
+		{
+			name: "same as python ica2",
+			args: args{
+				w: mat.NewDense(1, 3, []float64{0.5488135039273248, 0.7151893663724195, 0.6027633760716439}),
+				X: mat.NewDense(3, 6, []float64{0.07346330684499848, -0.16266386346933273, 0.6183995645355771, -0.4969371346445325, 1.456665495096312, -1.4889273683630337, 0.4698717643162649, -1.1824477251366896, -1.1726003085478844, 1.224782595853268, 0.7096003882015676, -0.049206714686523594, -1.1543270002269619, 1.0997098202708755, -0.266104962484705, 1.2893650136691885, -0.12671900817333798, -0.8419238630550545}),
+			},
+			want: mat.NewDense(1, 3, []float64{-0.09450675071422016, 0.9885266335381587, 0.11782855704435635}),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := CalcNewW(tt.args.w, tt.args.X); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("CalcNewW() = %v, want %v", got, tt.want)
 			}
 		})
 	}
