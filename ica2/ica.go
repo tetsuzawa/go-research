@@ -2,6 +2,7 @@ package ica
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gonum/floats"
 	"gonum.org/v1/gonum/mat"
 	"gonum.org/v1/gonum/stat"
@@ -19,14 +20,10 @@ func gDer(x float64) float64 {
 func center(X *mat.Dense) *mat.Dense {
 	r, c := X.Dims()
 	var xs = make([]float64, c)
-	//var XMeans = make([]float64, r)
 	for i := 0; i < r; i++ {
 		xs = X.RawRowView(i)
-		//XMeans[i] = floats.Sum(xs) / float64(c)
 		floats.AddConst(-(floats.Sum(xs) / float64(c)), xs)
 	}
-	//XMeanMat := mat.NewDense(r, 1, XMeans)
-	//X.RawRowView(i)
 	return X
 }
 
@@ -64,6 +61,7 @@ func CalcNewW(w, X *mat.Dense) *mat.Dense {
 	r, c := X.Dims()
 	var auxSl1 = make([]float64, 1*c)
 	var auxSl2 = make([]float64, 1*c)
+	var auxSl3 = make([]float64, 1*c)
 	aux1 := mat.NewDense(1, c, nil)
 	aux1.Mul(w, X)
 	row1 := aux1.RawRowView(0)
@@ -71,10 +69,16 @@ func CalcNewW(w, X *mat.Dense) *mat.Dense {
 		auxSl1[i] = g(row1[i])
 		auxSl2[i] = gDer(row1[i])
 	}
-	// diagonal matrix
-	aux2 := NewDiagMat(auxSl1, c)
+
 	aux3 := mat.NewDense(r, c, nil)
-	aux3.Mul(X, aux2)
+	// diagonal matrix
+	//aux2 := NewDiagMat(auxSl1, c)
+	for i := 0; i < r; i++ {
+		copy(auxSl3, X.RawRowView(i))
+		floats.Mul(auxSl3, auxSl1)
+		aux3.SetRow(i, auxSl3)
+	}
+	//aux3.Mul(X, aux2)
 	// [r, 1]
 	aux4 := ColMeanVector(aux3)
 	// diagonal matrix
@@ -96,6 +100,7 @@ func CalcNewW(w, X *mat.Dense) *mat.Dense {
 }
 
 func ICA(X *mat.Dense, iter int, tolerance float64) (*mat.Dense, error) {
+	r, c := X.Dims()
 	X = center(X)
 	X, err := Whitening(X)
 	if err != nil {
@@ -109,15 +114,21 @@ func ICA(X *mat.Dense, iter int, tolerance float64) (*mat.Dense, error) {
 	// aux
 	var aMat1 = mat.NewDense(1, componentsNR, nil)
 	var aMat2 = mat.NewDense(1, componentsNR, nil)
-	//var matSum float64
 	var distance float64
 	for i := 0; i < componentsNR; i++ {
 		w = NewRandVector(componentsNR)
 
 		for j := 0; j < iter; j++ {
 			wNew = CalcNewW(w, X)
+			fmt.Printf("Calculating... %d%%\r", (i*iter+j+1)*100/(componentsNR*iter))
 			if i >= 1 {
-				aMat1.Product(wNew, W.Slice(0, i, 0, componentsNR))
+				//TODO
+				Wi := W.Slice(0, i, 0, componentsNR)
+				//wnWT := mat.NewDense(1, i, nil)
+				//wnWT.Mul(wNew, Wi.T())
+				//aMat1.Mul(wnWT, Wi)
+				//wNew.Sub(wNew, aMat1)
+				aMat1.Product(wNew, Wi.T(), Wi)
 				wNew.Sub(wNew, aMat1)
 			}
 			aMat2.MulElem(w, wNew)
@@ -131,7 +142,8 @@ func ICA(X *mat.Dense, iter int, tolerance float64) (*mat.Dense, error) {
 		W.SetRow(i, w.RawRowView(0))
 	}
 
-	S := mat.NewDense(3, 6, nil)
+	S := mat.NewDense(r, c, nil)
 	S.Mul(W, X)
+	fmt.Println("complete")
 	return S, nil
 }
