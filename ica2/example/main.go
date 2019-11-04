@@ -185,7 +185,8 @@ func m2() {
 	allData = append(allData, valf3...)
 
 	X := mat.NewDense(3, len(valf1), allData)
-	yMat, err := ica.ICA(X, 1000, 1e-5)
+	//yMat, err := ica.ICA(X, 1000, 1e-5)
+	yMat, err := ica.ICA(X, 1000, 1.7)
 	var y =make([][]float64, 3)
 	y[0] = yMat.RawRowView(0)
 	y[1] = yMat.RawRowView(1)
