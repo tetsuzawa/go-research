@@ -144,6 +144,6 @@ func ICA(X *mat.Dense, iter int, tolerance float64) (*mat.Dense, error) {
 
 	S := mat.NewDense(r, c, nil)
 	S.Mul(W, X)
-	fmt.Println("complete")
+	fmt.Println("\n\ncomplete")
 	return S, nil
 }
