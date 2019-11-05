@@ -12,7 +12,7 @@ type FiltRLS struct {
 	R        *mat.Dense
 }
 
-func NewFiltRLS(n int, mu float64, eps float64, w interface{}) (*FiltRLS, error) {
+func NewFiltRLS(n int, mu float64, eps float64, w interface{}) (ADFInterface, error) {
 	var err error
 	p := new(FiltRLS)
 	p.kind = "RLS filter"

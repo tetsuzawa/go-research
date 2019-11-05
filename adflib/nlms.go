@@ -13,7 +13,7 @@ type FiltNLMS struct {
 	wHistory [][]float64
 }
 
-func NewFiltNLMS(n int, mu float64, eps float64, w interface{}) (*FiltNLMS, error) {
+func NewFiltNLMS(n int, mu float64, eps float64, w interface{}) (ADFInterface, error) {
 	var err error
 	p := new(FiltNLMS)
 	p.kind = "NLMS filter"
@@ -47,7 +47,7 @@ func (af *FiltNLMS) Run(d []float64, x [][]float64) ([]float64, []float64, [][]f
 	//measure the data and check if the dimension agree
 	N := len(x)
 	if len(d) != N {
-		return nil, nil, nil, errors.New("The length of slice d and x must agree.")
+		return nil, nil, nil, errors.New("the length of slice d and x must agree")
 	}
 	af.n = len(x[0])
 	af.wHistory = make([][]float64, N)
