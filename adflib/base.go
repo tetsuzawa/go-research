@@ -23,9 +23,9 @@ func init() {
 
 type ADFInterface interface {
 	InitWeights() error
-	Predict() float64
+	//Predict() float64
 	PreTrainedRun() ([]float64, []float64, []float64)
-	Run() ([]float64, []float64, []float64)
+	Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error)
 	ExploreLearning() ([]float64, error)
 	CheckFloatParam() (float64, error)
 	CheckIntParam() (int, error)
@@ -58,7 +58,7 @@ func LinSpace(start, end float64, n int) []float64 {
 }
 
 func Must(adf *ADFInterface, err error) *ADFInterface {
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 	return adf
