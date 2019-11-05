@@ -11,7 +11,7 @@ type FiltLMS struct {
 	wHistory [][]float64
 }
 
-func NewFiltLMS(n int, mu float64, w interface{}) (*FiltLMS, error) {
+func NewFiltLMS(n int, mu float64, w interface{}) (ADFInterface, error) {
 	var err error
 	p := new(FiltLMS)
 	p.kind = "LMS filter"

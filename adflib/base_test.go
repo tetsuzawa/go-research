@@ -11,6 +11,49 @@ func init() {
 	rand.Seed(1)
 }
 
+func NewRandSlice(n int) []float64 {
+	rs := make([]float64, n)
+	for i := 0; i < n; i++ {
+		rs[i] = rand.Float64()
+	}
+	return rs
+}
+
+func NewNormRandSlice(n int) []float64 {
+	rs := make([]float64, n)
+	for i := 0; i < n; i++ {
+		rs[i] = rand.NormFloat64()
+	}
+	return rs
+}
+
+// NewRand2dSlice make 2d slice.
+// the arg n is sample number and m is number of signals.
+func NewRand2dSlice(n, m int) [][]float64 {
+	rs2 := make([][]float64, m)
+	for j := 0; j < m; j++ {
+		rs2[j] = NewRandSlice(n)
+	}
+	return rs2
+}
+
+// NewRandNorm2dSlice make 2d slice.
+// the arg n is sample number and m is number of signals.
+func NewNormRand2dSlice(n, m int) [][]float64 {
+	rs2 := make([][]float64, m)
+	for j := 0; j < m; j++ {
+		rs2[j] = NewNormRandSlice(n)
+	}
+	return rs2
+}
+
+func Unset(s []float64, i int) []float64 {
+	if i >= len(s) {
+		return s
+	}
+	return append(s[:i], s[i+1:]...)
+}
+
 func TestAdaptiveFilter_CheckFloatParam(t *testing.T) {
 	type fields struct {
 		w  *mat.Dense
@@ -99,7 +142,7 @@ func TestAdaptiveFilter_ExploreLearning(t *testing.T) {
 	}
 	type args struct {
 		d        []float64
-		x        []float64
+		x        [][]float64
 		muStart  float64
 		muEnd    float64
 		steps    int
@@ -176,17 +219,18 @@ func TestAdaptiveFilter_PreTrainedRun(t *testing.T) {
 	}
 	type args struct {
 		d      []float64
-		x      []float64
+		x      [][]float64
 		nTrain float64
 		epochs int
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		wantY  []float64
-		wantE  []float64
-		wantW  []float64
+		name    string
+		fields  fields
+		args    args
+		wantY   []float64
+		wantE   []float64
+		wantW   [][]float64
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
@@ -197,7 +241,11 @@ func TestAdaptiveFilter_PreTrainedRun(t *testing.T) {
 				n:  tt.fields.n,
 				mu: tt.fields.mu,
 			}
-			gotY, gotE, gotW := af.PreTrainedRun(tt.args.d, tt.args.x, tt.args.nTrain, tt.args.epochs)
+			gotY, gotE, gotW, err := af.PreTrainedRun(tt.args.d, tt.args.x, tt.args.nTrain, tt.args.epochs)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("PreTrainedRun() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
 			if !reflect.DeepEqual(gotY, tt.wantY) {
 				t.Errorf("PreTrainedRun() gotY = %v, want %v", gotY, tt.wantY)
 			}
@@ -250,15 +298,16 @@ func TestAdaptiveFilter_Run(t *testing.T) {
 	}
 	type args struct {
 		d []float64
-		x []float64
+		x [][]float64
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		wantY  []float64
-		wantE  []float64
-		wantW  []float64
+		name    string
+		fields  fields
+		args    args
+		want    []float64
+		want1   []float64
+		want2   [][]float64
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
@@ -269,15 +318,19 @@ func TestAdaptiveFilter_Run(t *testing.T) {
 				n:  tt.fields.n,
 				mu: tt.fields.mu,
 			}
-			gotY, gotE, gotW := af.Run(tt.args.d, tt.args.x)
-			if !reflect.DeepEqual(gotY, tt.wantY) {
-				t.Errorf("Run() gotY = %v, want %v", gotY, tt.wantY)
+			got, got1, got2, err := af.Run(tt.args.d, tt.args.x)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Run() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
-			if !reflect.DeepEqual(gotE, tt.wantE) {
-				t.Errorf("Run() gotE = %v, want %v", gotE, tt.wantE)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Run() got = %v, want %v", got, tt.want)
 			}
-			if !reflect.DeepEqual(gotW, tt.wantW) {
-				t.Errorf("Run() gotW = %v, want %v", gotW, tt.wantW)
+			if !reflect.DeepEqual(got1, tt.want1) {
+				t.Errorf("Run() got1 = %v, want %v", got1, tt.want1)
+			}
+			if !reflect.DeepEqual(got2, tt.want2) {
+				t.Errorf("Run() got2 = %v, want %v", got2, tt.want2)
 			}
 		})
 	}
@@ -310,6 +363,28 @@ func TestLinSpace(t *testing.T) {
 		}
 	}
 }
+
+func TestMust(t *testing.T) {
+	type args struct {
+		adf ADFInterface
+		err error
+	}
+	tests := []struct {
+		name string
+		args args
+		want ADFInterface
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Must(tt.args.adf, tt.args.err); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Must() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 
 func TestNewRandn(t *testing.T) {
 	type args struct {
