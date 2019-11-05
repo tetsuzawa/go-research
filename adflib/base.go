@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"github.com/tetsuzawa/go-research/adflib/misc"
 	"gonum.org/v1/gonum/floats"
+	"gonum.org/v1/gonum/mat"
 	"math/rand"
 	"time"
 )
@@ -33,7 +34,7 @@ type ADFInterface interface {
 //AdaptiveFilter is base struct for adaptive filter structs.
 //It puts together some functions used by all adaptive filters.
 type AdaptiveFilter struct {
-	w  []float64
+	w  *mat.Dense
 	n  int
 	mu float64
 }
@@ -74,10 +75,10 @@ func (af *AdaptiveFilter) InitWeights(w interface{}, n int) error {
 			for i := 0; i < n; i++ {
 				w[i] = NewRandn(0.5, 0)
 			}
-			af.w = w
+			af.w = mat.NewDense(1, n, w)
 		} else if v == "zeros" {
 			w := make([]float64, n)
-			af.w = w
+			af.w = mat.NewDense(1, n, w)
 		} else {
 			return errors.New("impossible to understand the w")
 		}
@@ -85,7 +86,7 @@ func (af *AdaptiveFilter) InitWeights(w interface{}, n int) error {
 		if len(v) != n {
 			return errors.New("length of w is different from n")
 		}
-		af.w = v
+		af.w = mat.NewDense(1, n, v)
 	default:
 		return errors.New(`args w must be "random" or "zeros" or []float64{...}`)
 	}
@@ -94,7 +95,7 @@ func (af *AdaptiveFilter) InitWeights(w interface{}, n int) error {
 
 //Predict calculates the new output value `y` from input array `x`.
 func (af *AdaptiveFilter) Predict(x []float64) (y float64) {
-	y = floats.Dot(af.w, x)
+	y = floats.Dot(af.w.RawRowView(0), x)
 	return y
 }
 
