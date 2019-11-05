@@ -10,12 +10,16 @@ package adflib
 import (
 	"errors"
 	"fmt"
-	"math/rand"
-	"time"
-
 	"github.com/tetsuzawa/go-research/adflib/misc"
 	"gonum.org/v1/gonum/floats"
+	"gonum.org/v1/gonum/mat"
+	"math/rand"
+	"time"
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 type ADFInterface interface {
 	InitWeights() error
@@ -30,21 +34,17 @@ type ADFInterface interface {
 //AdaptiveFilter is base struct for adaptive filter structs.
 //It puts together some functions used by all adaptive filters.
 type AdaptiveFilter struct {
-	w  []float64
+	w  *mat.Dense
 	n  int
 	mu float64
 }
 
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
-
 // NewRandn returns random value. stddev 0.5, mean 0.
-func NewRandn() float64 {
-	return rand.NormFloat64()*0.5 + 0
+func NewRandn(stddev, mean float64) float64 {
+	return rand.NormFloat64()*stddev + mean
 }
 
-func linspace(start, end float64, n int) ([]float64) {
+func LinSpace(start, end float64, n int) []float64 {
 	res := make([]float64, n)
 	if n == 1 {
 		res[0] = end
@@ -73,12 +73,12 @@ func (af *AdaptiveFilter) InitWeights(w interface{}, n int) error {
 		if v == "random" {
 			w := make([]float64, n)
 			for i := 0; i < n; i++ {
-				w[i] = NewRandn()
+				w[i] = NewRandn(0.5, 0)
 			}
-			af.w = w
+			af.w = mat.NewDense(1, n, w)
 		} else if v == "zeros" {
 			w := make([]float64, n)
-			af.w = w
+			af.w = mat.NewDense(1, n, w)
 		} else {
 			return errors.New("impossible to understand the w")
 		}
@@ -86,7 +86,7 @@ func (af *AdaptiveFilter) InitWeights(w interface{}, n int) error {
 		if len(v) != n {
 			return errors.New("length of w is different from n")
 		}
-		af.w = v
+		af.w = mat.NewDense(1, n, v)
 	default:
 		return errors.New(`args w must be "random" or "zeros" or []float64{...}`)
 	}
@@ -94,8 +94,8 @@ func (af *AdaptiveFilter) InitWeights(w interface{}, n int) error {
 }
 
 //Predict calculates the new output value `y` from input array `x`.
-func (af *AdaptiveFilter) Predict(x []float64) (y float64){
-	y = floats.Dot(af.w, x)
+func (af *AdaptiveFilter) Predict(x []float64) (y float64) {
+	y = floats.Dot(af.w.RawRowView(0), x)
 	return y
 }
 
@@ -143,7 +143,7 @@ func (af *AdaptiveFilter) Run(d, x []float64) (y, e, w []float64) {
 //				 is used.
 func (af *AdaptiveFilter) ExploreLearning(d, x []float64, muStart, muEnd float64, steps int,
 	nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, error) {
-	mus := linspace(muStart, muEnd, steps)
+	mus := LinSpace(muStart, muEnd, steps)
 	es := make([]float64, len(mus))
 	zeros := make([]float64, len(mus))
 	for i, mu := range mus {
@@ -173,6 +173,7 @@ func (af *AdaptiveFilter) CheckFloatParam(p, low, high float64, name string) (fl
 		return 0, err
 	}
 }
+
 //CheckIntParam check if the value of the given parameter
 //is in the given range and a int.
 func (af *AdaptiveFilter) CheckIntParam(p, low, high int, name string) (int, error) {
