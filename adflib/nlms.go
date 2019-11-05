@@ -34,11 +34,12 @@ func NewFiltNLMS(n int, mu float64, eps float64, w interface{}) (*FiltNLMS, erro
 }
 
 func (af *FiltNLMS) Adapt(d float64, x []float64) {
-	y := floats.Dot(af.w, x)
+	w := af.w.RawRowView(0)
+	y := floats.Dot(w, x)
 	e := d - y
 	nu := af.mu / (af.eps + floats.Dot(x, x))
 	for i := 0; i < len(x); i++ {
-		af.w[i] += nu * e * x[i]
+		w[i] += nu * e * x[i]
 	}
 }
 
@@ -53,14 +54,15 @@ func (af *FiltNLMS) Run(d []float64, x [][]float64) ([]float64, []float64, [][]f
 
 	y := make([]float64, N)
 	e := make([]float64, N)
+	w := af.w.RawRowView(0)
 	//adaptation loop
 	for i := 0; i < N; i++ {
-		af.wHistory[i] = af.w
-		y[i] = floats.Dot(af.w, x[i])
+		af.wHistory[i] = w
+		y[i] = floats.Dot(w, x[i])
 		e[i] = d[i] - y[i]
 		nu := af.mu / (af.eps + floats.Dot(x[i], x[i]))
 		for j := 0; j < af.n; j++ {
-			af.w[j] = nu * e[i] * x[i][j]
+			w[j] = nu * e[i] * x[i][j]
 		}
 	}
 	return y, e, af.wHistory, nil
