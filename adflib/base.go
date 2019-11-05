@@ -57,6 +57,13 @@ func LinSpace(start, end float64, n int) []float64 {
 	return res
 }
 
+func Must(adf *ADFInterface, err error) *ADFInterface {
+	if err != nil{
+		panic(err)
+	}
+	return adf
+}
+
 //InitWeights initialises the adaptive weights of the filter.
 //
 //`w`: initial weights of filter. Possible values are
