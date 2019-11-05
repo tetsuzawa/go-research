@@ -44,7 +44,7 @@ func NewRandn() float64 {
 	return rand.NormFloat64()*0.5 + 0
 }
 
-func linspace(start, end float64, n int) ([]float64) {
+func LinSpace(start, end float64, n int) []float64 {
 	res := make([]float64, n)
 	if n == 1 {
 		res[0] = end
@@ -94,7 +94,7 @@ func (af *AdaptiveFilter) InitWeights(w interface{}, n int) error {
 }
 
 //Predict calculates the new output value `y` from input array `x`.
-func (af *AdaptiveFilter) Predict(x []float64) (y float64){
+func (af *AdaptiveFilter) Predict(x []float64) (y float64) {
 	y = floats.Dot(af.w, x)
 	return y
 }
@@ -143,7 +143,7 @@ func (af *AdaptiveFilter) Run(d, x []float64) (y, e, w []float64) {
 //				 is used.
 func (af *AdaptiveFilter) ExploreLearning(d, x []float64, muStart, muEnd float64, steps int,
 	nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, error) {
-	mus := linspace(muStart, muEnd, steps)
+	mus := LinSpace(muStart, muEnd, steps)
 	es := make([]float64, len(mus))
 	zeros := make([]float64, len(mus))
 	for i, mu := range mus {
@@ -173,6 +173,7 @@ func (af *AdaptiveFilter) CheckFloatParam(p, low, high float64, name string) (fl
 		return 0, err
 	}
 }
+
 //CheckIntParam check if the value of the given parameter
 //is in the given range and a int.
 func (af *AdaptiveFilter) CheckIntParam(p, low, high int, name string) (int, error) {
