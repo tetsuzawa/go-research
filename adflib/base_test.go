@@ -1,9 +1,14 @@
 package adflib
 
 import (
+	"math/rand"
 	"reflect"
 	"testing"
 )
+
+func init() {
+	rand.Seed(1)
+}
 
 func TestAdaptiveFilter_CheckFloatParam(t *testing.T) {
 	type fields struct {
@@ -277,22 +282,6 @@ func TestAdaptiveFilter_Run(t *testing.T) {
 	}
 }
 
-func TestNewRandn(t *testing.T) {
-	tests := []struct {
-		name string
-		want float64
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewRandn(); got != tt.want {
-				t.Errorf("NewRandn() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func Test_LinSpace(t *testing.T) {
 	type args struct {
 		start float64
@@ -314,6 +303,30 @@ func Test_LinSpace(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := LinSpace(tt.args.start, tt.args.end, tt.args.n); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("LinSpace() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewRandn(t *testing.T) {
+	type args struct {
+		stddev float64
+		mean   float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		{
+			args: args{stddev: 0.5, mean: 0},
+			want: -0.6168790887989735,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewRandn(tt.args.stddev, tt.args.mean); got != tt.want {
+				t.Errorf("NewRandn() = %v, want %v", got, tt.want)
 			}
 		})
 	}

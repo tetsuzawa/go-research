@@ -10,12 +10,15 @@ package adflib
 import (
 	"errors"
 	"fmt"
-	"math/rand"
-	"time"
-
 	"github.com/tetsuzawa/go-research/adflib/misc"
 	"gonum.org/v1/gonum/floats"
+	"math/rand"
+	"time"
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 type ADFInterface interface {
 	InitWeights() error
@@ -35,13 +38,9 @@ type AdaptiveFilter struct {
 	mu float64
 }
 
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
-
 // NewRandn returns random value. stddev 0.5, mean 0.
-func NewRandn() float64 {
-	return rand.NormFloat64()*0.5 + 0
+func NewRandn(stddev, mean float64) float64 {
+	return rand.NormFloat64()*stddev + mean
 }
 
 func LinSpace(start, end float64, n int) []float64 {
@@ -73,7 +72,7 @@ func (af *AdaptiveFilter) InitWeights(w interface{}, n int) error {
 		if v == "random" {
 			w := make([]float64, n)
 			for i := 0; i < n; i++ {
-				w[i] = NewRandn()
+				w[i] = NewRandn(0.5, 0)
 			}
 			af.w = w
 		} else if v == "zeros" {
