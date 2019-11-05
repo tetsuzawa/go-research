@@ -72,22 +72,15 @@ func CalcNewW(w, X *mat.Dense) *mat.Dense {
 
 	aux3 := mat.NewDense(r, c, nil)
 	// diagonal matrix
-	//aux2 := NewDiagMat(auxSl1, c)
 	for i := 0; i < r; i++ {
 		copy(auxSl3, X.RawRowView(i))
 		floats.Mul(auxSl3, auxSl1)
 		aux3.SetRow(i, auxSl3)
 	}
-	//aux3.Mul(X, aux2)
 	// [r, 1]
 	aux4 := ColMeanVector(aux3)
-	// diagonal matrix
-	//aux5 := mat.NewDense(1, c, auxSl2)
-	//aux5 := NewDiagMat(auxSl2, c)
-	//aux6 is scalar
-	aux6 := SliceMean(auxSl2)
 	aux7 := mat.NewDense(1, r, nil)
-	aux7.Scale(aux6, w)
+	aux7.Scale(SliceMean(auxSl2), w)
 	wNew := mat.NewDense(1, r, nil)
 	wNew.Sub(aux4.T(), aux7)
 	aux8 := make([]float64, 3)
@@ -119,18 +112,16 @@ func ICA(X *mat.Dense, iter int, tolerance float64) (*mat.Dense, error) {
 		w = NewRandVector(componentsNR)
 
 		for j := 0; j < iter; j++ {
-			wNew = CalcNewW(w, X)
+			// progress
 			fmt.Printf("Calculating... %d%%\r", (i*iter+j+1)*100/(componentsNR*iter))
+
+			wNew = CalcNewW(w, X)
 			if i >= 1 {
-				//TODO
 				Wi := W.Slice(0, i, 0, componentsNR)
-				//wnWT := mat.NewDense(1, i, nil)
-				//wnWT.Mul(wNew, Wi.T())
-				//aMat1.Mul(wnWT, Wi)
-				//wNew.Sub(wNew, aMat1)
 				aMat1.Product(wNew, Wi.T(), Wi)
 				wNew.Sub(wNew, aMat1)
 			}
+
 			aMat2.MulElem(w, wNew)
 			distance = math.Abs(math.Abs(ElemSum(aMat2) - 1))
 			w = wNew
@@ -138,6 +129,7 @@ func ICA(X *mat.Dense, iter int, tolerance float64) (*mat.Dense, error) {
 			if distance < tolerance {
 				break
 			}
+
 		}
 		W.SetRow(i, w.RawRowView(0))
 	}
