@@ -1,6 +1,7 @@
 package adflib
 
 import (
+	"gonum.org/v1/gonum/mat"
 	"math/rand"
 	"reflect"
 	"testing"
@@ -12,7 +13,7 @@ func init() {
 
 func TestAdaptiveFilter_CheckFloatParam(t *testing.T) {
 	type fields struct {
-		w  []float64
+		w  *mat.Dense
 		n  int
 		mu float64
 	}
@@ -52,7 +53,7 @@ func TestAdaptiveFilter_CheckFloatParam(t *testing.T) {
 
 func TestAdaptiveFilter_CheckIntParam(t *testing.T) {
 	type fields struct {
-		w  []float64
+		w  *mat.Dense
 		n  int
 		mu float64
 	}
@@ -92,7 +93,7 @@ func TestAdaptiveFilter_CheckIntParam(t *testing.T) {
 
 func TestAdaptiveFilter_ExploreLearning(t *testing.T) {
 	type fields struct {
-		w  []float64
+		w  *mat.Dense
 		n  int
 		mu float64
 	}
@@ -137,7 +138,7 @@ func TestAdaptiveFilter_ExploreLearning(t *testing.T) {
 
 func TestAdaptiveFilter_InitWeights(t *testing.T) {
 	type fields struct {
-		w  []float64
+		w  *mat.Dense
 		n  int
 		mu float64
 	}
@@ -169,7 +170,7 @@ func TestAdaptiveFilter_InitWeights(t *testing.T) {
 
 func TestAdaptiveFilter_PreTrainedRun(t *testing.T) {
 	type fields struct {
-		w  []float64
+		w  *mat.Dense
 		n  int
 		mu float64
 	}
@@ -212,7 +213,7 @@ func TestAdaptiveFilter_PreTrainedRun(t *testing.T) {
 
 func TestAdaptiveFilter_Predict(t *testing.T) {
 	type fields struct {
-		w  []float64
+		w  *mat.Dense
 		n  int
 		mu float64
 	}
@@ -243,7 +244,7 @@ func TestAdaptiveFilter_Predict(t *testing.T) {
 
 func TestAdaptiveFilter_Run(t *testing.T) {
 	type fields struct {
-		w  []float64
+		w  *mat.Dense
 		n  int
 		mu float64
 	}
@@ -282,29 +283,31 @@ func TestAdaptiveFilter_Run(t *testing.T) {
 	}
 }
 
-func Test_LinSpace(t *testing.T) {
-	type args struct {
-		start float64
-		end   float64
-		n     int
-	}
-	tests := []struct {
-		name string
-		args args
-		want []float64
-	}{
-		{
-			args: args{start: 0, end: 10, n: 21},
-			want: []float64{0., 0.5, 1., 1.5, 2., 2.5, 3., 3.5, 4., 4.5, 5.,
-				5.5, 6., 6.5, 7., 7.5, 8., 8.5, 9., 9.5, 10.},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := LinSpace(tt.args.start, tt.args.end, tt.args.n); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("LinSpace() = %v, want %v", got, tt.want)
-			}
-		})
+func TestLinSpace(t *testing.T) {
+	{
+		type args struct {
+			start float64
+			end   float64
+			n     int
+		}
+		tests := []struct {
+			name string
+			args args
+			want []float64
+		}{
+			{
+				args: args{start: 0, end: 10, n: 21},
+				want: []float64{0., 0.5, 1., 1.5, 2., 2.5, 3., 3.5, 4., 4.5, 5.,
+					5.5, 6., 6.5, 7., 7.5, 8., 8.5, 9., 9.5, 10.},
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if got := LinSpace(tt.args.start, tt.args.end, tt.args.n); !reflect.DeepEqual(got, tt.want) {
+					t.Errorf("LinSpace() = %v, want %v", got, tt.want)
+				}
+			})
+		}
 	}
 }
 
