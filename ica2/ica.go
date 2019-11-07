@@ -110,50 +110,51 @@ func CalcNewW(w, X *mat.Dense) *mat.Dense {
 	return wNew
 }
 
-func ICA(X *mat.Dense, iter int, tolerance float64) (*mat.Dense, error) {
+func ICA(X *mat.Dense, iter int, tol float64) (*mat.Dense, error) {
 	r, c := X.Dims()
 	X = center(X)
 	X, err := Whiten(X)
 	if err != nil {
 		return nil, err
 	}
-	componentsNR, _ := X.Dims()
-	W := mat.NewDense(componentsNR, componentsNR, nil)
+	_, componentsNC := X.Dims()
+	W := mat.NewDense(componentsNC, componentsNC, nil)
 
-	var w = mat.NewDense(1, componentsNR, nil)
-	var wNew = mat.NewDense(1, componentsNR, nil)
+	var w = mat.NewDense(componentsNC, 1, nil)
+	var wNew = mat.NewDense(componentsNC, 1, nil)
 	// aux
-	var aMat1 = mat.NewDense(1, componentsNR, nil)
-	var aMat2 = mat.NewDense(1, componentsNR, nil)
+	var aMat1 = mat.NewDense(1, componentsNC, nil)
+	var aMat2 = mat.NewDense(componentsNC, 1, nil)
 	var distance float64
-	for i := 0; i < componentsNR; i++ {
-		w = NewRandVector(componentsNR)
+	for i := 0; i < componentsNC; i++ {
+		w = mat.DenseCopyOf(NewRandVector(componentsNC).T())
 
 		for j := 0; j < iter; j++ {
 			// progress
-			fmt.Printf("Calculating... %d%%\r", (i*iter+j+1)*100/(componentsNR*iter))
+			fmt.Printf("Calculating... %d%%\r", (i*iter+j+1)*100/(componentsNC*iter))
 
 			wNew = CalcNewW(w, X)
 			if i >= 1 {
-				Wi := W.Slice(0, i, 0, componentsNR)
-				aMat1.Product(wNew, Wi.T(), Wi)
-				wNew.Sub(wNew, aMat1)
+				Wi := W.Slice(0, componentsNC, 0, i)
+				aMat1.Product(wNew.T(), Wi, Wi.T())
+				wNew.Sub(wNew, aMat1.T())
 			}
 
 			aMat2.MulElem(w, wNew)
 			distance = math.Abs(math.Abs(ElemSum(aMat2) - 1))
 			w = wNew
 
-			if distance < tolerance {
+			if distance < tol {
 				break
 			}
 
 		}
-		W.SetRow(i, w.RawRowView(0))
+		W.SetCol(i, mat.Col(nil, 0, w))
+		fmt.Println(W)
 	}
 
 	S := mat.NewDense(r, c, nil)
-	S.Mul(W, X)
+	S.Mul(X, W)
 	fmt.Println("\n\ncomplete")
 	return S, nil
 }
