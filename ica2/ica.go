@@ -37,8 +37,8 @@ func center(X *mat.Dense) *mat.Dense {
 
 func Whiten(X *mat.Dense) (*mat.Dense, error) {
 	r, c := X.Dims()
-	cov := mat.NewSymDense(r, nil)
-	stat.CovarianceMatrix(cov, X.T(), nil)
+	cov := mat.NewSymDense(c, nil)
+	stat.CovarianceMatrix(cov, X, nil)
 	var eigsym mat.EigenSym
 	ok := eigsym.Factorize(cov, true)
 	if !ok {
@@ -48,17 +48,19 @@ func Whiten(X *mat.Dense) (*mat.Dense, error) {
 	d := eigsym.Values(nil)
 	// eigenvectors of cov
 	E := eigsym.VectorsTo(nil)
-	D := NewDiagMat(d, r)
-	var DInv = mat.NewDense(r, r, nil)
+	D := NewDiagMat(d, c)
+	var DInv = mat.NewDense(c, c, nil)
 	err := DInv.Inverse(D)
 	if err != nil {
 		return nil, err
 	}
-	for i := 0; i < r; i++ {
+	for i := 0; i < c; i++ {
 		DInv.Set(i, i, math.Sqrt(DInv.At(i, i)))
 	}
+	var XWhitenT = mat.NewDense(c, r, nil)
+	XWhitenT.Product(E, DInv, E.T(), X.T())
 	var XWhiten = mat.NewDense(r, c, nil)
-	XWhiten.Product(E, DInv, E.T(), X)
+	XWhiten = mat.DenseCopyOf(XWhitenT.T())
 	return XWhiten, err
 }
 
