@@ -73,3 +73,4 @@ func GetMeanError(x1, x2 []float64, fn string) (float64, error) {
 		return 0, err
 	}
 }
+

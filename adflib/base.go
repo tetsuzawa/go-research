@@ -22,16 +22,17 @@ func init() {
 }
 
 type ADFInterface interface {
-	InitWeights() error
-	Predict() float64
-	PreTrainedRun() ([]float64, []float64, []float64)
-	Run() ([]float64, []float64, []float64)
-	ExploreLearning() ([]float64, error)
-	CheckFloatParam() (float64, error)
-	CheckIntParam() (int, error)
+	InitWeights(w interface{}, n int) error
+	Predict(x []float64) (y float64)
+	PreTrainedRun(d []float64, x [][]float64, nTrain float64, epochs int) (y, e []float64, w [][]float64, err error)
+	Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error)
+	ExploreLearning(d []float64, x [][]float64, muStart, muEnd float64, steps int,
+		nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, error)
+	CheckFloatParam(p, low, high float64, name string) (float64, error)
+	CheckIntParam(p, low, high int, name string) (int, error)
 }
 
-//AdaptiveFilter is base struct for adaptive filter structs.
+//AdaptiveFilter is base struct for adaptive filter structs
 //It puts together some functions used by all adaptive filters.
 type AdaptiveFilter struct {
 	w  *mat.Dense
@@ -55,6 +56,13 @@ func LinSpace(start, end float64, n int) []float64 {
 		res[i] = start + (delta * float64(i))
 	}
 	return res
+}
+
+func Must(adf ADFInterface, err error) ADFInterface {
+	if err != nil {
+		panic(err)
+	}
+	return adf
 }
 
 //InitWeights initialises the adaptive weights of the filter.
@@ -107,19 +115,25 @@ func (af *AdaptiveFilter) Predict(x []float64) (y float64) {
 //`epochs`: number of training epochs (int), default value is 1.
 //          This number describes how many times the training will be repeated
 //          on dedicated part of data.
-func (af *AdaptiveFilter) PreTrainedRun(d, x []float64, nTrain float64, epochs int) (y, e, w []float64) {
+func (af *AdaptiveFilter) PreTrainedRun(d []float64, x [][]float64, nTrain float64, epochs int) (y, e []float64, w [][]float64, err error) {
 	var nTrainI = int(float64(len(d)) * nTrain)
 	for i := 0; i < epochs; i++ {
-		af.Run(d[:nTrainI], x[:nTrainI])
+		_, _, _, err = af.Run(d[:nTrainI], x[:][:nTrainI])
+		if err != nil {
+			return nil, nil, nil, err
+		}
 	}
-	y, e, w = af.Run(d[:nTrainI], x[:nTrainI])
-	return y, e, w
+	y, e, w, err = af.Run(d[:nTrainI], x[:nTrainI])
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	return y, e, w, nil
 }
 
 //Override to use this func.
-func (af *AdaptiveFilter) Run(d, x []float64) (y, e, w []float64) {
+func (af *AdaptiveFilter) Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error) {
 	//TODO
-	return nil, nil, nil
+	return nil, nil, nil, nil
 }
 
 //ExploreLearning tests what learning rate is the best.
@@ -141,7 +155,7 @@ func (af *AdaptiveFilter) Run(d, x []float64) (y, e, w []float64) {
 //				 If False, the mean error is estimated from prediction error.
 //				 If an array is provided, the error between weights and `target_w`
 //				 is used.
-func (af *AdaptiveFilter) ExploreLearning(d, x []float64, muStart, muEnd float64, steps int,
+func (af *AdaptiveFilter) ExploreLearning(d []float64, x [][]float64, muStart, muEnd float64, steps int,
 	nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, error) {
 	mus := LinSpace(muStart, muEnd, steps)
 	es := make([]float64, len(mus))
@@ -154,7 +168,10 @@ func (af *AdaptiveFilter) ExploreLearning(d, x []float64, muStart, muEnd float64
 		}
 		af.mu = mu
 		//run
-		_, e, _ := af.PreTrainedRun(d, x, nTrain, epochs)
+		_, e, _, err := af.PreTrainedRun(d, x, nTrain, epochs)
+		if err != nil {
+			return nil, err
+		}
 		es[i], err = misc.GetMeanError(e, zeros, criteria)
 		if err != nil {
 			return nil, err

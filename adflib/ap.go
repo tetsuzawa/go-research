@@ -2,8 +2,6 @@ package adflib
 
 import (
 	"errors"
-	"fmt"
-	"github.com/gonum/floats"
 	"gonum.org/v1/gonum/mat"
 )
 
@@ -21,12 +19,7 @@ type FiltAP struct {
 	ide      *mat.Dense
 }
 
-func matPrint(X mat.Matrix) {
-	fa := mat.Formatted(X, mat.Prefix(""), mat.Squeeze())
-	fmt.Printf("%v\n", fa)
-}
-
-func NewFiltAP(n int, mu float64, order int, eps float64, w interface{}) (*FiltAP, error) {
+func NewFiltAP(n int, mu float64, order int, eps float64, w interface{}) (ADFInterface, error) {
 	var err error
 	p := new(FiltAP)
 	p.kind = "AP filter"
@@ -84,8 +77,8 @@ func (af *FiltAP) Adapt(d float64, x []float64) error {
 	af.dMem.Set(0, 0, d)
 
 	// estimate output and error
-	wd := mat.NewDense(1, len(af.w), af.w)
-	af.yMem.Mul(wd, af.xMem)
+	//wd := mat.NewDense(1, len(af.w), af.w)
+	af.yMem.Mul(af.w, af.xMem)
 	af.eMem.Sub(af.dMem, af.yMem)
 
 	// update
@@ -95,16 +88,14 @@ func (af *FiltAP) Adapt(d float64, x []float64) error {
 	dw2 := mat.NewDense(af.order, af.order, nil)
 	err := dw2.Solve(dw1, af.ide)
 	if err != nil {
-		return  err
+		return err
 	}
 	dw3 := mat.NewDense(1, af.order, nil)
 	dw3.Mul(af.eMem, dw2)
 	dw := mat.NewDense(1, af.n, nil)
 	dw.Mul(dw3, af.xMem.T())
 	dw.Scale(af.mu, dw)
-	w := make([]float64, len(af.w))
-	floats.Add(w, dw.RawRowView(0))
-	af.w = w
+	af.w.Add(af.w, dw)
 	return nil
 }
 
@@ -112,10 +103,9 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 	//measure the data and check if the dimension agree
 	N := len(x)
 	if len(d) != N {
-		return nil, nil, nil, errors.New("the length of slice d and x must agree.")
+		return nil, nil, nil, errors.New("the length of slice d and x must agree")
 	}
 	af.n = len(x[0])
-	//af.wHistory = make([][]float64, N)
 
 	y := make([]float64, N)
 	e := make([]float64, N)
@@ -127,7 +117,7 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 	//adaptation loop
 	for i := 0; i < N; i++ {
 		//af.wHistory[i] = af.w
-		af.wHistory.SetRow(i, af.w)
+		af.wHistory.SetRow(i, af.w.RawRowView(0))
 
 		// create input matrix and target vector
 		// shift column
@@ -141,8 +131,7 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 		af.dMem.Set(0, 0, d[i])
 
 		// estimate output and error
-		wd := mat.NewDense(1, len(af.w), af.w)
-		af.yMem.Mul(wd, af.xMem.T())
+		af.yMem.Mul(af.w, af.xMem.T())
 		af.eMem.Sub(af.dMem, af.yMem)
 		y[i] = af.yMem.At(0, 0)
 		e[i] = af.eMem.At(0, 0)
@@ -160,9 +149,7 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 		dw3.Mul(af.eMem, dw2)
 		dw := mat.NewDense(1, af.n, nil)
 		dw.Scale(af.mu, dw)
-		w := make([]float64, len(af.w))
-		floats.Add(w, dw.RawRowView(0))
-		af.w = w
+		af.w.Add(af.w, dw)
 	}
 	wHistory := make([][]float64, af.n)
 	for i := 0; i < af.n; i++ {
@@ -170,4 +157,3 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 	}
 	return y, e, wHistory, nil
 }
-
