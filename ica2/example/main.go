@@ -43,7 +43,7 @@ func calcNewWEx() {
 	}
 }
 
-func whiteningEx() {
+func whitenEx() {
 	type args struct {
 		x *mat.Dense
 	}
@@ -61,7 +61,7 @@ func whiteningEx() {
 		},
 	}
 	for _, tt := range tests {
-		_, err := ica.Whitening(tt.args.x)
+		_, err := ica.Whiten(tt.args.x)
 		if err != nil {
 			log.Fatalln(err)
 		}
