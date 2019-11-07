@@ -2,9 +2,14 @@ package ica
 
 import (
 	"gonum.org/v1/gonum/mat"
+	"math/rand"
 	"reflect"
 	"testing"
 )
+
+func init() {
+	rand.Seed(1)
+}
 
 func Test_g(t *testing.T) {
 	type args struct {

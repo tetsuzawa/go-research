@@ -5,11 +5,11 @@ import (
 	"gonum.org/v1/gonum/floats"
 	"gonum.org/v1/gonum/mat"
 	"math/rand"
+	"time"
 )
 
 func init() {
-	//rand.Seed(time.Now().UnixNano())
-	rand.Seed(1)
+	rand.Seed(time.Now().UnixNano())
 }
 
 func NewRandSlice(n int) []float64 {
