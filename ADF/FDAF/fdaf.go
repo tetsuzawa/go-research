@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/binary"
+	"flag"
 	"fmt"
 	"github.com/mjibson/go-dsp/fft"
 	"github.com/takuyaohashi/go-wav"
@@ -12,11 +13,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-)
-
-const (
-	mu = 0.001
-	L  = 128
+	"strconv"
 )
 
 func ExtractFileName(path string) string {
@@ -31,7 +28,8 @@ func unset(s []float64, i int) []float64 {
 	return append(s[:i], s[i+1:]...)
 }
 
-func fdaf(data []float64) []float64 {
+func fdaf(data []float64, mu float64, L int) []float64 {
+
 	// 1 w(o). random value. use as vector.
 	var w = make([]float64, 2*L)
 	// output buffer
@@ -58,6 +56,7 @@ FDAF:
 			// 2.1.0 Read/generate a new data pair
 			in := data[idx]
 			if idx == len(data)-1 {
+				//fmt.Println(w[:L])
 				fmt.Printf("\nAdaptation completed!!\n")
 				break FDAF
 			}
@@ -93,11 +92,16 @@ FDAF:
 		aux1 = fft.FFT(converter.Float64sToComplex128s(append(w[:L], zeros...)))
 		aux2 = fft.FFT(append(phi, converter.Float64sToComplex128s(zeros)...))
 		for i := 0; i < 2*L; i++ {
-			W[i] = aux1[i] + mu*aux2[i]
+			W[i] = aux1[i] + complex(mu, 0)*aux2[i]
 		}
 		aux3 := fft.IFFT(W)
 		for i := 0; i < 2*L; i++ {
 			w[i] = real(aux3[i])
+		}
+
+		// Judge divergence
+		if e[0] > 100000 {
+			log.Fatalln("ERROR: filter divergence occur. \nPlease reconsider stepsize:mu and filter length:L.")
 		}
 		err_buf = append(err_buf, e...)
 	}
@@ -108,20 +112,45 @@ FDAF:
 func main() {
 	utils2.LoggingSettings("fdaf.log")
 
-	fileName := os.Args[1]
+	flag.Parse()
+	fileName := flag.Arg(0)
 	f, err := os.Open(fileName)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer f.Close()
 
+	// ADF Parameter
+	var mu float64
+	var L int
+	mu, err = strconv.ParseFloat(flag.Arg(1), 64)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	L, err = strconv.Atoi(flag.Arg(2))
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	fmt.Printf("Filter stepsize mu: %v, Filter length L: %v\n", mu, L)
+
 	w, err := wav.NewReader(f)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
+	fmt.Println("Analize following file:", fileName)
+	fmt.Println("Channels:", w.GetNumChannels())
+	fmt.Println("Bits per samples:", w.GetBitsPerSample())
+	fmt.Println("Block align:", w.GetBlockAlign())
+	fmt.Println("Data chunk size:", w.GetSubChunkSize())
+	fmt.Println("Audio format:", w.GetAudioFormat().String())
+	fmt.Println("Byte rate:", w.GetByteRate())
+	fmt.Println("Sample rate:", w.GetSampleRate())
+
 	var data interface{}
-	data, err = w.ReadSamples(int(w.GetSubChunkSize()) / int(w.GetNumChannels()) / int(w.GetBitsPerSample()) * 8)
+	data, err = w.ReadSamples(int(w.GetSubChunkSize()) / int(w.GetNumChannels()) / int(w.GetBlockAlign()))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -131,11 +160,12 @@ func main() {
 	}
 
 	value, ok := data.([]int16)
+	fmt.Println("len", len(value))
 	if !ok {
 		log.Fatalln("Data type is not valid")
 	}
 
-	estErr := fdaf(converter.Int16sToFloat64s(value))
+	estErr := fdaf(converter.Int16sToFloat64s(value), mu, L)
 
 	inFileName := ExtractFileName(fileName)
 	wav_out_dir := "/Users/tetsu/personal_files/Research/filters/test/FDAF_wav/"
@@ -157,6 +187,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	defer ww.Close()
 	ww.WriteSamples(converter.Float64sToInt16s(estErr))
 
 	b := make([]byte, 2)
@@ -175,6 +206,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Printf("\n\n")
+	fmt.Printf("\n")
+	fmt.Println("Filtered data is saved at:", wav_out_dir+wav_out_name)
 	fmt.Println("end!!")
 }
