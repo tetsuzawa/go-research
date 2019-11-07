@@ -98,7 +98,7 @@ func Test_center(t *testing.T) {
 	}
 }
 
-func Test_whitening(t *testing.T) {
+func Test_whiten(t *testing.T) {
 	type args struct {
 		X *mat.Dense
 	}
@@ -117,7 +117,7 @@ func Test_whitening(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Whitening(tt.args.X)
+			got, err := Whiten(tt.args.X)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Whitening() error = %v, wantErr %v", err, tt.wantErr)
 				return

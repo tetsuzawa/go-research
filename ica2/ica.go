@@ -35,7 +35,7 @@ func center(X *mat.Dense) *mat.Dense {
 	//return X
 }
 
-func Whitening(X *mat.Dense) (*mat.Dense, error) {
+func Whiten(X *mat.Dense) (*mat.Dense, error) {
 	r, c := X.Dims()
 	cov := mat.NewSymDense(r, nil)
 	stat.CovarianceMatrix(cov, X.T(), nil)
@@ -103,7 +103,7 @@ func CalcNewW(w, X *mat.Dense) *mat.Dense {
 func ICA(X *mat.Dense, iter int, tolerance float64) (*mat.Dense, error) {
 	r, c := X.Dims()
 	X = center(X)
-	X, err := Whitening(X)
+	X, err := Whiten(X)
 	if err != nil {
 		return nil, err
 	}
