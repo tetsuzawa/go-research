@@ -21,18 +21,11 @@ func center(X *mat.Dense) *mat.Dense {
 	r, c := X.Dims()
 	var xs = make([]float64, r)
 	for i := 0; i < c; i++ {
-		//xs = X.RawRowView(i)
 		mat.Col(xs, i, X)
 		floats.AddConst(-(floats.Sum(xs) / float64(r)), xs)
 		X.SetCol(i, xs)
 	}
 	return X
-	//var xs = make([]float64, c)
-	//for i := 0; i < r; i++ {
-	//	xs = X.RawRowView(i)
-	//	floats.AddConst(-(floats.Sum(xs) / float64(c)), xs)
-	//}
-	//return X
 }
 
 func Whiten(X *mat.Dense) (*mat.Dense, error) {
