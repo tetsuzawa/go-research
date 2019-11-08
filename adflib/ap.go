@@ -60,7 +60,7 @@ func NewFiltAP(n int, mu float64, order int, eps float64, w interface{}) (ADFInt
 	return p, nil
 }
 
-func (af *FiltAP) Adapt(d float64, x []float64) error {
+func (af *FiltAP) Adapt(d float64, x []float64) {
 	xr, _ := af.xMem.Dims()
 	xCol := make([]float64, xr)
 	dr, _ := af.dMem.Dims()
@@ -88,7 +88,7 @@ func (af *FiltAP) Adapt(d float64, x []float64) error {
 	dw2 := mat.NewDense(af.order, af.order, nil)
 	err := dw2.Solve(dw1, af.ide)
 	if err != nil {
-		return err
+		panic(err)
 	}
 	dw3 := mat.NewDense(1, af.order, nil)
 	dw3.Mul(af.eMem, dw2)
@@ -96,7 +96,6 @@ func (af *FiltAP) Adapt(d float64, x []float64) error {
 	dw.Mul(dw3, af.xMem.T())
 	dw.Scale(af.mu, dw)
 	af.w.Add(af.w, dw)
-	return nil
 }
 
 func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error) {
