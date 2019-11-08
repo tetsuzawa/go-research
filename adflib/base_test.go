@@ -11,48 +11,6 @@ func init() {
 	rand.Seed(1)
 }
 
-func NewRandSlice(n int) []float64 {
-	rs := make([]float64, n)
-	for i := 0; i < n; i++ {
-		rs[i] = rand.Float64()
-	}
-	return rs
-}
-
-func NewNormRandSlice(n int) []float64 {
-	rs := make([]float64, n)
-	for i := 0; i < n; i++ {
-		rs[i] = rand.NormFloat64()
-	}
-	return rs
-}
-
-// NewRand2dSlice make 2d slice.
-// the arg n is sample number and m is number of signals.
-func NewRand2dSlice(n, m int) [][]float64 {
-	rs2 := make([][]float64, m)
-	for j := 0; j < m; j++ {
-		rs2[j] = NewRandSlice(n)
-	}
-	return rs2
-}
-
-// NewRandNorm2dSlice make 2d slice.
-// the arg n is sample number and m is number of signals.
-func NewNormRand2dSlice(n, m int) [][]float64 {
-	rs2 := make([][]float64, m)
-	for j := 0; j < m; j++ {
-		rs2[j] = NewNormRandSlice(n)
-	}
-	return rs2
-}
-
-func Unset(s []float64, i int) []float64 {
-	if i >= len(s) {
-		return s
-	}
-	return append(s[:i], s[i+1:]...)
-}
 
 func TestAdaptiveFilter_CheckFloatParam(t *testing.T) {
 	type fields struct {

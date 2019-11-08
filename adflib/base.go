@@ -10,7 +10,6 @@ package adflib
 import (
 	"errors"
 	"fmt"
-	"github.com/tetsuzawa/go-research/adflib/misc"
 	"gonum.org/v1/gonum/floats"
 	"gonum.org/v1/gonum/mat"
 	"math/rand"
@@ -178,7 +177,7 @@ func (af *AdaptiveFilter) ExploreLearning(d []float64, x [][]float64, muStart, m
 		if err != nil {
 			return nil, err
 		}
-		es[i], err = misc.GetMeanError(e, zeros, criteria)
+		es[i], err = GetMeanError(e, zeros, criteria)
 		if err != nil {
 			return nil, err
 		}
