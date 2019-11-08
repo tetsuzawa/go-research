@@ -11,6 +11,10 @@ func init() {
 	rand.Seed(1)
 }
 
+func TestMain(m *testing.M) {
+
+}
+
 
 func TestAdaptiveFilter_CheckFloatParam(t *testing.T) {
 	type fields struct {

@@ -58,6 +58,15 @@ func LinSpace(start, end float64, n int) []float64 {
 	return res
 }
 
+func newAdaptiveFilter(w [][]float64, n int, mu float64) ADFInterface {
+	wMat := mat.NewDense(len(w), len(w[0]), Floor(w))
+	return &AdaptiveFilter{
+		w:  wMat,
+		n:  n,
+		mu: mu,
+	}
+}
+
 func Must(adf ADFInterface, err error) ADFInterface {
 	if err != nil {
 		panic(err)
