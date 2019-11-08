@@ -25,6 +25,7 @@ type ADFInterface interface {
 	InitWeights(w interface{}, n int) error
 	Predict(x []float64) (y float64)
 	PreTrainedRun(d []float64, x [][]float64, nTrain float64, epochs int) (y, e []float64, w [][]float64, err error)
+	Adapt(d float64, x []float64)
 	Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error)
 	ExploreLearning(d []float64, x [][]float64, muStart, muEnd float64, steps int,
 		nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, error)
@@ -109,7 +110,7 @@ func (af *AdaptiveFilter) Predict(x []float64) (y float64) {
 
 //PreTrainedRun sacrifices part of the data for few epochs of learning.
 //`d`: desired value
-//`x`: input matrix (samples x input arrays)
+//`x`: input matrix (samples x input arrays). rows are samples and  columns are features.
 //`nTrain`: train to test ratio (float), default value is 0.5
 //          (that means 50% of data is used for training)
 //`epochs`: number of training epochs (int), default value is 1.
@@ -128,6 +129,11 @@ func (af *AdaptiveFilter) PreTrainedRun(d []float64, x [][]float64, nTrain float
 		return nil, nil, nil, err
 	}
 	return y, e, w, nil
+}
+
+//Override to use this func.
+func (af *AdaptiveFilter) Adapt(d float64, x []float64) {
+	//TODO
 }
 
 //Override to use this func.
