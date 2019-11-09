@@ -27,7 +27,7 @@ type ADFInterface interface {
 	Adapt(d float64, x []float64)
 	Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error)
 	ExploreLearning(d []float64, x [][]float64, muStart, muEnd float64, steps int,
-		nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, error)
+		nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, []float64, error)
 	CheckFloatParam(p, low, high float64, name string) (float64, error)
 	CheckIntParam(p, low, high int, name string) (int, error)
 }
@@ -194,30 +194,30 @@ func (af *AdaptiveFilter) Run(d []float64, x [][]float64) ([]float64, []float64,
 //				 If an array is provided, the error between weights and `target_w`
 //				 is used.
 func (af *AdaptiveFilter) ExploreLearning(d []float64, x [][]float64, muStart, muEnd float64, steps int,
-	nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, error) {
+	nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, []float64, error) {
 	mus := LinSpace(muStart, muEnd, steps)
 	es := make([]float64, len(mus))
-	zeros := make([]float64, int(float64(len(x)) * nTrain))
+	zeros := make([]float64, int(float64(len(x))*nTrain))
 	for i, mu := range mus {
 		//init
 		err := af.InitWeights("zeros", len(x[0]))
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to init weights at InitWights()")
+			return nil, nil, errors.Wrap(err, "failed to init weights at InitWights()")
 		}
 		af.mu = mu
 		//run
 		_, e, _, err := af.PreTrainedRun(d, x, nTrain, epochs)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to pre train at PreTrainedRun()")
+			return nil, nil, errors.Wrap(err, "failed to pre train at PreTrainedRun()")
 		}
 		//fmt.Println(e)
 		es[i], err = GetMeanError(e, zeros, criteria)
 		//fmt.Println(es[i])
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to get mean error at GetMeanError()")
+			return nil, nil, errors.Wrap(err, "failed to get mean error at GetMeanError()")
 		}
 	}
-	return es, nil
+	return es, mus, nil
 }
 
 //CheckFloatParam check if the value of the given parameter
