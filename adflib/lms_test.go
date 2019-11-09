@@ -2,6 +2,7 @@ package adflib
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"reflect"
 	"testing"
@@ -173,3 +174,42 @@ func TestNewFiltLMS(t *testing.T) {
 	}
 }
 */
+
+func ExampleAdaptiveFilter_ExploreLearning_lms() {
+	rand.Seed(1)
+	//creation of data
+	//number of samples
+	n := 64
+	L := 4
+	mu := 0.1
+	//input value
+	var x = make([][]float64, n)
+	//noise
+	var v = make([]float64, n)
+	//desired value
+	var d = make([]float64, n)
+	var xRow = make([]float64, L)
+	for i := 0; i < n; i++ {
+		xRow = Unset(xRow, 0)
+		xRow = append(xRow, rand.NormFloat64())
+		x[i] = xRow
+		v[i] = rand.NormFloat64() * 0.1
+		d[i] = x[i][0]
+	}
+
+	af, err := NewFiltLMS(L, mu, "random")
+	checkError(err)
+	es, mus, err := af.ExploreLearning(d, x, 0.00001, 1.0, 100, 0.5, 1, "MSE", nil)
+	checkError(err)
+	fmt.Println(es)
+	fmt.Println(mus)
+	//output:
+	//[4 6 7 7]
+	//[4 6 7 7]
+}
+
+func checkError(err error) {
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
