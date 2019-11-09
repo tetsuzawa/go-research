@@ -175,7 +175,7 @@ func TestNewFiltLMS(t *testing.T) {
 }
 */
 
-func ExampleAdaptiveFilter_ExploreLearning_lms() {
+func ExampleExploreLearning_lms() {
 	rand.Seed(1)
 	//creation of data
 	//number of samples
@@ -199,7 +199,7 @@ func ExampleAdaptiveFilter_ExploreLearning_lms() {
 
 	af, err := NewFiltLMS(L, mu, "random")
 	checkError(err)
-	es, mus, err := af.ExploreLearning(d, x, 0.00001, 1.0, 100, 0.5, 1, "MSE", nil)
+	es, mus, err := ExploreLearning(af, d, x, 0.00001, 1.0, 100, 0.5, 1, "MSE", nil)
 	checkError(err)
 	fmt.Println(es)
 	fmt.Println(mus)

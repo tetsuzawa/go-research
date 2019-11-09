@@ -232,7 +232,7 @@ func TestNewRandn(t *testing.T) {
 	}
 }
 
-func TestAdaptiveFilter_ExploreLearning(t *testing.T) {
+func TestExploreLearning(t *testing.T) {
 	rand.Seed(1)
 	//creation of data
 	//number of samples
@@ -315,7 +315,7 @@ func TestAdaptiveFilter_ExploreLearning(t *testing.T) {
 			if err != nil {
 				log.Fatalln(err)
 			}
-			got, got1, err := af.ExploreLearning(tt.args.d, tt.args.x, tt.args.muStart, tt.args.muEnd, tt.args.steps, tt.args.nTrain, tt.args.epochs, tt.args.criteria, tt.args.targetW)
+			got, got1, err := ExploreLearning(af, tt.args.d, tt.args.x, tt.args.muStart, tt.args.muEnd, tt.args.steps, tt.args.nTrain, tt.args.epochs, tt.args.criteria, tt.args.targetW)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ExploreLearning() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -362,7 +362,7 @@ func TestAdaptiveFilter_InitWeights(t *testing.T) {
 	}
 }
 
-func TestAdaptiveFilter_PreTrainedRun(t *testing.T) {
+func TestPreTrainedRun(t *testing.T) {
 	type fields struct {
 		w  *mat.Dense
 		n  int
@@ -392,7 +392,7 @@ func TestAdaptiveFilter_PreTrainedRun(t *testing.T) {
 				n:  tt.fields.n,
 				mu: tt.fields.mu,
 			}
-			gotY, gotE, gotW, err := af.PreTrainedRun(tt.args.d, tt.args.x, tt.args.nTrain, tt.args.epochs)
+			gotY, gotE, gotW, err := PreTrainedRun(af, tt.args.d, tt.args.x, tt.args.nTrain, tt.args.epochs)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PreTrainedRun() error = %v, wantErr %v", err, tt.wantErr)
 				return
