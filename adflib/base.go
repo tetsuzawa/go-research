@@ -8,8 +8,8 @@ This package is created with reference to https://github.com/matousc89/padasip.
 package adflib
 
 import (
-	"errors"
 	"fmt"
+	"github.com/pkg/errors"
 	"gonum.org/v1/gonum/floats"
 	"gonum.org/v1/gonum/mat"
 	"math/rand"
@@ -58,13 +58,19 @@ func LinSpace(start, end float64, n int) []float64 {
 	return res
 }
 
-func newAdaptiveFilter(w [][]float64, n int, mu float64) ADFInterface {
-	wMat := mat.NewDense(len(w), len(w[0]), Floor(w))
-	return &AdaptiveFilter{
-		w:  wMat,
-		n:  n,
-		mu: mu,
+func newAdaptiveFilter(n int, mu float64, w interface{}) (ADFInterface, error) {
+	var err error
+	p := new(AdaptiveFilter)
+	p.n = n
+	p.mu, err = p.CheckFloatParam(mu, 0, 1000, "mu")
+	if err != nil {
+		return nil, err
 	}
+	err = p.InitWeights(w, n)
+	if err != nil {
+		return nil, err
+	}
+	return p, nil
 }
 
 func Must(adf ADFInterface, err error) ADFInterface {
@@ -147,7 +153,25 @@ func (af *AdaptiveFilter) Adapt(d float64, x []float64) {
 //Override to use this func.
 func (af *AdaptiveFilter) Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error) {
 	//TODO
-	return nil, nil, nil, nil
+	//measure the data and check if the dimension agree
+	N := len(x)
+	if len(d) != N {
+		return nil, nil, nil, errors.New("the length of slice d and x must agree")
+	}
+	af.n = len(x[0])
+
+	y := make([]float64, N)
+	e := make([]float64, N)
+	w := make([]float64, af.n)
+	ws := make([][]float64, N)
+	//adaptation loop
+	for i := 0; i < N; i++ {
+		w = af.w.RawRowView(0)
+		y[i] = floats.Dot(w, x[i])
+		e[i] = d[i] - y[i]
+		ws[i] = w
+	}
+	return y, e, ws, nil
 }
 
 //ExploreLearning tests what learning rate is the best.
@@ -173,22 +197,24 @@ func (af *AdaptiveFilter) ExploreLearning(d []float64, x [][]float64, muStart, m
 	nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, error) {
 	mus := LinSpace(muStart, muEnd, steps)
 	es := make([]float64, len(mus))
-	zeros := make([]float64, len(mus))
+	zeros := make([]float64, int(float64(len(x)) * nTrain))
 	for i, mu := range mus {
 		//init
-		err := af.InitWeights("zeros", 0)
+		err := af.InitWeights("zeros", len(x[0]))
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "failed to init weights at InitWights()")
 		}
 		af.mu = mu
 		//run
 		_, e, _, err := af.PreTrainedRun(d, x, nTrain, epochs)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "failed to pre train at PreTrainedRun()")
 		}
+		//fmt.Println(e)
 		es[i], err = GetMeanError(e, zeros, criteria)
+		//fmt.Println(es[i])
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "failed to get mean error at GetMeanError()")
 		}
 	}
 	return es, nil

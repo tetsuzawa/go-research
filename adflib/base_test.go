@@ -2,6 +2,7 @@ package adflib
 
 import (
 	"gonum.org/v1/gonum/mat"
+	"log"
 	"math/rand"
 	"reflect"
 	"testing"
@@ -11,16 +12,11 @@ func init() {
 	rand.Seed(1)
 }
 
-func TestMain(m *testing.M) {
-
-}
-
-
 func TestAdaptiveFilter_CheckFloatParam(t *testing.T) {
 	type fields struct {
-		w  *mat.Dense
 		n  int
 		mu float64
+		w  interface{}
 	}
 	type args struct {
 		p    float64
@@ -35,15 +31,50 @@ func TestAdaptiveFilter_CheckFloatParam(t *testing.T) {
 		want    float64
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "valid",
+			fields: fields{
+				n:  1,
+				mu: 1.0,
+				w:  nil,
+			},
+			args: args{
+				p:    1.5,
+				low:  0,
+				high: 1000,
+				name: "mu",
+			},
+			want:    1.5,
+			wantErr: false,
+		},
+		{
+			name: "invalid",
+			fields: fields{
+				n:  1,
+				mu: 1.0,
+				w:  nil,
+			},
+			args: args{
+				p:    1.5,
+				low:  0,
+				high: 1,
+				name: "mu",
+			},
+			want:    0,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			af := &AdaptiveFilter{
-				w:  tt.fields.w,
 				n:  tt.fields.n,
 				mu: tt.fields.mu,
+				//w:  tt.fields.w,
 			}
+			//af, err := newAdaptiveFilter(tt.fields.n, tt.fields.mu, tt.fields.w)
+			//if err != nil {
+			//	log.Fatalln(err)
+			//}
 			got, err := af.CheckFloatParam(tt.args.p, tt.args.low, tt.args.high, tt.args.name)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CheckFloatParam() error = %v, wantErr %v", err, tt.wantErr)
@@ -75,7 +106,38 @@ func TestAdaptiveFilter_CheckIntParam(t *testing.T) {
 		want    int
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "valid",
+			fields: fields{
+				n:  1,
+				mu: 1.0,
+				w:  nil,
+			},
+			args: args{
+				p:    1,
+				low:  0,
+				high: 1000,
+				name: "mu",
+			},
+			want:    1,
+			wantErr: false,
+		},
+		{
+			name: "invalid",
+			fields: fields{
+				n:  1,
+				mu: 1.0,
+				w:  nil,
+			},
+			args: args{
+				p:    2,
+				low:  0,
+				high: 1,
+				name: "mu",
+			},
+			want:    0,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -96,11 +158,108 @@ func TestAdaptiveFilter_CheckIntParam(t *testing.T) {
 	}
 }
 
+func TestLinSpace(t *testing.T) {
+	{
+		type args struct {
+			start float64
+			end   float64
+			n     int
+		}
+		tests := []struct {
+			name string
+			args args
+			want []float64
+		}{
+			{
+				args: args{start: 0, end: 10, n: 21},
+				want: []float64{0., 0.5, 1., 1.5, 2., 2.5, 3., 3.5, 4., 4.5, 5.,
+					5.5, 6., 6.5, 7., 7.5, 8., 8.5, 9., 9.5, 10.},
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if got := LinSpace(tt.args.start, tt.args.end, tt.args.n); !reflect.DeepEqual(got, tt.want) {
+					t.Errorf("LinSpace() = %v, want %v", got, tt.want)
+				}
+			})
+		}
+	}
+}
+
+func TestMust(t *testing.T) {
+	type args struct {
+		adf ADFInterface
+		err error
+	}
+	tests := []struct {
+		name string
+		args args
+		want ADFInterface
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Must(tt.args.adf, tt.args.err); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Must() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewRandn(t *testing.T) {
+	rand.Seed(1)
+	type args struct {
+		stddev float64
+		mean   float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		{
+			args: args{stddev: 0.5, mean: 0},
+			want: -0.6168790887989735,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewRandn(tt.args.stddev, tt.args.mean); got != tt.want {
+				t.Errorf("NewRandn() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestAdaptiveFilter_ExploreLearning(t *testing.T) {
+	rand.Seed(1)
+	//creation of data
+	//number of samples
+	n := 64
+	L := 4
+	//input value
+	var x = make([][]float64, n)
+	//noise
+	var v = make([]float64, n)
+	//desired value
+	var d = make([]float64, n)
+	var xRow = make([]float64, L)
+	for i := 0; i < n; i++ {
+		xRow = Unset(xRow, 0)
+		xRow = append(xRow, rand.NormFloat64())
+		x[i] = xRow
+		v[i] = rand.NormFloat64() * 0.1
+		d[i] = x[i][0]
+	}
+	//targetW := NewRandSlice(L)
+	//targetW := nil
+	//t.Log(targetW)
+
 	type fields struct {
-		w  *mat.Dense
 		n  int
 		mu float64
+		w  interface{}
 	}
 	type args struct {
 		d        []float64
@@ -120,14 +279,38 @@ func TestAdaptiveFilter_ExploreLearning(t *testing.T) {
 		want    []float64
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "random",
+			fields: fields{
+				n:  L,
+				mu: 1.0,
+				w:  "random",
+			},
+			args: args{
+				d:        d,
+				x:        x,
+				muStart:  0.000001,
+				muEnd:    1.0,
+				steps:    100,
+				nTrain:   0.5,
+				epochs:   1,
+				criteria: "MSE",
+				targetW:  nil,
+			},
+			want:    []float64{0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			af := &AdaptiveFilter{
-				w:  tt.fields.w,
-				n:  tt.fields.n,
-				mu: tt.fields.mu,
+			//af := &AdaptiveFilter{
+			//	w:  tt.fields.w,
+			//	n:  tt.fields.n,
+			//	mu: tt.fields.mu,
+			//}
+			af, err := newAdaptiveFilter(tt.fields.n, tt.fields.mu, tt.fields.w)
+			if err != nil {
+				log.Fatalln(err)
 			}
 			got, err := af.ExploreLearning(tt.args.d, tt.args.x, tt.args.muStart, tt.args.muEnd, tt.args.steps, tt.args.nTrain, tt.args.epochs, tt.args.criteria, tt.args.targetW)
 			if (err != nil) != tt.wantErr {
@@ -293,80 +476,6 @@ func TestAdaptiveFilter_Run(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got2, tt.want2) {
 				t.Errorf("Run() got2 = %v, want %v", got2, tt.want2)
-			}
-		})
-	}
-}
-
-func TestLinSpace(t *testing.T) {
-	{
-		type args struct {
-			start float64
-			end   float64
-			n     int
-		}
-		tests := []struct {
-			name string
-			args args
-			want []float64
-		}{
-			{
-				args: args{start: 0, end: 10, n: 21},
-				want: []float64{0., 0.5, 1., 1.5, 2., 2.5, 3., 3.5, 4., 4.5, 5.,
-					5.5, 6., 6.5, 7., 7.5, 8., 8.5, 9., 9.5, 10.},
-			},
-		}
-		for _, tt := range tests {
-			t.Run(tt.name, func(t *testing.T) {
-				if got := LinSpace(tt.args.start, tt.args.end, tt.args.n); !reflect.DeepEqual(got, tt.want) {
-					t.Errorf("LinSpace() = %v, want %v", got, tt.want)
-				}
-			})
-		}
-	}
-}
-
-func TestMust(t *testing.T) {
-	type args struct {
-		adf ADFInterface
-		err error
-	}
-	tests := []struct {
-		name string
-		args args
-		want ADFInterface
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := Must(tt.args.adf, tt.args.err); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Must() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-
-func TestNewRandn(t *testing.T) {
-	type args struct {
-		stddev float64
-		mean   float64
-	}
-	tests := []struct {
-		name string
-		args args
-		want float64
-	}{
-		{
-			args: args{stddev: 0.5, mean: 0},
-			want: -0.6168790887989735,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewRandn(tt.args.stddev, tt.args.mean); got != tt.want {
-				t.Errorf("NewRandn() = %v, want %v", got, tt.want)
 			}
 		})
 	}
