@@ -91,12 +91,14 @@ func Must(adf ADFInterface, err error) ADFInterface {
 //          on dedicated part of data.
 func PreTrainedRun(af ADFInterface, d []float64, x [][]float64, nTrain float64, epochs int) (y, e []float64, w [][]float64, err error) {
 	var nTrainI = int(float64(len(d)) * nTrain)
+	//train
 	for i := 0; i < epochs; i++ {
 		_, _, _, err = af.Run(d[:nTrainI], x[:][:nTrainI])
 		if err != nil {
 			return nil, nil, nil, err
 		}
 	}
+	//run
 	y, e, w, err = af.Run(d[:nTrainI], x[:nTrainI])
 	if err != nil {
 		return nil, nil, nil, err
@@ -140,7 +142,6 @@ func ExploreLearning(af ADFInterface, d []float64, x [][]float64, muStart, muEnd
 		if err != nil {
 			return nil, nil, errors.Wrap(err, "failed to pre train at PreTrainedRun()")
 		}
-		//fmt.Println(e)
 		es[i], err = GetMeanError(e, zeros, criteria)
 		//fmt.Println(es[i])
 		if err != nil {

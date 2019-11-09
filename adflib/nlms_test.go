@@ -7,15 +7,12 @@ import (
 	"testing"
 )
 
-func init() {
-	rand.Seed(1)
-}
-
 /*
-func TestFiltLMS_Adapt(t *testing.T) {
+func TestFiltNLMS_Adapt(t *testing.T) {
 	type fields struct {
 		AdaptiveFilter AdaptiveFilter
 		kind           string
+		eps            float64
 		wHistory       [][]float64
 	}
 	type args struct {
@@ -31,9 +28,10 @@ func TestFiltLMS_Adapt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			af := &FiltLMS{
+			af := &FiltNLMS{
 				AdaptiveFilter: tt.fields.AdaptiveFilter,
 				kind:           tt.fields.kind,
+				eps:            tt.fields.eps,
 				wHistory:       tt.fields.wHistory,
 			}
 		})
@@ -42,7 +40,7 @@ func TestFiltLMS_Adapt(t *testing.T) {
 
 */
 
-func TestFiltLMS_Run(t *testing.T) {
+func TestFiltNLMS_Run(t *testing.T) {
 	rand.Seed(1)
 	//creation of data
 	//number of samples
@@ -62,22 +60,10 @@ func TestFiltLMS_Run(t *testing.T) {
 		v[i] = rand.NormFloat64() * 0.1
 		d[i] = x[i][0]
 	}
-	//n := 100
-	//x := NewNormRand2dSlice(n, 4)
-	//v := NewNormRandSlice(n)
-	//floats.Scale(2.0, x[0])
-	//floats.Scale(0.1, x[1])
-	//floats.Scale(1.0, x[2])
-	//floats.Scale(0.5, x[3])
-	//d := make([]float64, n)
-	//for i := 0; i < 4; i++ {
-	//	floats.Add(d, x[i])
-	//}
-	//floats.Add(d, v)
-
 	//type fields struct {
 	//	AdaptiveFilter AdaptiveFilter
 	//	kind           string
+	//	eps            float64
 	//	wHistory       [][]float64
 	//}
 	type args struct {
@@ -94,10 +80,7 @@ func TestFiltLMS_Run(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "Run LMS Filter",
-			//fields: fields{
-			//	Must(NewFiltLMS(4, 1., "random")),
-			//},
+			name: "Run NLMS Filter",
 			args: args{
 				d: d,
 				x: x,
@@ -110,77 +93,72 @@ func TestFiltLMS_Run(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			//af := &FiltLMS{
+			//af := &FiltNLMS{
 			//	AdaptiveFilter: tt.fields.AdaptiveFilter,
 			//	kind:           tt.fields.kind,
+			//	eps:            tt.fields.eps,
 			//	wHistory:       tt.fields.wHistory,
 			//}
-			af := Must(NewFiltLMS(L, 0.1, "random"))
-			y, e, wHist, err := af.Run(tt.args.d, tt.args.x)
+			af := Must(NewFiltNLMS(L, 1.0, 1e-5, "random"))
+			got, got1, got2, err := af.Run(tt.args.d, tt.args.x)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Run() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(y, tt.want) {
-				t.Errorf("Run() y = %v, want %v", y, tt.want)
-				//for _, v := range y {
-				//	fmt.Printf("%g, ", v)
-				//}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Run() got = %v\n, want %v\n", got, tt.want)
 			}
-			if !reflect.DeepEqual(e, tt.want1) {
-				t.Errorf("Run() e = %v, want %v", e, tt.want1)
+			if !reflect.DeepEqual(got1, tt.want1) {
+				t.Errorf("Run() got1 = %v\n, want %v\n", got1, tt.want1)
 			}
-			if !reflect.DeepEqual(wHist, tt.want2) {
-				t.Errorf("Run() wHist = %v, want %v", wHist, tt.want2)
-				for _, v := range wHist {
-					fmt.Printf("{")
-					for _, vv := range v {
-						fmt.Printf("%g, ", vv)
-					}
-					fmt.Printf("},")
-				}
+			if !reflect.DeepEqual(got2, tt.want2) {
+				t.Errorf("Run() got2 = %v\n, want %v\n", got2, tt.want2)
 			}
 		})
 	}
 }
 
 /*
-func TestNewFiltLMS(t *testing.T) {
+func TestNewFiltNLMS(t *testing.T) {
 	type args struct {
-		n  int
-		mu float64
-		w  interface{}
+		n   int
+		mu  float64
+		eps float64
+		w   interface{}
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *FiltLMS
+		want    ADFInterface
 		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewFiltLMS(tt.args.n, tt.args.mu, tt.args.w)
+			got, err := NewFiltNLMS(tt.args.n, tt.args.mu, tt.args.eps, tt.args.w)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("NewFiltLMS() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("NewFiltNLMS() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewFiltLMS() got = %v, want %v", got, tt.want)
+				t.Errorf("NewFiltNLMS() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
+
 */
 
-func ExampleExploreLearning_lms() {
+func ExampleExploreLearning_nlms() {
 	rand.Seed(1)
 	//creation of data
 	//number of samples
-	n := 64
-	L := 4
-	mu := 0.1
+	//n := 64
+	n := 512
+	L := 8
+	mu := 1.0
+	eps := 0.001
 	//input value
 	var x = make([][]float64, n)
 	//noise
@@ -193,15 +171,13 @@ func ExampleExploreLearning_lms() {
 		xRow = append(xRow, rand.NormFloat64())
 		x[i] = append([]float64{}, xRow...)
 		v[i] = rand.NormFloat64() * 0.1
-		d[i] = x[i][0]
+		d[i] = x[i][L-1]
 	}
 
-	af, err := NewFiltLMS(L, mu, "random")
+	af, err := NewFiltNLMS(L, mu, eps, "zeros")
 	checkError(err)
-	es, mus, err := ExploreLearning(af, d, x, 0.00001, 1.0, 100, 0.5, 100, "MSE", nil)
+	es, mus, err := ExploreLearning(af, d, x, 0.00001, 2.0, 100, 0.5, 100, "MSE", nil)
 	checkError(err)
-
-
 	fmt.Println(es)
 	fmt.Println(mus)
 	//output:
