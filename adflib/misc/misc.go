@@ -73,3 +73,14 @@ func GetMeanError(x1, x2 []float64, fn string) (float64, error) {
 		return 0, err
 	}
 }
+
+func Floor(fs [][]float64) []float64 {
+	var fs1d = make([]float64, len(fs)*len(fs[0]))
+	for i, sl := range fs {
+		for j, v := range sl {
+			fs1d[len(fs)*i+j] = v
+		}
+	}
+	return fs1d
+}
+
