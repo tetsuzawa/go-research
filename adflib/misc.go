@@ -76,16 +76,33 @@ func GetMeanError(x1, x2 []float64, fn string) (float64, error) {
 	}
 }
 
+// NewRandn returns random value. stddev 0.5, mean 0.
+func NewRandn(stddev, mean float64) float64 {
+	return rand.NormFloat64()*stddev + mean
+}
+
+func LinSpace(start, end float64, n int) []float64 {
+	res := make([]float64, n)
+	if n == 1 {
+		res[0] = end
+		return res
+	}
+	delta := (end - start) / (float64(n) - 1)
+	for i := 0; i < n; i++ {
+		res[i] = start + (delta * float64(i))
+	}
+	return res
+}
+
 func Floor(fs [][]float64) []float64 {
 	var fs1d = make([]float64, len(fs)*len(fs[0]))
 	for i, sl := range fs {
 		for j, v := range sl {
-			fs1d[len(fs)*i+j] = v
+			fs1d[len(fs[0])*i+j] = v
 		}
 	}
 	return fs1d
 }
-
 
 func NewRandSlice(n int) []float64 {
 	rs := make([]float64, n)

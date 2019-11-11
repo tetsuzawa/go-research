@@ -41,23 +41,6 @@ type AdaptiveFilter struct {
 	mu float64
 }
 
-// NewRandn returns random value. stddev 0.5, mean 0.
-func NewRandn(stddev, mean float64) float64 {
-	return rand.NormFloat64()*stddev + mean
-}
-
-func LinSpace(start, end float64, n int) []float64 {
-	res := make([]float64, n)
-	if n == 1 {
-		res[0] = end
-		return res
-	}
-	delta := (end - start) / (float64(n) - 1)
-	for i := 0; i < n; i++ {
-		res[i] = start + (delta * float64(i))
-	}
-	return res
-}
 
 func newAdaptiveFilter(n int, mu float64, w interface{}) (ADFInterface, error) {
 	var err error

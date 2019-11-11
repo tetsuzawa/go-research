@@ -158,33 +158,6 @@ func TestAdaptiveFilter_CheckIntParam(t *testing.T) {
 	}
 }
 
-func TestLinSpace(t *testing.T) {
-	{
-		type args struct {
-			start float64
-			end   float64
-			n     int
-		}
-		tests := []struct {
-			name string
-			args args
-			want []float64
-		}{
-			{
-				args: args{start: 0, end: 10, n: 21},
-				want: []float64{0., 0.5, 1., 1.5, 2., 2.5, 3., 3.5, 4., 4.5, 5.,
-					5.5, 6., 6.5, 7., 7.5, 8., 8.5, 9., 9.5, 10.},
-			},
-		}
-		for _, tt := range tests {
-			t.Run(tt.name, func(t *testing.T) {
-				if got := LinSpace(tt.args.start, tt.args.end, tt.args.n); !reflect.DeepEqual(got, tt.want) {
-					t.Errorf("LinSpace() = %v, want %v", got, tt.want)
-				}
-			})
-		}
-	}
-}
 
 func TestMust(t *testing.T) {
 	type args struct {
@@ -207,30 +180,6 @@ func TestMust(t *testing.T) {
 	}
 }
 
-func TestNewRandn(t *testing.T) {
-	rand.Seed(1)
-	type args struct {
-		stddev float64
-		mean   float64
-	}
-	tests := []struct {
-		name string
-		args args
-		want float64
-	}{
-		{
-			args: args{stddev: 0.5, mean: 0},
-			want: -0.6168790887989735,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewRandn(tt.args.stddev, tt.args.mean); got != tt.want {
-				t.Errorf("NewRandn() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
 
 func TestExploreLearning(t *testing.T) {
 	rand.Seed(1)

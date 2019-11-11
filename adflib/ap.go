@@ -53,7 +53,7 @@ func NewFiltAP(n int, mu float64, order int, eps float64, w interface{}) (ADFInt
 		diaMat[i*(order+1)] = 1
 	}
 	p.ide = mat.NewDense(order, order, diaMat)
-	p.wHistory = mat.NewDense(n, order, nil)
+	//p.wHistory = mat.NewDense(len(x), order, nil)
 	p.yMem = mat.NewDense(1, order, nil)
 	p.eMem = mat.NewDense(1, order, nil)
 
@@ -105,6 +105,7 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 		return nil, nil, nil, errors.New("the length of slice d and x must agree")
 	}
 	af.n = len(x[0])
+	af.wHistory = mat.NewDense(N, af.order, nil)
 
 	y := make([]float64, N)
 	e := make([]float64, N)

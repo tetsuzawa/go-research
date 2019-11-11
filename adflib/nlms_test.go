@@ -8,39 +8,6 @@ import (
 	"testing"
 )
 
-/*
-func TestFiltNLMS_Adapt(t *testing.T) {
-	type fields struct {
-		AdaptiveFilter AdaptiveFilter
-		kind           string
-		eps            float64
-		wHistory       [][]float64
-	}
-	type args struct {
-		d float64
-		x []float64
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		args   args
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			af := &FiltNLMS{
-				AdaptiveFilter: tt.fields.AdaptiveFilter,
-				kind:           tt.fields.kind,
-				eps:            tt.fields.eps,
-				wHistory:       tt.fields.wHistory,
-			}
-		})
-	}
-}
-
-*/
-
 func TestFiltNLMS_Run(t *testing.T) {
 	rand.Seed(1)
 	//creation of data
@@ -149,7 +116,25 @@ func TestNewFiltNLMS(t *testing.T) {
 		want    ADFInterface
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "TestNewFiltNLMS",
+			args: args{
+				n:   4,
+				mu:  1.0,
+				eps: 1e-5,
+				w:   "zeros",
+			},
+			want: &FiltLMS{
+				AdaptiveFilter: AdaptiveFilter{
+					w:  mat.NewDense(1, 4, []float64{0, 0, 0, 0}),
+					n:  4,
+					mu: 1.0,
+				},
+				kind:     "LMS Filter",
+				wHistory: nil,
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -164,7 +149,6 @@ func TestNewFiltNLMS(t *testing.T) {
 		})
 	}
 }
-
 */
 
 func ExampleExploreLearning_nlms() {
