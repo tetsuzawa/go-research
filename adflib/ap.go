@@ -98,6 +98,7 @@ func (af *FiltAP) Adapt(d float64, x []float64) {
 	af.w.Add(af.w, dw)
 }
 
+
 func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error) {
 	//measure the data and check if the dimension agree
 	N := len(x)
@@ -147,9 +148,10 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 		}
 		dw3 := mat.NewDense(1, af.order, nil)
 		dw3.Mul(af.eMem, dw2)
-		dw := mat.NewDense(1, af.n, nil)
+		dw := mat.NewDense(af.n, 1, nil)
+		dw.Mul(af.xMem, dw3.T())
 		dw.Scale(af.mu, dw)
-		af.w.Add(af.w, dw)
+		af.w.Add(af.w, dw.T())
 	}
 	wHistory := make([][]float64, af.n)
 	for i := 0; i < af.n; i++ {
@@ -157,3 +159,5 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 	}
 	return y, e, wHistory, nil
 }
+
+
