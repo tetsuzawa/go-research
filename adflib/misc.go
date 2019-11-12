@@ -1,9 +1,11 @@
-package misc
+package adflib
 
 import (
 	"errors"
 	"github.com/gonum/floats"
+	"log"
 	"math"
+	"math/rand"
 )
 
 func ElmAbs(fs []float64) []float64 {
@@ -74,13 +76,79 @@ func GetMeanError(x1, x2 []float64, fn string) (float64, error) {
 	}
 }
 
+// NewRandn returns random value. stddev 0.5, mean 0.
+func NewRandn(stddev, mean float64) float64 {
+	return rand.NormFloat64()*stddev + mean
+}
+
+func LinSpace(start, end float64, n int) []float64 {
+	res := make([]float64, n)
+	if n == 1 {
+		res[0] = end
+		return res
+	}
+	delta := (end - start) / (float64(n) - 1)
+	for i := 0; i < n; i++ {
+		res[i] = start + (delta * float64(i))
+	}
+	return res
+}
+
 func Floor(fs [][]float64) []float64 {
 	var fs1d = make([]float64, len(fs)*len(fs[0]))
 	for i, sl := range fs {
 		for j, v := range sl {
-			fs1d[len(fs)*i+j] = v
+			fs1d[len(fs[0])*i+j] = v
 		}
 	}
 	return fs1d
 }
 
+func NewRandSlice(n int) []float64 {
+	rs := make([]float64, n)
+	for i := 0; i < n; i++ {
+		rs[i] = rand.Float64()
+	}
+	return rs
+}
+
+func NewNormRandSlice(n int) []float64 {
+	rs := make([]float64, n)
+	for i := 0; i < n; i++ {
+		rs[i] = rand.NormFloat64()
+	}
+	return rs
+}
+
+// NewRand2dSlice make 2d slice.
+// the arg n is sample number and m is number of signals.
+func NewRand2dSlice(n, m int) [][]float64 {
+	rs2 := make([][]float64, m)
+	for j := 0; j < m; j++ {
+		rs2[j] = NewRandSlice(n)
+	}
+	return rs2
+}
+
+// NewRandNorm2dSlice make 2d slice.
+// the arg n is sample number and m is number of signals.
+func NewNormRand2dSlice(n, m int) [][]float64 {
+	rs2 := make([][]float64, m)
+	for j := 0; j < m; j++ {
+		rs2[j] = NewNormRandSlice(n)
+	}
+	return rs2
+}
+
+func Unset(s []float64, i int) []float64 {
+	if i >= len(s) {
+		return s
+	}
+	return append(s[:i], s[i+1:]...)
+}
+
+func checkError(err error) {
+	if err != nil {
+		log.Fatalln(err)
+	}
+}

@@ -60,10 +60,7 @@ func main() {
 		//v = 0.1 * rand.NormFloat64()
 		//d = x[L-1] + v
 		d = x[L-1]
-		err = f.Adapt(d, x)
-		if err != nil {
-			log.Fatalln(err)
-		}
+		f.Adapt(d, x)
 		y = f.Predict(x)
 		e = d - y
 		dBuf = append(dBuf, d)

@@ -64,7 +64,10 @@ func (af *FiltRLS) Run(d []float64, x [][]float64) ([]float64, []float64, [][]fl
 	var R2 float64
 	xVec := mat.NewDense(1, af.n, nil)
 	aux1 := mat.NewDense(af.n, 1, nil)
-	aux2 := mat.NewDense(af.n, af.n, nil)
+	aux4 := mat.NewDense(1, af.n, nil)
+	//aux2 := mat.NewDense(af.n, af.n, nil)
+	var aux2 float64
+	aux3 := mat.NewDense(af.n, af.n, nil)
 	dwT := mat.NewDense(af.n, 1, nil)
 	//adaptation loop
 	for i := 0; i < N; i++ {
@@ -73,15 +76,18 @@ func (af *FiltRLS) Run(d []float64, x [][]float64) ([]float64, []float64, [][]fl
 		e[i] = d[i] - y[i]
 		xVec.SetRow(0, x[i])
 		aux1.Mul(af.R, xVec.T())
-		R1.Product(aux1.T(), xVec)
-		aux1.Mul(xVec, af.R)
-		R2 = af.mu + mat.Dot(aux1.RowView(0), mat.DenseCopyOf(xVec.T()).ColView(0))
+		aux2 = floats.Dot(mat.Col(nil, 0, aux1), mat.Row(nil, 0, xVec))
+		R1 = mat.DenseCopyOf(af.R)
+		R1.Scale(aux2, R1)
+		//R1.Product(aux1.T(), xVec.T())
+		aux4.Mul(xVec, af.R)
+		R2 = af.mu + mat.Dot(aux4.RowView(0), mat.DenseCopyOf(xVec.T()).ColView(0))
 		//for j:=0;j<af.n;j++{
 		//	floats.AddConst(af.R.RawRowView(j))
 		//}
 		R1.Scale(1/R2, R1)
-		aux2.Sub(af.R, R1)
-		af.R.Scale(1/af.mu, aux2)
+		aux3.Sub(af.R, R1)
+		af.R.Scale(1/af.mu, aux3)
 		dwT.Mul(af.R, xVec.T())
 		dwT.Scale(e[i], dwT)
 		floats.Add(w, mat.Col(nil, 0, dwT))
