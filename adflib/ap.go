@@ -115,6 +115,7 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 	xCol := make([]float64, xr)
 	dr, _ := af.dMem.Dims()
 	dCol := make([]float64, dr)
+
 	//adaptation loop
 	for i := 0; i < N; i++ {
 		//af.wHistory[i] = af.w
@@ -132,6 +133,7 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 		af.dMem.Set(0, 0, d[i])
 
 		// estimate output and error
+		// same as af.yMem.Mul(af.xMem, af.w.T()).T()
 		af.yMem.Mul(af.w, af.xMem.T())
 		af.eMem.Sub(af.dMem, af.yMem)
 		y[i] = af.yMem.At(0, 0)
