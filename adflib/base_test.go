@@ -2,6 +2,7 @@ package adflib
 
 import (
 	"gonum.org/v1/gonum/mat"
+	"log"
 	"math/rand"
 	"reflect"
 	"testing"
@@ -11,54 +12,11 @@ func init() {
 	rand.Seed(1)
 }
 
-func NewRandSlice(n int) []float64 {
-	rs := make([]float64, n)
-	for i := 0; i < n; i++ {
-		rs[i] = rand.Float64()
-	}
-	return rs
-}
-
-func NewNormRandSlice(n int) []float64 {
-	rs := make([]float64, n)
-	for i := 0; i < n; i++ {
-		rs[i] = rand.NormFloat64()
-	}
-	return rs
-}
-
-// NewRand2dSlice make 2d slice.
-// the arg n is sample number and m is number of signals.
-func NewRand2dSlice(n, m int) [][]float64 {
-	rs2 := make([][]float64, m)
-	for j := 0; j < m; j++ {
-		rs2[j] = NewRandSlice(n)
-	}
-	return rs2
-}
-
-// NewRandNorm2dSlice make 2d slice.
-// the arg n is sample number and m is number of signals.
-func NewNormRand2dSlice(n, m int) [][]float64 {
-	rs2 := make([][]float64, m)
-	for j := 0; j < m; j++ {
-		rs2[j] = NewNormRandSlice(n)
-	}
-	return rs2
-}
-
-func Unset(s []float64, i int) []float64 {
-	if i >= len(s) {
-		return s
-	}
-	return append(s[:i], s[i+1:]...)
-}
-
 func TestAdaptiveFilter_CheckFloatParam(t *testing.T) {
 	type fields struct {
-		w  *mat.Dense
 		n  int
 		mu float64
+		w  interface{}
 	}
 	type args struct {
 		p    float64
@@ -73,15 +31,50 @@ func TestAdaptiveFilter_CheckFloatParam(t *testing.T) {
 		want    float64
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "valid",
+			fields: fields{
+				n:  1,
+				mu: 1.0,
+				w:  nil,
+			},
+			args: args{
+				p:    1.5,
+				low:  0,
+				high: 1000,
+				name: "mu",
+			},
+			want:    1.5,
+			wantErr: false,
+		},
+		{
+			name: "invalid",
+			fields: fields{
+				n:  1,
+				mu: 1.0,
+				w:  nil,
+			},
+			args: args{
+				p:    1.5,
+				low:  0,
+				high: 1,
+				name: "mu",
+			},
+			want:    0,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			af := &AdaptiveFilter{
-				w:  tt.fields.w,
 				n:  tt.fields.n,
 				mu: tt.fields.mu,
+				//w:  tt.fields.w,
 			}
+			//af, err := newAdaptiveFilter(tt.fields.n, tt.fields.mu, tt.fields.w)
+			//if err != nil {
+			//	log.Fatalln(err)
+			//}
 			got, err := af.CheckFloatParam(tt.args.p, tt.args.low, tt.args.high, tt.args.name)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CheckFloatParam() error = %v, wantErr %v", err, tt.wantErr)
@@ -113,7 +106,38 @@ func TestAdaptiveFilter_CheckIntParam(t *testing.T) {
 		want    int
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "valid",
+			fields: fields{
+				n:  1,
+				mu: 1.0,
+				w:  nil,
+			},
+			args: args{
+				p:    1,
+				low:  0,
+				high: 1000,
+				name: "mu",
+			},
+			want:    1,
+			wantErr: false,
+		},
+		{
+			name: "invalid",
+			fields: fields{
+				n:  1,
+				mu: 1.0,
+				w:  nil,
+			},
+			args: args{
+				p:    2,
+				low:  0,
+				high: 1,
+				name: "mu",
+			},
+			want:    0,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -134,11 +158,57 @@ func TestAdaptiveFilter_CheckIntParam(t *testing.T) {
 	}
 }
 
-func TestAdaptiveFilter_ExploreLearning(t *testing.T) {
+
+func TestMust(t *testing.T) {
+	type args struct {
+		adf ADFInterface
+		err error
+	}
+	tests := []struct {
+		name string
+		args args
+		want ADFInterface
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Must(tt.args.adf, tt.args.err); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Must() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+
+func TestExploreLearning(t *testing.T) {
+	rand.Seed(1)
+	//creation of data
+	//number of samples
+	n := 64
+	L := 4
+	//input value
+	var x = make([][]float64, n)
+	//noise
+	var v = make([]float64, n)
+	//desired value
+	var d = make([]float64, n)
+	var xRow = make([]float64, L)
+	for i := 0; i < n; i++ {
+		xRow = Unset(xRow, 0)
+		xRow = append(xRow, rand.NormFloat64())
+		x[i] = xRow
+		v[i] = rand.NormFloat64() * 0.1
+		d[i] = x[i][0]
+	}
+	//targetW := NewRandSlice(L)
+	//targetW := nil
+	//t.Log(targetW)
+
 	type fields struct {
-		w  *mat.Dense
 		n  int
 		mu float64
+		w  interface{}
 	}
 	type args struct {
 		d        []float64
@@ -156,24 +226,54 @@ func TestAdaptiveFilter_ExploreLearning(t *testing.T) {
 		fields  fields
 		args    args
 		want    []float64
+		want1   []float64
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "random",
+			fields: fields{
+				n:  L,
+				mu: 1.0,
+				w:  "random",
+			},
+			args: args{
+				d:        d,
+				x:        x,
+				muStart:  0.000001,
+				muEnd:    1.0,
+				steps:    100,
+				nTrain:   0.5,
+				epochs:   1,
+				criteria: "MSE",
+				targetW:  nil,
+			},
+			want: []float64{0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666, 0.7203269776822666},
+			//want1:   []float64{1e-06, 0.010101999999999998, 0.020203, 0.030303999999999998, 0.040404999999999996, 0.050505999999999995, 0.060606999999999994, 0.070708, 0.08080899999999999, 0.09090999999999999, 0.10101099999999999, 0.11111199999999999, 0.12121299999999999, 0.131314, 0.14141499999999999, 0.15151599999999998, 0.16161699999999998, 0.17171799999999998, 0.18181899999999998, 0.19191999999999998, 0.20202099999999998, 0.21212199999999998, 0.22222299999999998, 0.23232399999999997, 0.24242499999999997, 0.252526, 0.26262699999999994, 0.2727279999999999, 0.28282899999999994, 0.29292999999999997, 0.30303099999999994, 0.3131319999999999, 0.32323299999999994, 0.33333399999999996, 0.34343499999999993, 0.3535359999999999, 0.36363699999999993, 0.37373799999999996, 0.38383899999999993, 0.3939399999999999, 0.40404099999999993, 0.41414199999999995, 0.4242429999999999, 0.4343439999999999, 0.4444449999999999, 0.45454599999999995, 0.4646469999999999, 0.4747479999999999, 0.4848489999999999, 0.49494999999999995, 0.505051, 0.5151519999999999, 0.525253, 0.535354, 0.5454549999999999, 0.5555559999999999, 0.565657, 0.575758, 0.585859, 0.5959599999999999, 0.606061, 0.616162, 0.6262629999999999, 0.6363639999999999, 0.646465, 0.656566, 0.666667, 0.6767679999999999, 0.686869, 0.69697, 0.7070709999999999, 0.7171719999999999, 0.727273, 0.737374, 0.747475, 0.7575759999999999, 0.7676769999999999, 0.777778, 0.7878789999999999, 0.7979799999999999, 0.8080809999999999, 0.818182, 0.828283, 0.8383839999999999, 0.8484849999999999, 0.858586, 0.8686869999999999, 0.8787879999999999, 0.8888889999999999, 0.89899, 0.909091, 0.9191919999999999, 0.9292929999999999, 0.939394, 0.9494949999999999, 0.9595959999999999, 0.9696969999999999, 0.979798, 0.989899, 0.9999999999999999},
+			want1:   []float64{1e-06, 0.010101999999999998, 0.020203, 0.030303999999999998, 0.040404999999999996, 0.050505999999999995, 0.060606999999999994, 0.070708, 0.08080899999999999, 0.09090999999999999, 0.10101099999999999, 0.11111199999999999, 0.12121299999999999, 0.131314, 0.14141499999999999, 0.15151599999999998, 0.16161699999999998, 0.17171799999999998, 0.18181899999999998, 0.19191999999999998, 0.20202099999999998, 0.21212199999999998, 0.22222299999999998, 0.23232399999999997, 0.24242499999999997, 0.252526, 0.26262699999999994, 0.2727279999999999, 0.28282899999999994, 0.29292999999999997, 0.30303099999999994, 0.3131319999999999, 0.32323299999999994, 0.33333399999999996, 0.34343499999999993, 0.3535359999999999, 0.36363699999999993, 0.37373799999999996, 0.38383899999999993, 0.3939399999999999, 0.40404099999999993, 0.41414199999999995, 0.4242429999999999, 0.4343439999999999, 0.4444449999999999, 0.45454599999999995, 0.4646469999999999, 0.4747479999999999, 0.4848489999999999, 0.49494999999999995, 0.505051, 0.5151519999999999, 0.525253, 0.535354, 0.5454549999999999, 0.5555559999999999, 0.565657, 0.575758, 0.585859, 0.5959599999999999, 0.606061, 0.616162, 0.6262629999999999, 0.6363639999999999, 0.646465, 0.656566, 0.666667, 0.6767679999999999, 0.686869, 0.69697, 0.7070709999999999, 0.7171719999999999, 0.727273, 0.737374, 0.747475, 0.7575759999999999, 0.7676769999999999, 0.777778, 0.7878789999999999, 0.7979799999999999, 0.8080809999999999, 0.818182, 0.828283, 0.8383839999999999, 0.8484849999999999, 0.858586, 0.8686869999999999, 0.8787879999999999, 0.8888889999999999, 0.89899, 0.909091, 0.9191919999999999, 0.9292929999999999, 0.939394, 0.9494949999999999, 0.9595959999999999, 0.9696969999999999, 0.979798, 0.989899, 0.9999999999999999},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			af := &AdaptiveFilter{
-				w:  tt.fields.w,
-				n:  tt.fields.n,
-				mu: tt.fields.mu,
+			//af := &AdaptiveFilter{
+			//	w:  tt.fields.w,
+			//	n:  tt.fields.n,
+			//	mu: tt.fields.mu,
+			//}
+			af, err := newAdaptiveFilter(tt.fields.n, tt.fields.mu, tt.fields.w)
+			if err != nil {
+				log.Fatalln(err)
 			}
-			got, err := af.ExploreLearning(tt.args.d, tt.args.x, tt.args.muStart, tt.args.muEnd, tt.args.steps, tt.args.nTrain, tt.args.epochs, tt.args.criteria, tt.args.targetW)
+			got, got1, err := ExploreLearning(af, tt.args.d, tt.args.x, tt.args.muStart, tt.args.muEnd, tt.args.steps, tt.args.nTrain, tt.args.epochs, tt.args.criteria, tt.args.targetW)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ExploreLearning() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ExploreLearning() got = %v, want %v", got, tt.want)
+			}
+			if !reflect.DeepEqual(got1, tt.want1) {
+				t.Errorf("ExploreLearning() got1 = %v, want %v", got1, tt.want1)
 			}
 		})
 	}
@@ -211,7 +311,7 @@ func TestAdaptiveFilter_InitWeights(t *testing.T) {
 	}
 }
 
-func TestAdaptiveFilter_PreTrainedRun(t *testing.T) {
+func TestPreTrainedRun(t *testing.T) {
 	type fields struct {
 		w  *mat.Dense
 		n  int
@@ -241,7 +341,7 @@ func TestAdaptiveFilter_PreTrainedRun(t *testing.T) {
 				n:  tt.fields.n,
 				mu: tt.fields.mu,
 			}
-			gotY, gotE, gotW, err := af.PreTrainedRun(tt.args.d, tt.args.x, tt.args.nTrain, tt.args.epochs)
+			gotY, gotE, gotW, err := PreTrainedRun(af, tt.args.d, tt.args.x, tt.args.nTrain, tt.args.epochs)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PreTrainedRun() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -331,80 +431,6 @@ func TestAdaptiveFilter_Run(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got2, tt.want2) {
 				t.Errorf("Run() got2 = %v, want %v", got2, tt.want2)
-			}
-		})
-	}
-}
-
-func TestLinSpace(t *testing.T) {
-	{
-		type args struct {
-			start float64
-			end   float64
-			n     int
-		}
-		tests := []struct {
-			name string
-			args args
-			want []float64
-		}{
-			{
-				args: args{start: 0, end: 10, n: 21},
-				want: []float64{0., 0.5, 1., 1.5, 2., 2.5, 3., 3.5, 4., 4.5, 5.,
-					5.5, 6., 6.5, 7., 7.5, 8., 8.5, 9., 9.5, 10.},
-			},
-		}
-		for _, tt := range tests {
-			t.Run(tt.name, func(t *testing.T) {
-				if got := LinSpace(tt.args.start, tt.args.end, tt.args.n); !reflect.DeepEqual(got, tt.want) {
-					t.Errorf("LinSpace() = %v, want %v", got, tt.want)
-				}
-			})
-		}
-	}
-}
-
-func TestMust(t *testing.T) {
-	type args struct {
-		adf ADFInterface
-		err error
-	}
-	tests := []struct {
-		name string
-		args args
-		want ADFInterface
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := Must(tt.args.adf, tt.args.err); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Must() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-
-func TestNewRandn(t *testing.T) {
-	type args struct {
-		stddev float64
-		mean   float64
-	}
-	tests := []struct {
-		name string
-		args args
-		want float64
-	}{
-		{
-			args: args{stddev: 0.5, mean: 0},
-			want: -0.6168790887989735,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewRandn(tt.args.stddev, tt.args.mean); got != tt.want {
-				t.Errorf("NewRandn() = %v, want %v", got, tt.want)
 			}
 		})
 	}

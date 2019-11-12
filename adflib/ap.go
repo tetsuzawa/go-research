@@ -53,7 +53,7 @@ func NewFiltAP(n int, mu float64, order int, eps float64, w interface{}) (ADFInt
 		diaMat[i*(order+1)] = 1
 	}
 	p.ide = mat.NewDense(order, order, diaMat)
-	p.wHistory = mat.NewDense(n, order, nil)
+	//p.wHistory = mat.NewDense(len(x), order, nil)
 	p.yMem = mat.NewDense(1, order, nil)
 	p.eMem = mat.NewDense(1, order, nil)
 
@@ -99,12 +99,14 @@ func (af *FiltAP) Adapt(d float64, x []float64) {
 }
 
 func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error) {
+	//TODO
 	//measure the data and check if the dimension agree
 	N := len(x)
 	if len(d) != N {
 		return nil, nil, nil, errors.New("the length of slice d and x must agree")
 	}
 	af.n = len(x[0])
+	af.wHistory = mat.NewDense(N, af.n, nil)
 
 	y := make([]float64, N)
 	e := make([]float64, N)
@@ -113,6 +115,7 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 	xCol := make([]float64, xr)
 	dr, _ := af.dMem.Dims()
 	dCol := make([]float64, dr)
+
 	//adaptation loop
 	for i := 0; i < N; i++ {
 		//af.wHistory[i] = af.w
@@ -130,6 +133,7 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 		af.dMem.Set(0, 0, d[i])
 
 		// estimate output and error
+		// same as af.yMem.Mul(af.xMem, af.w.T()).T()
 		af.yMem.Mul(af.w, af.xMem.T())
 		af.eMem.Sub(af.dMem, af.yMem)
 		y[i] = af.yMem.At(0, 0)
@@ -146,12 +150,13 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 		}
 		dw3 := mat.NewDense(1, af.order, nil)
 		dw3.Mul(af.eMem, dw2)
-		dw := mat.NewDense(1, af.n, nil)
+		dw := mat.NewDense(af.n, 1, nil)
+		dw.Mul(af.xMem, dw3.T())
 		dw.Scale(af.mu, dw)
-		af.w.Add(af.w, dw)
+		af.w.Add(af.w, dw.T())
 	}
-	wHistory := make([][]float64, af.n)
-	for i := 0; i < af.n; i++ {
+	wHistory := make([][]float64, N)
+	for i := 0; i < N; i++ {
 		wHistory[i] = af.wHistory.RawRowView(i)
 	}
 	return y, e, wHistory, nil
