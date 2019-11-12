@@ -2,6 +2,7 @@ package adflib
 
 import (
 	"fmt"
+	"github.com/gonum/floats"
 	"math/rand"
 	"reflect"
 	"testing"
@@ -87,4 +88,45 @@ func TestFiltRLS_Run(t *testing.T) {
 			}
 		})
 	}
+}
+
+func ExampleExploreLearning_rls() {
+	rand.Seed(1)
+	//creation of data
+	//number of samples
+	n := 64
+	L := 4
+	mu := 1.0
+	eps := 0.001
+	//input value
+	var x = make([][]float64, n)
+	//noise
+	var v = make([]float64, n)
+	//desired value
+	var d = make([]float64, n)
+	var xRow = make([]float64, L)
+	for i := 0; i < n; i++ {
+		xRow = Unset(xRow, 0)
+		xRow = append(xRow, rand.NormFloat64())
+		x[i] = append([]float64{}, xRow...)
+		v[i] = rand.NormFloat64() * 0.1
+		d[i] = x[i][L-1]
+	}
+
+	af, err := NewFiltRLS(L, mu, eps, "random")
+	checkError(err)
+	es, mus, err := ExploreLearning(af, d, x, 0.001, 1.0, 100, 0.5, 100, "MSE", nil)
+	checkError(err)
+
+	res := make(map[float64]float64, len(es))
+	for i := 0; i < len(es); i++ {
+		res[es[i]] = mus[i]
+	}
+	//for i := 0; i < len(es); i++ {
+	//	fmt.Println(es[i], mus[i])
+	//}
+	eMin := floats.Min(es)
+	fmt.Printf("the step size mu with the smallest error is %.3f\n", res[eMin])
+	//output:
+	//the step size mu with the smallest error is 0.798
 }
