@@ -98,15 +98,15 @@ func (af *FiltAP) Adapt(d float64, x []float64) {
 	af.w.Add(af.w, dw)
 }
 
-
 func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error) {
+	//TODO
 	//measure the data and check if the dimension agree
 	N := len(x)
 	if len(d) != N {
 		return nil, nil, nil, errors.New("the length of slice d and x must agree")
 	}
 	af.n = len(x[0])
-	af.wHistory = mat.NewDense(N, af.order, nil)
+	af.wHistory = mat.NewDense(N, af.n, nil)
 
 	y := make([]float64, N)
 	e := make([]float64, N)
@@ -153,11 +153,9 @@ func (af *FiltAP) Run(d []float64, x [][]float64) ([]float64, []float64, [][]flo
 		dw.Scale(af.mu, dw)
 		af.w.Add(af.w, dw.T())
 	}
-	wHistory := make([][]float64, af.n)
-	for i := 0; i < af.n; i++ {
+	wHistory := make([][]float64, N)
+	for i := 0; i < N; i++ {
 		wHistory[i] = af.wHistory.RawRowView(i)
 	}
 	return y, e, wHistory, nil
 }
-
-
