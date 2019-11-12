@@ -221,18 +221,18 @@ func ExampleExploreLearning_ap() {
 
 	af, err := NewFiltAP(L, mu, order, eps, "random")
 	checkError(err)
-	es, mus, err := ExploreLearning(af, d, x, 0.00001, 1.0, 101, 0.5, 100, "MSE", nil)
+	es, mus, err := ExploreLearning(af, d, x, 0.001, 2.0, 100, 0.5, 100, "MSE", nil)
 	checkError(err)
 
 	res := make(map[float64]float64, len(es))
 	for i := 0; i < len(es); i++ {
 		res[es[i]] = mus[i]
 	}
-	for i := 0; i < len(es); i++ {
-		fmt.Println(es[i], mus[i])
-	}
+	//for i := 0; i < len(es); i++ {
+	//	fmt.Println(es[i], mus[i])
+	//}
 	eMin := floats.Min(es)
 	fmt.Printf("the step size mu with the smallest error is %.3f\n", res[eMin])
 	//output:
-	//the step size mu with the smallest error is 1.313
+	//the step size mu with the smallest error is 0.001
 }
