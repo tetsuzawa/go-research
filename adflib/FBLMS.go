@@ -1,19 +1,18 @@
 package adflib
 
 import (
-	"github.com/gonum/floats"
 	"github.com/mjibson/go-dsp/fft"
 	"github.com/pkg/errors"
 	"github.com/tetsuzawa/converter"
+	"gonum.org/v1/gonum/mat"
 	"math/cmplx"
 )
 
 type FiltFBLMS struct {
 	AdaptiveFilter
-	w        []float64
 	kind     string
 	wHistory [][]float64
-	xMem     []float64
+	xMem     *mat.Dense
 }
 
 func NewFiltFBLMS(n int, mu float64, w interface{}) (FDADFInterface, error) {
@@ -29,26 +28,28 @@ func NewFiltFBLMS(n int, mu float64, w interface{}) (FDADFInterface, error) {
 	if err != nil {
 		return nil, err
 	}
-	p.xMem = make([]float64, 2*n)
+	p.xMem = mat.NewDense(1, 2*n, make([]float64, 2*n))
 	return p, nil
 }
 
-func (af *FiltFBLMS) Adapt(d float64, x []float64) {
+func (af *FiltFBLMS) Adapt(d []float64, x []float64) {
 	zeros := make([]float64, af.n)
 	Y := make([]complex128, 2*af.n)
 	y := make([]float64, af.n)
 	e := make([]float64, af.n)
 	EU := make([]complex128, 2*af.n)
 
-	W := fft.FFT(converter.Float64sToComplex128s(append(af.w[:af.n], zeros...)))
-	U := fft.FFT(converter.Float64sToComplex128s(append(af.xMem, x...)))
+	w := af.w.RawRowView(0)
+	// 1 compute the output of the filter for the block kM, ..., KM + M -1
+	W := fft.FFT(converter.Float64sToComplex128s(append(w[:af.n], zeros...)))
+	U := fft.FFT(converter.Float64sToComplex128s(append(af.xMem.RawRowView(0), x...)))
 	for i := 0; i < 2*af.n; i++ {
 		Y[i] = W[i] * U[i]
 	}
 	yc := fft.IFFT(Y)[af.n:]
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 2*af.n; i++ {
 		y[i] = real(yc[i])
-		e[i] = x[i] - y[i]
+		e[i] = d[i] - y[i]
 	}
 
 	// 2 compute the correlation vector
@@ -60,35 +61,35 @@ func (af *FiltFBLMS) Adapt(d float64, x []float64) {
 	phi := fft.IFFT(EU)[:af.n]
 
 	// 3 update the parameters of the filter
-	aux1 = fft.FFT(converter.Float64sToComplex128s(append(af.w[:af.n], zeros...)))
+	aux1 = fft.FFT(converter.Float64sToComplex128s(append(w[:af.n], zeros...)))
 	aux2 = fft.FFT(append(phi, converter.Float64sToComplex128s(zeros)...))
 	for i := 0; i < 2*af.n; i++ {
 		W[i] = aux1[i] + complex(af.mu, 0)*aux2[i]
 	}
 	aux3 := fft.IFFT(W)
 	for i := 0; i < 2*af.n; i++ {
-		af.w[i] = real(aux3[i])
+		w[i] = real(aux3[i])
 	}
-
 }
 
 func (af *FiltFBLMS) Predict(x []float64) (y []float64) {
 	zeros := make([]float64, af.n)
 	y = make([]float64, af.n)
 	Y := make([]complex128, 2*af.n)
-	W := fft.FFT(converter.Float64sToComplex128s(append(af.w[:af.n], zeros...)))
-	U := fft.FFT(converter.Float64sToComplex128s(append(af.xMem, x...)))
+	W := fft.FFT(converter.Float64sToComplex128s(append(af.w.RawRowView(0)[:af.n], zeros...)))
+	U := fft.FFT(converter.Float64sToComplex128s(append(af.xMem.RawRowView(0), x...)))
 	for i := 0; i < 2*af.n; i++ {
 		Y[i] = W[i] * U[i]
 	}
 	yc := fft.IFFT(Y)[af.n:]
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 2*af.n; i++ {
 		y[i] = real(yc[i])
 	}
 	return
 }
 
-func (af *FiltFBLMS) Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error) {
+//x: rows are samples sets, and columns are input values
+func (af *FiltFBLMS) Run(d [][]float64, x [][]float64) ([][]float64, [][]float64, [][]float64, error) {
 	//measure the data and check if the dimension agree
 	N := len(x)
 	if len(d) != N {
@@ -97,17 +98,48 @@ func (af *FiltFBLMS) Run(d []float64, x [][]float64) ([]float64, []float64, [][]
 	af.n = len(x[0])
 	af.wHistory = make([][]float64, N)
 
-	y := make([]float64, N)
-	e := make([]float64, N)
-	//adaptation loop
-	for i := 0; i < N; i++ {
+	zeros := make([]float64, af.n)
+	Y := make([]complex128, 2*af.n)
+	y := make([][]float64, af.n)
+	e := make([][]float64, af.n)
+	EU := make([]complex128, 2*af.n)
+
+	for k := 0; k < N; k++ {
 		w := af.w.RawRowView(0)
-		af.wHistory[i] = w
-		y[i] = floats.Dot(w, x[i])
-		e[i] = d[i] - y[i]
-		for j := 0; j < af.n; j++ {
-			w[j] = af.mu * e[i] * x[i][j]
+		af.wHistory[k] = w
+
+		// 1 compute the output of the filter for the block kM, ..., KM + M -1
+		W := fft.FFT(converter.Float64sToComplex128s(append(w[:af.n], zeros...)))
+		U := fft.FFT(converter.Float64sToComplex128s(append(af.xMem.RawRowView(0), x[k]...)))
+
+		for i := 0; i < 2*af.n; i++ {
+			Y[i] = W[i] * U[i]
+		}
+		yc := fft.IFFT(Y)[af.n:]
+		for i := 0; i < 2; i++ {
+			y[k][i] = real(yc[i])
+			e[k][i] = x[k][i] - y[k][i]
+		}
+
+		// 2 compute the correlation vector
+		aux1 := fft.FFT(converter.Float64sToComplex128s(append(zeros, e...)))
+		aux2 := fft.FFT(converter.Float64sToComplex128s(x[k]))
+		for i := 0; i < 2*af.n; i++ {
+			EU[i] = aux1[i] * cmplx.Conj(aux2[i])
+		}
+		phi := fft.IFFT(EU)[:af.n]
+
+		// 3 update the parameters of the filter
+		aux1 = fft.FFT(converter.Float64sToComplex128s(append(w[:af.n], zeros...)))
+		aux2 = fft.FFT(append(phi, converter.Float64sToComplex128s(zeros)...))
+		for i := 0; i < 2*af.n; i++ {
+			W[i] = aux1[i] + complex(af.mu, 0)*aux2[i]
+		}
+		aux3 := fft.IFFT(W)
+		for i := 0; i < 2*af.n; i++ {
+			w[i] = real(aux3[i])
 		}
 	}
+
 	return y, e, af.wHistory, nil
 }

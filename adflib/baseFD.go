@@ -10,15 +10,14 @@ package adflib
 import (
 	"fmt"
 	"github.com/pkg/errors"
-	"gonum.org/v1/gonum/floats"
 	"gonum.org/v1/gonum/mat"
 )
 
 type FDADFInterface interface {
 	InitWeights(w interface{}, n int) error
 	Predict(x []float64) (y []float64)
-	Adapt(d float64, x []float64)
-	Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error)
+	Adapt(d []float64, x []float64)
+	Run(d [][]float64, x [][]float64) ([][]float64, [][]float64, [][]float64, error)
 	CheckFloatParam(p, low, high float64, name string) (float64, error)
 	CheckIntParam(p, low, high int, name string) (int, error)
 	SetMu(mu float64)
@@ -33,6 +32,20 @@ type FDAdaptiveFilter struct {
 	mu float64
 }
 
+func newFDAdaptiveFilter(n int, mu float64, w interface{}) (FDADFInterface, error) {
+	var err error
+	p := new(FDAdaptiveFilter)
+	p.n = n
+	p.mu, err = p.CheckFloatParam(mu, 0, 1000, "mu")
+	if err != nil {
+		return nil, err
+	}
+	err = p.InitWeights(w, n)
+	if err != nil {
+		return nil, err
+	}
+	return p, nil
+}
 
 func (af *FDAdaptiveFilter) GetParams() (int, float64, []float64) {
 	return af.n, af.mu, af.w.RawRowView(0)
@@ -75,38 +88,23 @@ func (af *FDAdaptiveFilter) InitWeights(w interface{}, n int) error {
 }
 
 //Predict calculates the new output value `y` from input array `x`.
-func (af *FDAdaptiveFilter) Predict(x []float64) (y float64) {
-	y = floats.Dot(af.w.RawRowView(0), x)
-	return y
+func (af *FDAdaptiveFilter) Predict(x []float64) (y []float64) {
+	//TODO
+	//y = floats.Dot(af.w.RawRowView(0), x)
+	//return y
+	copy(y, x)
+	return
 }
 
 //Override to use this func.
-func (af *FDAdaptiveFilter) Adapt(d float64, x []float64) {
+func (af *FDAdaptiveFilter) Adapt(d []float64, x []float64) {
 	//TODO
 }
 
 //Override to use this func.
-func (af *FDAdaptiveFilter) Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error) {
+func (af *FDAdaptiveFilter) Run(d [][]float64, x [][]float64) ([][]float64, [][]float64, [][]float64, error) {
 	//TODO
-	//measure the data and check if the dimension agree
-	N := len(x)
-	if len(d) != N {
-		return nil, nil, nil, errors.New("the length of slice d and x must agree")
-	}
-	af.n = len(x[0])
-
-	y := make([]float64, N)
-	e := make([]float64, N)
-	w := make([]float64, af.n)
-	ws := make([][]float64, N)
-	//adaptation loop
-	for i := 0; i < N; i++ {
-		w = af.w.RawRowView(0)
-		y[i] = floats.Dot(w, x[i])
-		e[i] = d[i] - y[i]
-		ws[i] = w
-	}
-	return y, e, ws, nil
+	return nil, nil, nil, nil
 }
 
 //CheckFloatParam check if the value of the given parameter
