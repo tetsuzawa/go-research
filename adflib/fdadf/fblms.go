@@ -42,20 +42,21 @@ func (af *FiltFBLMS) Adapt(d []float64, x []float64) {
 	w := af.w.RawRowView(0)
 	// 1 compute the output of the filter for the block kM, ..., KM + M -1
 	W := fft.FFT(converter.Float64sToComplex128s(append(w[:af.n], zeros...)))
-	U := fft.FFT(converter.Float64sToComplex128s(append(af.xMem.RawRowView(0), x...)))
+	xSet := append(af.xMem.RawRowView(0), x...)
+	U := fft.FFT(converter.Float64sToComplex128s(xSet))
 	af.xMem.SetRow(0, x)
 	for i := 0; i < 2*af.n; i++ {
 		Y[i] = W[i] * U[i]
 	}
 	yc := fft.IFFT(Y)[af.n:]
-	for i := 0; i < 2*af.n; i++ {
+	for i := 0; i < af.n; i++ {
 		y[i] = real(yc[i])
 		e[i] = d[i] - y[i]
 	}
 
 	// 2 compute the correlation vector
 	aux1 := fft.FFT(converter.Float64sToComplex128s(append(zeros, e...)))
-	aux2 := fft.FFT(converter.Float64sToComplex128s(x))
+	aux2 := fft.FFT(converter.Float64sToComplex128s(xSet))
 	for i := 0; i < 2*af.n; i++ {
 		EU[i] = aux1[i] * cmplx.Conj(aux2[i])
 	}
@@ -83,7 +84,7 @@ func (af *FiltFBLMS) Predict(x []float64) (y []float64) {
 		Y[i] = W[i] * U[i]
 	}
 	yc := fft.IFFT(Y)[af.n:]
-	for i := 0; i < 2*af.n; i++ {
+	for i := 0; i < af.n; i++ {
 		y[i] = real(yc[i])
 	}
 	return
