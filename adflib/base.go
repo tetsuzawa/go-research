@@ -31,6 +31,7 @@ type ADFInterface interface {
 	CheckFloatParam(p, low, high float64, name string) (float64, error)
 	CheckIntParam(p, low, high int, name string) (int, error)
 	SetMu(mu float64)
+	GetParams() (int, float64, []float64)
 }
 
 //AdaptiveFilter is base struct for adaptive filter structs
@@ -40,7 +41,6 @@ type AdaptiveFilter struct {
 	n  int
 	mu float64
 }
-
 
 func newAdaptiveFilter(n int, mu float64, w interface{}) (ADFInterface, error) {
 	var err error
@@ -132,6 +132,10 @@ func ExploreLearning(af ADFInterface, d []float64, x [][]float64, muStart, muEnd
 		}
 	}
 	return es, mus, nil
+}
+
+func (af *AdaptiveFilter) GetParams() (int, float64, []float64) {
+	return af.n, af.mu, af.w.RawRowView(0)
 }
 
 //InitWeights initialises the adaptive weights of the filter.

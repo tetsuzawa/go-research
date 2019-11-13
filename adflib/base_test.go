@@ -158,7 +158,6 @@ func TestAdaptiveFilter_CheckIntParam(t *testing.T) {
 	}
 }
 
-
 func TestMust(t *testing.T) {
 	type args struct {
 		adf ADFInterface
@@ -179,7 +178,6 @@ func TestMust(t *testing.T) {
 		})
 	}
 }
-
 
 func TestExploreLearning(t *testing.T) {
 	rand.Seed(1)
@@ -431,6 +429,48 @@ func TestAdaptiveFilter_Run(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got2, tt.want2) {
 				t.Errorf("Run() got2 = %v, want %v", got2, tt.want2)
+			}
+		})
+	}
+}
+
+func TestAdaptiveFilter_GetParams(t *testing.T) {
+	type fields struct {
+		n  int
+		mu float64
+		w  interface{}
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   int
+		want1  float64
+		want2  []float64
+	}{
+		{
+			name: "GetParams",
+			fields: fields{
+				n:  8,
+				mu: 1.0,
+				w:  "zeros",
+			},
+			want:  8,
+			want1: 1.0,
+			want2: []float64{0, 0, 0, 0, 0, 0, 0, 0},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			af, _ := newAdaptiveFilter(tt.fields.n, tt.fields.mu, tt.fields.w)
+			got, got1, got2 := af.GetParams()
+			if got != tt.want {
+				t.Errorf("GetParams() got = %v, want %v", got, tt.want)
+			}
+			if got1 != tt.want1 {
+				t.Errorf("GetParams() got1 = %v, want %v", got1, tt.want1)
+			}
+			if !reflect.DeepEqual(got2, tt.want2) {
+				t.Errorf("GetParams() got2 = %v, want %v", got2, tt.want2)
 			}
 		})
 	}
