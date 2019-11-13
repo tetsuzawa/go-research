@@ -78,7 +78,7 @@ func PreTrainedRun(af ADFInterface, d []float64, x [][]float64, nTrain float64, 
 	var nTrainI = int(float64(len(d)) * nTrain)
 	//train
 	for i := 0; i < epochs; i++ {
-		_, _, _, err = af.Run(d[:nTrainI], x[:][:nTrainI])
+		_, _, _, err = af.Run(d[:nTrainI], x[:nTrainI])
 		if err != nil {
 			return nil, nil, nil, err
 		}

@@ -145,4 +145,3 @@ func Unset(s []float64, i int) []float64 {
 	}
 	return append(s[:i], s[i+1:]...)
 }
-

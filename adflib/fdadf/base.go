@@ -9,8 +9,8 @@ package fdadf
 
 import (
 	"fmt"
+
 	"github.com/pkg/errors"
-	"github.com/tetsuzawa/go-research/adflib/adf"
 	"github.com/tetsuzawa/go-research/adflib/misc"
 	"gonum.org/v1/gonum/mat"
 )
@@ -64,11 +64,11 @@ func MustFDADF(af FDADFInterface, err error) FDADFInterface {
 //`epochs`: number of training epochs (int), default value is 1.
 //          This number describes how many times the training will be repeated
 //          on dedicated part of data.
-func PreTrainedRun(af FDADFInterface, d []float64, x [][]float64, nTrain float64, epochs int) (y, e []float64, w [][]float64, err error) {
+func PreTrainedRun(af FDADFInterface, d [][]float64, x [][]float64, nTrain float64, epochs int) (y, e [][]float64, w [][]float64, err error) {
 	var nTrainI = int(float64(len(d)) * nTrain)
 	//train
 	for i := 0; i < epochs; i++ {
-		_, _, _, err = af.Run(d[:nTrainI], x[:][:nTrainI])
+		_, _, _, err = af.Run(d[:nTrainI], x[:nTrainI])
 		if err != nil {
 			return nil, nil, nil, err
 		}
@@ -100,14 +100,16 @@ func PreTrainedRun(af FDADFInterface, d []float64, x [][]float64, nTrain float64
 //				 If False, the mean error is estimated from prediction error.
 //				 If an array is provided, the error between weights and `target_w`
 //				 is used.
-func ExploreLearning(af adf.ADFInterface, d []float64, x [][]float64, muStart, muEnd float64, steps int,
+func ExploreLearning(af FDADFInterface, d [][]float64, x [][]float64, muStart, muEnd float64, steps int,
 	nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, []float64, error) {
 	mus := misc.LinSpace(muStart, muEnd, steps)
 	es := make([]float64, len(mus))
 	zeros := make([]float64, int(float64(len(x))*nTrain))
+	ee := make([]float64, int(float64(len(x))*nTrain))
+	_, _, w := af.GetParams()
 	for i, mu := range mus {
 		//init
-		err := af.InitWeights("zeros", len(x[0]))
+		err := af.InitWeights("zeros", len(w))
 		if err != nil {
 			return nil, nil, errors.Wrap(err, "failed to init weights at InitWights()")
 		}
@@ -117,7 +119,13 @@ func ExploreLearning(af adf.ADFInterface, d []float64, x [][]float64, muStart, m
 		if err != nil {
 			return nil, nil, errors.Wrap(err, "failed to pre train at PreTrainedRun()")
 		}
-		es[i], err = misc.GetMeanError(e, zeros, criteria)
+		for i, sl := range e {
+			ee[i], err = misc.MSE(sl, make([]float64, len(sl)))
+		}
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "failed to find MSE of e at misc.MSE()")
+		}
+		es[i], err = misc.GetMeanError(ee, zeros, criteria)
 		//fmt.Println(es[i])
 		if err != nil {
 			return nil, nil, errors.Wrap(err, "failed to get mean error at GetMeanError()")

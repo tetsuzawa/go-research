@@ -98,6 +98,9 @@ func (af *FiltFBLMS) Run(d [][]float64, x [][]float64) ([][]float64, [][]float64
 	}
 	af.n = len(x[0])
 	af.wHistory = make([][]float64, N)
+	for i := range af.wHistory {
+		af.wHistory[i] = make([]float64, af.n)
+	}
 
 	zeros := make([]float64, af.n)
 	Y := make([]complex128, 2*af.n)
@@ -106,7 +109,7 @@ func (af *FiltFBLMS) Run(d [][]float64, x [][]float64) ([][]float64, [][]float64
 		y[i] = make([]float64, af.n)
 	}
 	e := make([][]float64, N)
-	for i := range y {
+	for i := range e {
 		e[i] = make([]float64, af.n)
 	}
 
@@ -114,7 +117,7 @@ func (af *FiltFBLMS) Run(d [][]float64, x [][]float64) ([][]float64, [][]float64
 
 	for k := 0; k < N; k++ {
 		w := af.w.RawRowView(0)
-		af.wHistory[k] = w
+		copy(af.wHistory[k], w)
 
 		// 1 compute the output of the filter for the block kM, ..., KM + M -1
 		W := fft.FFT(converter.Float64sToComplex128s(append(w[:af.n], zeros...)))
