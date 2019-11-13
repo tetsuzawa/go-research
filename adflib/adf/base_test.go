@@ -1,11 +1,13 @@
-package adflib
+package adf
 
 import (
-	"gonum.org/v1/gonum/mat"
 	"log"
 	"math/rand"
 	"reflect"
 	"testing"
+
+	"github.com/tetsuzawa/go-research/adflib/misc"
+	"gonum.org/v1/gonum/mat"
 )
 
 func init() {
@@ -193,7 +195,7 @@ func TestExploreLearning(t *testing.T) {
 	var d = make([]float64, n)
 	var xRow = make([]float64, L)
 	for i := 0; i < n; i++ {
-		xRow = Unset(xRow, 0)
+		xRow = misc.Unset(xRow, 0)
 		xRow = append(xRow, rand.NormFloat64())
 		x[i] = xRow
 		v[i] = rand.NormFloat64() * 0.1

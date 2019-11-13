@@ -1,7 +1,8 @@
-package adflib
+package adf
 
 import (
 	"errors"
+
 	"github.com/gonum/floats"
 )
 

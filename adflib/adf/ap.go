@@ -1,7 +1,8 @@
-package adflib
+package adf
 
 import (
 	"errors"
+
 	"gonum.org/v1/gonum/mat"
 )
 

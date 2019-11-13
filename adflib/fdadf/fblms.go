@@ -1,4 +1,4 @@
-package adflib
+package fdadf
 
 import (
 	"github.com/mjibson/go-dsp/fft"
@@ -9,7 +9,7 @@ import (
 )
 
 type FiltFBLMS struct {
-	AdaptiveFilter
+	FDAdaptiveFilter
 	kind     string
 	wHistory [][]float64
 	xMem     *mat.Dense

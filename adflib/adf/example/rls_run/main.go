@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/tetsuzawa/go-research/adflib"
+	"github.com/tetsuzawa/go-research/adflib/adf"
+	"github.com/tetsuzawa/go-research/adflib/misc"
 	"log"
 	"math/rand"
 	"os"
@@ -52,14 +53,14 @@ func run() {
 	var d = make([]float64, n)
 	var xRow = make([]float64, L)
 	for i := 0; i < n; i++ {
-		xRow = adflib.Unset(xRow, 0)
+		xRow = misc.Unset(xRow, 0)
 		xRow = append(xRow, rand.NormFloat64())
 		x[i] = append([]float64{}, xRow...)
 		v[i] = rand.NormFloat64() * 0.1
 		d[i] = x[i][0]
 	}
 
-	af := adflib.Must(adflib.NewFiltRLS(L, mu, 1e-5, "random"))
+	af := adf.Must(adf.NewFiltRLS(L, mu, 1e-5, "random"))
 
 	y, e, _, err := af.Run(d, x)
 	check(err)

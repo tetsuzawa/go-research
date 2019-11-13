@@ -1,6 +1,10 @@
-package adflib
+package fdadf
 
 import (
+	"fmt"
+	"github.com/tetsuzawa/go-research/adflib/adf"
+	"github.com/tetsuzawa/go-research/adflib/misc"
+	"gonum.org/v1/gonum/floats"
 	"math/rand"
 	"reflect"
 	"testing"
@@ -20,7 +24,7 @@ func TestFiltFBLMS_Run(t *testing.T) {
 	var xRow = make([]float64, L)
 	for i := 0; i < m; i++ {
 		for j := 0; j < L; j++ {
-			xRow = Unset(xRow, 0)
+			xRow = misc.Unset(xRow, 0)
 			xRow = append(xRow, rand.NormFloat64())
 		}
 		x[i] = append([]float64{}, xRow...)
@@ -48,7 +52,7 @@ func TestFiltFBLMS_Run(t *testing.T) {
 			name: "FBLMS Run",
 			fields: fields{
 				n:  L,
-				mu: 1.0,
+				mu: 0.0000000001,
 				w:  "zeros",
 			},
 			args: args{
@@ -82,30 +86,40 @@ func TestFiltFBLMS_Run(t *testing.T) {
 	}
 }
 
-func TestNewFiltFBLMS(t *testing.T) {
-	type args struct {
-		n  int
-		mu float64
-		w  interface{}
+func ExampleExploreLearning_fblms() {
+	rand.Seed(1)
+	//creation of data
+	//number of samples
+	n := 512
+	L := 32
+	m := n / L
+	mu := 0.0000001
+
+	//input value
+	var x = make([][]float64, m)
+	//desired value
+	var d = make([][]float64, m)
+	var xRow = make([]float64, L)
+	for i := 0; i < m; i++ {
+		for j := 0; j < L; j++ {
+			xRow = misc.Unset(xRow, 0)
+			xRow = append(xRow, rand.NormFloat64())
+		}
+		x[i] = append([]float64{}, xRow...)
+		copy(d[i], x[i])
 	}
-	tests := []struct {
-		name    string
-		args    args
-		want    FDADFInterface
-		wantErr bool
-	}{
-		// TODO: Add test cases.
+
+	af, err := NewFiltFBLMS(L, mu, "zeros")
+	check(err)
+	es, mus, err := ExploreLearning(af, d, x, 0.00001, 2.0, 100, 0.5, 100, "MSE", nil)
+	check(err)
+
+	res := make(map[float64]float64, len(es))
+	for i := 0; i < len(es); i++ {
+		res[es[i]] = mus[i]
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewFiltFBLMS(tt.args.n, tt.args.mu, tt.args.w)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("NewFiltFBLMS() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewFiltFBLMS() got = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	eMin := floats.Min(es)
+	fmt.Printf("the step size mu with the smallest error is %.3f\n", res[eMin])
+	//output:
+	//the step size mu with the smallest error is 1.313
 }

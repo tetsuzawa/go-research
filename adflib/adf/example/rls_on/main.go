@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/tetsuzawa/go-research/adflib"
+	"github.com/tetsuzawa/go-research/adflib/adf"
 	"log"
 	"math/rand"
 	"os"
@@ -21,9 +21,11 @@ func unset(s []float64, i int) []float64 {
 
 const (
 	//step size of filter
-	mu = 0.1
+	mu = 0.01
 	//length of filter
 	L = 8
+	//eps
+	eps = 0.001
 )
 
 func main() {
@@ -44,7 +46,7 @@ func main() {
 	var yBuf = make([]float64, 0)
 	var eBuf = make([]float64, 0)
 
-	f, err := adflib.NewFiltLMS(L, mu, "zeros")
+	f, err := adf.NewFiltRLS(L, mu, eps, "zeros")
 	//identification
 	if err != nil {
 		log.Fatalln(err)
@@ -57,23 +59,21 @@ func main() {
 		d = x[L-1] + v
 		f.Adapt(d, x)
 		y = f.Predict(x)
-		e = d-y
+		e = d - y
 		dBuf = append(dBuf, d)
 		yBuf = append(yBuf, y)
 		eBuf = append(eBuf, e)
 	}
 
-
-
-	name := fmt.Sprintf("lms_ex_on_mu-%v_L-%v.csv", mu, L)
+	name := fmt.Sprintf("rls_ex_on_mu-%v_L-%v.csv", mu, L)
 	fw, err := os.Create(name)
-	if err != nil{
+	if err != nil {
 		log.Fatalln(err)
 	}
 	defer fw.Close()
-	for i:=0; i<n; i++ {
+	for i := 0; i < n; i++ {
 		_, err = fw.Write([]byte(fmt.Sprintf("%f,%f,%f\n", dBuf[i], yBuf[i], eBuf[i])))
-		if err != nil{
+		if err != nil {
 			log.Fatalln(err)
 		}
 	}

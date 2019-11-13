@@ -1,4 +1,4 @@
-package adflib
+package misc
 
 import (
 	"math/rand"

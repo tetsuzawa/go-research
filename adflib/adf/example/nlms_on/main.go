@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/gonum/floats"
-	"github.com/tetsuzawa/go-research/adflib"
+	"github.com/tetsuzawa/go-research/adflib/adf"
+	"github.com/tetsuzawa/go-research/adflib/misc"
 	"log"
 	"math/rand"
 	"os"
@@ -51,7 +52,7 @@ func m() {
 	var yBuf = make([]float64, 0)
 	var eBuf = make([]float64, 0)
 
-	f, err := adflib.NewFiltNLMS(L, mu, eps, "zeros")
+	f, err := adf.NewFiltNLMS(L, mu, eps, "zeros")
 	//identification
 	if err != nil {
 		log.Fatalln(err)
@@ -100,16 +101,16 @@ func ExploreLearning_nlms() {
 	var d = make([]float64, n)
 	var xRow = make([]float64, L)
 	for i := 0; i < n; i++ {
-		xRow = adflib.Unset(xRow, 0)
+		xRow = misc.Unset(xRow, 0)
 		xRow = append(xRow, rand.NormFloat64())
 		x[i] = append([]float64{}, xRow...)
 		v[i] = rand.NormFloat64() * 0.1
 		d[i] = x[i][L-1]
 	}
 
-	af, err := adflib.NewFiltNLMS(L, mu, eps, "zeros")
+	af, err := adf.NewFiltNLMS(L, mu, eps, "zeros")
 	checkError(err)
-	es, mus, err := adflib.ExploreLearning(af, d, x, 0.00001, 2.0, 100, 0.5, 100, "MSE", nil)
+	es, mus, err := adf.ExploreLearning(af, d, x, 0.00001, 2.0, 100, 0.5, 100, "MSE", nil)
 	checkError(err)
 	res := make(map[float64]float64, len(es))
 	for i:=0;i<len(es);i++{

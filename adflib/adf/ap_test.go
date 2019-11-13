@@ -1,11 +1,13 @@
-package adflib
+package adf
 
 import (
 	"fmt"
-	"github.com/gonum/floats"
 	"math/rand"
 	"reflect"
 	"testing"
+
+	"github.com/gonum/floats"
+	"github.com/tetsuzawa/go-research/adflib/misc"
 )
 
 /*
@@ -68,7 +70,7 @@ func TestFiltAP_Run(t *testing.T) {
 	var d = make([]float64, n)
 	var xRow = make([]float64, L)
 	for i := 0; i < n; i++ {
-		xRow = Unset(xRow, 0)
+		xRow = misc.Unset(xRow, 0)
 		xRow = append(xRow, rand.NormFloat64())
 		x[i] = append([]float64{}, xRow...)
 		v[i] = rand.NormFloat64() * 0.1
@@ -212,7 +214,7 @@ func ExampleExploreLearning_ap() {
 	var d = make([]float64, n)
 	var xRow = make([]float64, L)
 	for i := 0; i < n; i++ {
-		xRow = Unset(xRow, 0)
+		xRow = misc.Unset(xRow, 0)
 		xRow = append(xRow, rand.NormFloat64())
 		x[i] = append([]float64{}, xRow...)
 		v[i] = rand.NormFloat64() * 0.1
@@ -220,9 +222,9 @@ func ExampleExploreLearning_ap() {
 	}
 
 	af, err := NewFiltAP(L, mu, order, eps, "random")
-	checkError(err)
+	check(err)
 	es, mus, err := ExploreLearning(af, d, x, 0.001, 2.0, 100, 0.5, 100, "MSE", nil)
-	checkError(err)
+	check(err)
 
 	res := make(map[float64]float64, len(es))
 	for i := 0; i < len(es); i++ {

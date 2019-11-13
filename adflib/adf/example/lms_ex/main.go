@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/tetsuzawa/go-research/adflib"
+	"github.com/tetsuzawa/go-research/adflib/adf"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
@@ -50,7 +50,7 @@ func main() {
 	}
 
 	//identification
-	f, err := adflib.NewFiltLMS(L, mu, "zeros")
+	f, err := adf.NewFiltLMS(L, mu, "zeros")
 	if err != nil {
 		log.Fatalln(err)
 	}

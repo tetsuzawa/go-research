@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/tetsuzawa/go-research/adflib"
+	"github.com/tetsuzawa/go-research/adflib/adf"
 	"log"
 	"math/rand"
 	"os"
@@ -48,7 +48,7 @@ func main() {
 	var yBuf = make([]float64, 0)
 	var eBuf = make([]float64, 0)
 
-	f, err := adflib.NewFiltAP(L, mu, order, eps, "zeros")
+	f, err := adf.NewFiltAP(L, mu, order, eps, "zeros")
 	//identification
 	if err != nil {
 		log.Fatalln(err)

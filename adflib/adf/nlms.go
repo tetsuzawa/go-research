@@ -1,4 +1,4 @@
-package adflib
+package adf
 
 import (
 	"errors"

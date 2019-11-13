@@ -1,9 +1,8 @@
-package adflib
+package misc
 
 import (
 	"errors"
 	"github.com/gonum/floats"
-	"log"
 	"math"
 	"math/rand"
 )
@@ -147,8 +146,3 @@ func Unset(s []float64, i int) []float64 {
 	return append(s[:i], s[i+1:]...)
 }
 
-func checkError(err error) {
-	if err != nil {
-		log.Fatalln(err)
-	}
-}
