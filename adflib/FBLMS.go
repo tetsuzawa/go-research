@@ -43,6 +43,7 @@ func (af *FiltFBLMS) Adapt(d []float64, x []float64) {
 	// 1 compute the output of the filter for the block kM, ..., KM + M -1
 	W := fft.FFT(converter.Float64sToComplex128s(append(w[:af.n], zeros...)))
 	U := fft.FFT(converter.Float64sToComplex128s(append(af.xMem.RawRowView(0), x...)))
+	af.xMem.SetRow(0, x)
 	for i := 0; i < 2*af.n; i++ {
 		Y[i] = W[i] * U[i]
 	}
@@ -111,6 +112,7 @@ func (af *FiltFBLMS) Run(d [][]float64, x [][]float64) ([][]float64, [][]float64
 		// 1 compute the output of the filter for the block kM, ..., KM + M -1
 		W := fft.FFT(converter.Float64sToComplex128s(append(w[:af.n], zeros...)))
 		U := fft.FFT(converter.Float64sToComplex128s(append(af.xMem.RawRowView(0), x[k]...)))
+		af.xMem.SetRow(0, x[k])
 
 		for i := 0; i < 2*af.n; i++ {
 			Y[i] = W[i] * U[i]
@@ -122,7 +124,7 @@ func (af *FiltFBLMS) Run(d [][]float64, x [][]float64) ([][]float64, [][]float64
 		}
 
 		// 2 compute the correlation vector
-		aux1 := fft.FFT(converter.Float64sToComplex128s(append(zeros, e...)))
+		aux1 := fft.FFT(converter.Float64sToComplex128s(append(zeros, e[k]...)))
 		aux2 := fft.FFT(converter.Float64sToComplex128s(x[k]))
 		for i := 0; i < 2*af.n; i++ {
 			EU[i] = aux1[i] * cmplx.Conj(aux2[i])
