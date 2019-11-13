@@ -101,8 +101,9 @@ func run() {
 }
 
 const (
-	mu  = 0.1
-	eps = 1e-5
+	mu    = 1
+	order = 8
+	eps   = 1e-5
 )
 
 var afBuf = make([]float64, FiltLen)
@@ -112,12 +113,16 @@ func callback(inBuf, outBuf []int16) {
 	//af, err := adflib.NewFiltNLMS(FiltLen, 1.0, 1e-5, "zeros")
 	//check(err)
 
+	var predict float64
+
 	for i := 0; i < FramesPerBuffer; i++ {
 		afBuf = adflib.Unset(afBuf, 0)
 		afBuf = append(afBuf, float64(inBuf[i]))
 		af.Adapt(float64(inBuf[i]), afBuf)
 		//outBuf[i] = inBuf[i] - int16(af.Predict(afBuf))
-		outBuf[i] = inBuf[i] - int16(0.8 * af.Predict(afBuf))
+		predict = af.Predict(afBuf)
+		outBuf[i] = inBuf[i] - int16(predict)
+		fmt.Println(outBuf[i], inBuf[i],float64(inBuf[i]), predict, 0.9*predict, int16(predict))
 	}
 	w1.WriteSamples(inBuf)
 	w2.WriteSamples(outBuf)
