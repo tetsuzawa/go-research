@@ -34,7 +34,7 @@ func fdaf(data []float64, mu float64, L int) []float64 {
 	// output buffer
 	var err_buf = make([]float64, 0)
 
-	var u = make([]float64, 2*L)
+	var x = make([]float64, 2*L)
 	var zeros = make([]float64, L)
 
 	var idx int
@@ -60,8 +60,8 @@ FDAF:
 				break FDAF
 			}
 
-			u = unset(u, 0)
-			u = append(u, in)
+			x = unset(x, 0)
+			x = append(x, in)
 
 			j++
 			idx++
@@ -69,19 +69,19 @@ FDAF:
 
 		// 1 compute the output of the filter for the block kM, ..., KM + M -1
 		W := fft.FFT(converter.Float64sToComplex128s(append(w[:L], zeros...)))
-		U := fft.FFT(converter.Float64sToComplex128s(u))
+		X := fft.FFT(converter.Float64sToComplex128s(x))
 		for i := 0; i < 2*L; i++ {
-			Y[i] = W[i] * U[i]
+			Y[i] = W[i] * X[i]
 		}
 		y_raw := fft.IFFT(Y)[L:]
 		for i := 0; i < L; i++ {
 			y[i] = real(y_raw[i])
-			e[i] = u[i] - y[i]
+			e[i] = x[i] - y[i]
 		}
 
 		// 2 compute the correlation vector
 		aux1 := fft.FFT(converter.Float64sToComplex128s(append(zeros, e...)))
-		aux2 := fft.FFT(converter.Float64sToComplex128s(u))
+		aux2 := fft.FFT(converter.Float64sToComplex128s(x))
 		for i := 0; i < 2*L; i++ {
 			EU[i] = aux1[i] * cmplx.Conj(aux2[i])
 		}
