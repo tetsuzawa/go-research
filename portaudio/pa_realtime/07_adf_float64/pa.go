@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"github.com/gordonklaus/portaudio"
 	"github.com/takuyaohashi/go-wav"
-	"github.com/tetsuzawa/go-research/adflib"
+	"github.com/tetsuzawa/go-research/adflib/adf"
+	"github.com/tetsuzawa/go-research/adflib/misc"
 	"log"
 	"os"
 	"time"
@@ -108,7 +109,7 @@ const (
 )
 
 var afBuf = make([]float64, FiltLen)
-var af, _ = adflib.NewFiltRLS(FiltLen, mu, eps, "zeros")
+var af, _ = adf.NewFiltRLS(FiltLen, mu, eps, "zeros")
 
 func callback(inBuf, outBuf []float32) {
 	//af, err := adflib.NewFiltNLMS(FiltLen, 1.0, 1e-5, "zeros")
@@ -118,7 +119,7 @@ func callback(inBuf, outBuf []float32) {
 	var predict float64
 
 	for i := 0; i < FramesPerBuffer; i++ {
-		afBuf = adflib.Unset(afBuf, 0)
+		afBuf = misc.Unset(afBuf, 0)
 		afBuf = append(afBuf, float64(inBuf[i]))
 		af.Adapt(float64(inBuf[i]), afBuf)
 		//outBuf[i] = inBuf[i] - int16(af.Predict(afBuf))
