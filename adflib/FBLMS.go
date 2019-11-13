@@ -28,7 +28,7 @@ func NewFiltFBLMS(n int, mu float64, w interface{}) (FDADFInterface, error) {
 	if err != nil {
 		return nil, err
 	}
-	p.xMem = mat.NewDense(1, 2*n, make([]float64, 2*n))
+	p.xMem = mat.NewDense(1, n, make([]float64, n))
 	return p, nil
 }
 
@@ -101,8 +101,15 @@ func (af *FiltFBLMS) Run(d [][]float64, x [][]float64) ([][]float64, [][]float64
 
 	zeros := make([]float64, af.n)
 	Y := make([]complex128, 2*af.n)
-	y := make([][]float64, af.n)
-	e := make([][]float64, af.n)
+	y := make([][]float64, N)
+	for i := range y {
+		y[i] = make([]float64, af.n)
+	}
+	e := make([][]float64, N)
+	for i := range y {
+		e[i] = make([]float64, af.n)
+	}
+
 	EU := make([]complex128, 2*af.n)
 
 	for k := 0; k < N; k++ {
@@ -111,21 +118,22 @@ func (af *FiltFBLMS) Run(d [][]float64, x [][]float64) ([][]float64, [][]float64
 
 		// 1 compute the output of the filter for the block kM, ..., KM + M -1
 		W := fft.FFT(converter.Float64sToComplex128s(append(w[:af.n], zeros...)))
-		U := fft.FFT(converter.Float64sToComplex128s(append(af.xMem.RawRowView(0), x[k]...)))
+		xSet := append(af.xMem.RawRowView(0), x[k]...)
+		U := fft.FFT(converter.Float64sToComplex128s(xSet))
 		af.xMem.SetRow(0, x[k])
 
 		for i := 0; i < 2*af.n; i++ {
 			Y[i] = W[i] * U[i]
 		}
 		yc := fft.IFFT(Y)[af.n:]
-		for i := 0; i < 2; i++ {
+		for i := 0; i < af.n; i++ {
 			y[k][i] = real(yc[i])
 			e[k][i] = x[k][i] - y[k][i]
 		}
 
 		// 2 compute the correlation vector
 		aux1 := fft.FFT(converter.Float64sToComplex128s(append(zeros, e[k]...)))
-		aux2 := fft.FFT(converter.Float64sToComplex128s(x[k]))
+		aux2 := fft.FFT(converter.Float64sToComplex128s(xSet))
 		for i := 0; i < 2*af.n; i++ {
 			EU[i] = aux1[i] * cmplx.Conj(aux2[i])
 		}
