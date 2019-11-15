@@ -95,7 +95,7 @@ func run() {
 	fmt.Println("recording...")
 	err = stream.Start()
 	check(err)
-	time.Sleep(10 * time.Second)
+	time.Sleep(20 * time.Second)
 	err = stream.Stop()
 	check(err)
 	fmt.Println("end!!")

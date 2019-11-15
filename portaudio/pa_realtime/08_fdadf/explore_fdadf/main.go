@@ -47,9 +47,9 @@ func main() {
 	for i := 0; i < len(es); i++ {
 		res[es[i]] = mus[i]
 	}
-	//for i := 0; i < len(es); i++ {
-	//	fmt.Println(es[i], mus[i])
-	//}
+	for i := 0; i < len(es); i++ {
+		fmt.Println(es[i], mus[i])
+	}
 	eMin := floats.Min(es)
 	fmt.Printf("the step size mu with the smallest error is %.3f\n", res[eMin])
 
