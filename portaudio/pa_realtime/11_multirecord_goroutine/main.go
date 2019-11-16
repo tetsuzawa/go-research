@@ -14,7 +14,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/gordonklaus/portaudio"
-	"github.com/takuyaohashi/go-wav"
+	"github.com/tetsuzawa/go-wav"
 	"log"
 	"os"
 	"strconv"
