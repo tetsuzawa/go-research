@@ -58,6 +58,21 @@ func run() {
 	}
 	defer portaudio.Terminate()
 
+	inputDevice, err := portaudio.DefaultInputDevice()
+	check(err)
+	outputDevice, err := portaudio.DefaultOutputDevice()
+	check(err)
+
+	paParam := portaudio.StreamParameters{
+		Input: portaudio.StreamDeviceParameters{inputDevice, 1, inputDevice.DefaultLowInputLatency},
+		Output: portaudio.StreamDeviceParameters{outputDevice, 1, outputDevice.DefaultLowOutputLatency},
+		//Output:          portaudio.StreamDeviceParameters{nil, 0, outputDevice.DefaultLowOutputLatency},
+		SampleRate:      float64(SampleRate),
+		FramesPerBuffer: FramesPerBuffer,
+		Flags:           portaudio.NoFlag,
+	}
+
+
 	//////////////////////////////////
 	h, err := portaudio.DefaultHostApi()
 	check(err)
