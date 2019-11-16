@@ -18,3 +18,6 @@
 
 # Research data files
 *.csv
+
+# Useless
+*.idea
