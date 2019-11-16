@@ -124,12 +124,11 @@ func run() {
 func wavWrite(ctx context.Context, bufCh chan []int16) {
 	for {
 		select {
-		case <-ctx.Done():
-			return
-
 		case buf := <-bufCh:
 			w1.WriteSamples(buf)
-
+			continue
+		case <-ctx.Done():
+			return
 		default:
 		}
 	}
