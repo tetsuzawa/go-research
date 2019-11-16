@@ -1,3 +1,13 @@
+/*
+Contents: wav to DSB converter.
+	This program converts .wav file to .DSB files.
+	Please run `wav_to_DSB --help` for details.
+Usage: wav_to_DSB (-o /path/to/out.DSB) /path/to/file.wav
+Author: Tetsu Takizawa
+E-mail: tt15219@tomakomai.kosen-ac.jp
+LastUpdate: 2019/11/16
+DateCreated  : 2019/11/16
+*/
 package main
 
 import (
@@ -8,6 +18,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 )
 
 //numOutputChannels int, sampleRate float64, framesPerBuffer
@@ -27,13 +38,14 @@ var w1 *wav.Writer
 func run() {
 	args := os.Args
 	RecordSeconds, err := strconv.Atoi(args[1])
-	fmt.Printf("Record Seconds: %v [sec]\n", RecordSeconds)
+	fmt.Printf("Record Seconds: %.1f [sec]\n", float64(RecordSeconds))
 	check(err)
 	NumInputChannels, err := strconv.Atoi(args[2])
 	fmt.Printf("Record on %d ch", NumInputChannels)
 	check(err)
 
-	f1, err := os.Create(`input.wav`)
+	fileName := `input.wav`
+	f1, err := os.Create(fileName)
 	check(err)
 	defer f1.Close()
 
@@ -102,23 +114,27 @@ func run() {
 	err = stream.Start()
 	check(err)
 	iter := RecordSeconds * SampleRate / FramesPerBuffer
+	start := time.Now()
 	//var progressRate float64
 	for i := 1; i <= iter; i++ {
 		/////// progress ///////
 		//progressRate = float64(i+1)/float64(iter)
 		//fmt.Printf("recording %3d%%, %3.1g [sec]\r", int(float64(i)/float64(iter)*100), float64(i)*float64(RecordSeconds)/float64(iter))
-		fmt.Printf("recording... %3d%%\r", int(float64(i)/float64(iter)*100))
+		//fmt.Printf("recording... %3d%%\r", int(float64(i)/float64(iter)*100))
+		fmt.Printf("%.1f[sec] : %.1f[sec]\r", time.Since(start).Seconds(), float64(RecordSeconds))
 		/////// progress ///////
 		err = stream.Read()
 		check(err)
 		bufCh <- inBuf
 		//w1.WriteSamples(inBuf)
 	}
+	fmt.Printf("\nrecording end\n")
 	cancel()
 
 	err = stream.Stop()
 	check(err)
-	fmt.Printf("\nend!!\n\n")
+	fmt.Printf("\nSuccessfully recorded!!\n")
+	fmt.Printf("File saved as `%v`\n", fileName)
 }
 
 func wavWrite(ctx context.Context, bufCh chan []int16) {
