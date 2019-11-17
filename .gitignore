@@ -21,3 +21,6 @@
 
 # Useless
 *.idea
+*.pdf
+*.DS_store
+
