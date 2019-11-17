@@ -18,3 +18,9 @@
 
 # Research data files
 *.csv
+
+# Useless
+*.idea
+*.pdf
+*.DS_store
+
