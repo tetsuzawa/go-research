@@ -20,7 +20,8 @@
 *.csv
 
 # Useless
-*.idea
+*.idea/
+.idea/
 *.pdf
 *.DS_store
 
