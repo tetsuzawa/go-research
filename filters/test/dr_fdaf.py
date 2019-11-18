@@ -10,7 +10,7 @@ sys.path.append('/Users/tetsu/personal_files/Research')
 sys.path.append('/Users/tetsu/personal_files/Research/research_tools')
 sys.path.append('/Users/tetsu/personal_files/Research/sample_wav')
 
-from research_tools.wave_handler_multi_ch import WaveHandler
+from research_tools.modules.wave_handler_multi_ch import WaveHandler
 
 input_filename = sys.argv[1]
 input_name_list = input_filename.split(".")
