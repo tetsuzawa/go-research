@@ -24,5 +24,6 @@
 .idea/
 *.pdf
 *.DS_store
+*.pptx
 
 bin/
