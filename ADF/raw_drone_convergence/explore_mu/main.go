@@ -17,26 +17,16 @@ const (
 )
 
 func main() {
-	var (
-		err error
 
-		wavName string
-		adfName string
-		L       int
-		mu      float64
-		order   int
+	wavName := os.Args[1]
+	adfName := os.Args[2]
+	dataDir := os.Args[3]
 
-		dataDir string
-	)
-
-	wavName = os.Args[1]
 	data := research.ReadDataFromWav(wavName)
-
-	adfName = os.Args[2]
-
-	L, err = strconv.Atoi(os.Args[3])
+	L, err := strconv.Atoi(os.Args[3])
 	check(err)
-	order, err = strconv.Atoi(os.Args[4])
+	mu := 1.0
+	order, err := strconv.Atoi(os.Args[4])
 	check(err)
 
 	var af adf.AdaptiveFilter
@@ -55,18 +45,12 @@ func main() {
 		check(err)
 	}
 
-	dataDir = "data"
-
 	fmt.Println("making d, x ...")
 	d, x := research.MakeData(data, L)
 	fmt.Println("exploring mu ...")
 	//mu = ExploreLearning(d, x, af, testName, dataDir)
 	mu = research.ExploreLearning(d, x, af, 0.000001, 2, 100)
 	af.SetStepSize(mu)
-	//fmt.Println("running ...")
-	//y, e, _, err := af.Run(d, x)
-	//check(err)
-	//research.SaveFilterdDataAsCSV(d, y, e, dataDir, testName)
 
 	var testName string
 	switch adfName {

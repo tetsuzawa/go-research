@@ -1,14 +1,12 @@
 package main
 
-
 import (
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"os"
-	"strconv"
-
 	"github.com/tetsuzawa/go-adflib/adf"
 	research "github.com/tetsuzawa/go-research/ADF/raw_drone_convergence"
+	"io/ioutil"
+	"os"
 )
 
 const (
@@ -17,35 +15,24 @@ const (
 )
 
 func main() {
-	var (
-		err error
-
-		wavName string
-		adfName string
-		L       int
-		mu      float64
-		order   int
-
-		dataDir string
-	)
 
 	jsonName := os.Args[1]
-	rawJSON ,err := ioutil.ReadFile(jsonName)
+	dataDir := os.Args[2]
+
+	rawJSON, err := ioutil.ReadFile(jsonName)
 	check(err)
-	
 
+	var optStepADF = new(research.OptStepADF)
+	err = json.Unmarshal(rawJSON, optStepADF)
+	check(err)
 
-	wavName = os.Args[1]
+	wavName := optStepADF.WavName
+	adfName := optStepADF.AdfName
+
 	data := research.ReadDataFromWav(wavName)
-
-	adfName = os.Args[2]
-
-	L, err = strconv.Atoi(os.Args[3])
-	check(err)
-	mu, err = strconv.ParseFloat(os.Args[4], 64)
-	check(err)
-	order, err = strconv.Atoi(os.Args[5])
-	check(err)
+	L := optStepADF.L
+	mu := optStepADF.Mu
+	order := optStepADF.Order
 
 	var af adf.AdaptiveFilter
 	var testName string
@@ -68,14 +55,8 @@ func main() {
 		check(err)
 	}
 
-	dataDir = "data"
-
 	fmt.Println("making d, x ...")
 	d, x := research.MakeData(data, L)
-	//fmt.Println("exploring mu ...")
-	//mu = ExploreLearning(d, x, af, testName, dataDir)
-	//mu = research.ExploreLearning(d, x, af, 0.000001, 2, 100)
-	//af.SetStepSize(mu)
 
 	fmt.Println("running ...")
 	y, e, _, err := af.Run(d, x)
