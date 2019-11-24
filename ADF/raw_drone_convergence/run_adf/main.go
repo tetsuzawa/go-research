@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/tetsuzawa/go-adflib/adf"
-	research "github.com/tetsuzawa/go-research/ADF/raw_drone_convergence"
 	"io/ioutil"
 	"os"
+
+	"github.com/tetsuzawa/go-adflib/adf"
+	research "github.com/tetsuzawa/go-research/ADF/raw_drone_convergence"
 )
 
 const (
@@ -38,19 +39,19 @@ func main() {
 	var testName string
 	switch adfName {
 	case "LMS":
-		testName = fmt.Sprintf("%v_static_mu-%f_L-%v", adfName, mu, L)
+		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
 		af, err = adf.NewFiltLMS(L, mu, w)
 		check(err)
 	case "NLMS":
-		testName = fmt.Sprintf("%v_static_mu-%f_L-%v", adfName, mu, L)
+		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
 		af, err = adf.NewFiltNLMS(L, mu, eps, w)
 		check(err)
 	case "AP":
-		testName = fmt.Sprintf("%v_static_mu-%f_L-%v_order-%v", adfName, mu, L, order)
+		testName = fmt.Sprintf("%v_static_L-%v_order-%v", adfName, L, order)
 		af, err = adf.NewFiltAP(L, mu, order, eps, w)
 		check(err)
 	case "RLS":
-		testName = fmt.Sprintf("%v_static_mu-%f_L-%v", adfName, mu, L)
+		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
 		af, err = adf.NewFiltRLS(L, mu, eps, w)
 		check(err)
 	}

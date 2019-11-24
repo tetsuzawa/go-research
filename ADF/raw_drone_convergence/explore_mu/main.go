@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/tetsuzawa/go-adflib/adf"
-	research "github.com/tetsuzawa/go-research/ADF/raw_drone_convergence"
 	"os"
 	"path/filepath"
+
+	"github.com/tetsuzawa/go-adflib/adf"
+	research "github.com/tetsuzawa/go-research/ADF/raw_drone_convergence"
 )
 
 const (
@@ -17,8 +18,6 @@ const (
 
 func main() {
 
-	//L, err := strconv.Atoi(os.Args[4])
-	//check(err)
 	var (
 		L       int
 		order   int
@@ -26,6 +25,7 @@ func main() {
 		muEnd   float64
 		step    int
 	)
+
 	flag.IntVar(&L, "l", 64, "filter length")
 	flag.IntVar(&order, "order", 8, "order (AP)")
 	flag.Float64Var(&muStart, "start", 1e-5, "start value of mu")
@@ -33,6 +33,7 @@ func main() {
 	flag.IntVar(&step, "step", 100, "explore steps")
 
 	flag.Parse()
+
 	fmt.Println("L:", L)
 	fmt.Println("order:", order)
 	fmt.Println("muStart:", muStart)
@@ -76,13 +77,14 @@ func main() {
 	var testName string
 	switch adfName {
 	case "LMS":
-		testName = fmt.Sprintf("%v_static_mu-%f_L-%v", adfName, mu, L)
+		//testName = fmt.Sprintf("%v_static_mu-%f_L-%v", adfName, mu, L)
+		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
 	case "NLMS":
-		testName = fmt.Sprintf("%v_static_mu-%f_L-%v", adfName, mu, L)
+		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
 	case "AP":
-		testName = fmt.Sprintf("%v_static_mu-%f_L-%v_order-%v", adfName, mu, L, order)
+		testName = fmt.Sprintf("%v_static_L-%v_order-%v", adfName, L, order)
 	case "RLS":
-		testName = fmt.Sprintf("%v_static_mu-%f_L-%v", adfName, mu, L)
+		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
 	}
 
 	var optadf = &research.OptStepADF{
