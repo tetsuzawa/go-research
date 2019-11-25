@@ -5,6 +5,6 @@ go 1.13
 require (
 	github.com/go-audio/wav v1.0.0
 	github.com/pkg/errors v0.8.1 // indirect
-	github.com/tetsuzawa/go-adflib v0.0.4
+	github.com/tetsuzawa/go-adflib v0.0.5
 	gonum.org/v1/gonum v0.6.1
 )

@@ -10,8 +10,8 @@ github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0/go.mod h1:E/TSTwGw
 github.com/jung-kurt/gofpdf v1.0.3-0.20190309125859-24315acbbda5/go.mod h1:7Id9E/uU8ce6rXgefFLlgrJj/GYY22cpxn+r32jIOes=
 github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
-github.com/tetsuzawa/go-adflib v0.0.4 h1:lWQwnDeDccj0Vw+A2GbHxRt5j7kax+bXiAk3RE5eWjw=
-github.com/tetsuzawa/go-adflib v0.0.4/go.mod h1:/J+HNlZUSMkOoXcjJd/5xyTMR2VgnqPSdxy2pU3Wf2A=
+github.com/tetsuzawa/go-adflib v0.0.5 h1:lUExBUwfDDJhVLc8T/sfTE/2KXaJXILzk7orNvRNNm0=
+github.com/tetsuzawa/go-adflib v0.0.5/go.mod h1:/J+HNlZUSMkOoXcjJd/5xyTMR2VgnqPSdxy2pU3Wf2A=
 golang.org/x/exp v0.0.0-20180321215751-8460e604b9de/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20180807140117-3d87b88a115f/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190125153040-c74c464bbbf2/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
