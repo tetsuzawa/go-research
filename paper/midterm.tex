@@ -1,0 +1,100 @@
+% latex uft-8
+\documentclass[a4paper, twocolumn]{ltjsarticle}
+%
+\usepackage{graphicx}
+\usepackage{here}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{comment}
+\usepackage[labelsep=space]{caption}
+\usepackage[subrefformat=parens， labelsep=space]{subcaption}
+\usepackage{siunitx}
+\usepackage{unicode-math}
+
+\captionsetup{compatibility=false}
+
+\setlength{\textwidth}{\fullwidth}
+\setlength{\textheight}{40\baselineskip}
+\addtolength{\textheight}{\topskip}
+\setlength{\voffset}{-0.55in}
+
+
+\title{Raspberry Piを使用した\\ドローンの雑音に対するADF適用の検討}
+\author{電気電子工学科 5年 19番 瀧澤哲}
+\date{2019年7月4日}
+%
+\begin{document}
+% START DOCUMENT
+%
+
+\maketitle
+  
+\section{研究背景}
+  近年、コンピュータの性能は指数関数的に向上してきた。また、スマートフォンの普及が進んだことにより、組み込み製品に使われるセンサの価格が低下し、容易に入手することが可能となった。
+
+  近年、ドローンの開発が盛んに行われている。「ドローン」はもともと「無人機」全般を指す言葉であるが、日本では慣例的に「マルチコプター」を指す。ドローンは従来の有人ヘリコプターや大型機と比べて小型・軽量なため、低コストで製造が可能となる。また、人間の立ち入りが困難な場所への侵入が安全かつ容易という特徴から、空撮、農業、測量、災害救助、デリバリー等、様々な用途を想定して開発が進められている。
+
+  しかしながら、ドローンを使用する上では騒音、駆動時間が短さ、悪天候に対する弱さといった技術的課題も多くしよう
+
+  %TODO
+  本論文では、ドローンが発生させる騒音の軽減を目指し、ADF (Adaptive Filter) を使用したシステムの検討について述べる。
+  計算機としてRaspberry Piを使用する。
+
+
+  Raspberry Piは英国のラズベリーパイ財団によって開発されている、シングルボードコンピュータである。Raspberr Piは教育用として制作されたが、現在ではIoT製品開発などの業務や人工衛星のOBC (On Board Computer) にも使用されている。
+  
+  この論文では、近年、急速に発達が進んでいるドローンにRaspberry Piを搭載し、
+
+\section*{課題}
+
+
+\section*{解答}
+  \subsection*{\(\alpha\)作用のみ考慮}
+    \(\alpha\)作用のみを考慮した場合の電流密度\(I\)[A/cm^2]は次式で求められる\footnote{ここでのeは自然対数の底であることに注意} (\(\alpha\):電子の衝突電離係数，\(d\):電極間の距離 [cm])｡
+    \begin{equation}
+      I = I_0 e^{\alpha d} 
+      \label{equation:alpha_I}
+    \end{equation}
+    ただし，\(I_0\)は次式で定義される (\(e\):素電荷，\(n_0\):初期の電子の個数)｡
+    \begin{equation}
+      I_0 = e n_0
+      \label{equation:I_0}
+    \end{equation}
+
+    (\ref{equation:alpha_I})式，(\ref{equation:I_0})式より
+    \begin{equation}
+      \begin{split}
+        I &= I_0 e^{\alpha d} \\
+          &= e n_0 e^{\alpha d} \\
+          &= 1.602 \times 10^{-19} \times 1 \times e^{7 \times 1} \\
+          &= 1.76 \times 10^{-16} [\si{\ampere} / \si{\centi \meter ^ 2}]
+      \end{split}
+      \label{equation:alpha_I_answer}
+    \end{equation} 
+    となる｡
+
+
+  \subsection*{\(\alpha\)作用と\(\gamma\)作用を考慮}
+    \(\alpha\)作用と\(\gamma\)作用を考慮した場合の電流密度\(I\)[A/cm^2]は次式で求められる (\(\alpha\):電子の衝突電離係数，\(\gamma\):正イオンが陰極に衝突する際の二次電子放出係数，\(d\):電極間の距離[cm])｡
+    \begin{equation}
+      I = \frac{e^{\alpha d}}{1-\gamma (e^{\alpha d} - 1)} I_0
+      \label{equation:gamma_I}
+    \end{equation}
+
+    従って，
+    \begin{equation}
+      \begin{split}
+        I &= \frac{e^{\alpha d}}{1-\gamma (e^{\alpha d} - 1)} I_0 \\
+          &= \frac{e^{\alpha d}}{1-\gamma (e^{\alpha d} - 1)} e n_0 \\
+          &= \frac{e^{7 \times 1}}{1 - 0.0009(e^{7 \times 1} - 1)} \times 1.602 \times 10^{-19} \times 1 \\
+          &= 1.26 \times 10^{-14} [\si{\ampere} / \si{\centi \meter ^ 2}]
+      \end{split}
+      \label{equation:gamma_I_answer}
+    \end{equation}
+    となる｡以上｡
+
+
+
+% end document
+\end{document}
