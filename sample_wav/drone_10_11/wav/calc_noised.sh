@@ -1,0 +1,1 @@
+/usr/bin/env python3 ~/personal_files/Research/research_tools/calc_noisemix_list.py   --clean_file ~/.ghq/github.com/tetsuzawa/audio-SNR/data/source_clean/arctic_a0001.wav --noise_file dr_level_04_L_trim.wav --output_dir noise_mixed/ --snr_start -40 --snr_end 40 --snr_div_num 19
