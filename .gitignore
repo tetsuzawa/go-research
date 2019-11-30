@@ -18,11 +18,17 @@
 
 # Research data files
 *.csv
+*.png
 
 # Useless
 *.idea/
 .idea/
+.idea
 *.pdf
 *.DS_store
+.DS_store
+*.pptx
+slide/
 
 bin/
+build/
