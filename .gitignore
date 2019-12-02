@@ -19,6 +19,7 @@
 # Research data files
 *.csv
 *.png
+*.gif
 
 # Useless
 *.idea/

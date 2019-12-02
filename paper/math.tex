@@ -1,0 +1,55 @@
+
+%lms
+\( \symbf{w}_k = \symbf{w}_{k-1} + \mu \symbf{x}_k \symbf{\epsilon}_k \)
+
+%nlms
+\(\mu \frac{1}{\left( \alpha \symbf{I} + \symbf{x}_k \symbf{x}_k^H \right)}\symbf{x}_k \symbf{\epsilon}_k \)
+\( \mu \left( \alpha \symbf{I} + \symbf{x}_k \symbf{x}_k^H \right)^{-1} \symbf{x}_k \symbf{\epsilon}_k \))
+
+%ap
+\(\symbf{w}_k = \symbf{w}_{k-1} + \mu \symbf{U}_k \left( \alpha \symbf{I} + \symbf{U}_k^H \symbf{U}_k \right)^{-1} \symbf{\epsilon}_k\) 
+
+%rls
+\(\symbf{w}_k = \symbf{w}_{k-1} + \mu \symbf{U}_k \left( \alpha \symbf{I} + \symbf{U}_{1:k}^H \symbf{U}_{1:k} \right)^{-1} \symbf{\epsilon}_k\) 
+
+
+\(\symbf{w}_k = \symbf{w}_{k-1} +  \symbf{g}_l \epsilon_k \) 
+
+s.t. \( \symbf{g}_k = \symbf{P}_{k-1} \symbf{x}_k \left(  1 + \symbf{x}_k^H \symbf{P}_{k-1} \symbf{x}_k  \right)^{-1} \)
+
+s.t. \(P_k = ( \symbf{I} - \symbf{g}_k \symbf{x}_k^H) P_{k-1}\
+
+
+%lms
+\( \bm{w}_k = \bm{w}_{k-1} + \mu \bm{x}_k \bm{\epsilon}_k \)
+
+%nlms
+\( \bm{w}_k = \bm{w}_{k-1} + \mu \frac{1}{\alpha + ||\bm{x_k}||^2}\bm{x}_k \bm{\epsilon}_k \)
+
+%ap
+\(\bm{w}_k = \bm{w}_{k-1} + \mu \bm{U}_k \left( \alpha \bm{I} + \bm{U}_k^H \bm{U}_k \right)^{-1} \bm{\epsilon}_k\) 
+
+%rls
+\(\bm{w}_k = \bm{w}_{k-1} + \mu \bm{U}_k \left( \alpha \bm{I} + \bm{U}_{1:k}^H \bm{U}_{1:k} \right)^{-1} \bm{\epsilon}_k\) 
+
+
+\(\bm{w}_k = \bm{w}_{k-1} +  \bm{g}_l \epsilon_k \) 
+
+s.t. \( \bm{g}_k = \bm{P}_{k-1} \bm{x}_k \left(  1 + \bm{x}_k^H \bm{P}_{k-1} \bm{x}_k  \right)^{-1} \)
+
+s.t. \(P_k = ( \bm{I} - \bm{g}_k \bm{x}_k^H) P_{k-1}\
+
+
+\begin{table}[]
+    \centering
+    \caption{代表的な適応アルゴリズムの係数更新式}
+    \label{tab:formula}
+    \begin{tabular}{|c|c|}
+    \hline
+         & \(\Delta \symbf{w}\)                                                                                             \\ \hline
+    LMS  & \( \mu \symbf{x}_k \symbf{\epsilon}_k \)                                                                         \\ \hline
+    NLMS & \( \mu \left( \alpha \symbf{I} + \symbf{x}_k \symbf{x}_k^H \right)^{-1} \symbf{x}_k \symbf{\epsilon}_k \)        \\ \hline
+    AP   & \(\mu \symbf{X}_k \left( \alpha \symbf{I} + \symbf{X}_k^H \symbf{X}_k \right)^{-1} \symbf{\epsilon}_k\)          \\ \hline
+    RLS  & \( \mu \symbf{X}_k \left( \alpha \symbf{I} + \symbf{X}_{1:k}^H \symbf{X}_{1:k} \right)^{-1} \symbf{\epsilon}_k\) \\ \hline
+    \end{tabular}
+    \end{table}
