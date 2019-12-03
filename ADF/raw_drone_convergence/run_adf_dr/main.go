@@ -38,25 +38,25 @@ func main() {
 	var testName string
 	switch adfName {
 	case "LMS":
-		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
+		testName = fmt.Sprintf("%v_dr_noise_L-%v", adfName, L)
 		af, err = adf.NewFiltLMS(L, mu, nil)
 		check(err)
 	case "NLMS":
-		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
+		testName = fmt.Sprintf("%v_dr_noise_L-%v", adfName, L)
 		af, err = adf.NewFiltNLMS(L, mu, eps, nil)
 		check(err)
 	case "AP":
-		testName = fmt.Sprintf("%v_static_L-%v_order-%v", adfName, L, order)
+		testName = fmt.Sprintf("%v_dr_noise_L-%v_order-%v", adfName, L, order)
 		af, err = adf.NewFiltAP(L, mu, order, eps, nil)
 		check(err)
 	case "RLS":
-		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
+		testName = fmt.Sprintf("%v_dr_noise_L-%v", adfName, L)
 		af, err = adf.NewFiltRLS(L, mu, eps, nil)
 		check(err)
 	}
 
 	fmt.Println("making d, x ...")
-	d, x := research.MakeData(data, L)
+	d, x := research.MakeDataWithNoise(data, L)
 
 	fmt.Println("running ...")
 	y, e, _, err := af.Run(d, x)
