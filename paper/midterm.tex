@@ -130,6 +130,11 @@
 
     作成したライブラリはGithub (https://github.com/tetsuzawa/go-adflib) にてOpen Source Softwareとして公開している。
 
+  \subsection{ADFライブラリのベンチマーク}
+    作成した各アルゴリズムのベンチマークを行い、1サンプルあたりの処理時間、使用メモリ、動的メモリ割当回数を測定した。測定条件を以下に示す。なお、実行環境はRaspberry Pi Model 3B+である。
+    結果を表3に示す。
+    
+
   \subsection{ドローンの定常的な雑音の収録・解析}
     ドローンの組み立てと定常的な雑音の収録を行い、周波数解析を行った。図2は解析結果のスペクトログラムである。
     \begin{figure}[h]
@@ -138,6 +143,20 @@
       \caption{ドローンの定常動作音の周波数解析結果}
       \label{fig:dr_spectrogram}
   \end{figure}
+
+  \subsection{白色雑音とドローンの雑音の収束速度の比較}
+    LMSおよびNLMSは信号が有色となると、収束速度が低下するという特徴を持つ。
+    ドローンの定常音は明らかに有色のノイズであるため、lms、nlmsでは収束速度が低下することが予想できる。このような予測のもと各アルゴリズムの収束速度を測定・検証した。測定条件を以下に示す。
+    \begin{enumerate}
+      \renewcommand{\labelenumi}{(\arabic{enumi})}
+      \item 実行環境: Raspberry Pi 3B+
+      \item 未知システム: 128タップのローパスフィルタ
+      \item 入力x: 白色雑音 および ドローンの定常動作音
+      \item 観測雑音v: 入力xに対して無相関でS/N比-50dBの白色雑音
+    \end{enumerate}  
+
+    結果を図3に示す。
+    
 
     
     

@@ -1,5 +1,5 @@
 # Fdb version 3
-["lualatex"] 1575204749 "/Users/tetsu/go/src/github.com/tetsuzawa/go-research/paper/midterm.tex" "midterm.pdf" "midterm" 1575204754
+["lualatex"] 1575299507 "/Users/tetsu/go/src/github.com/tetsuzawa/go-research/paper/midterm.tex" "midterm.pdf" "midterm" 1575299511
   "/Users/tetsu/Library/texlive/2019/texmf-var/luatex-cache/generic/fonts/otl/ipaexg.luc" 1573963281 1065650 ce2cae193c72b7f2eea7e443a82cd412 ""
   "/Users/tetsu/Library/texlive/2019/texmf-var/luatex-cache/generic/fonts/otl/ipaexm.luc" 1573963279 1076542 8c955a924b97d9d5861e9baf4294e6cd ""
   "/Users/tetsu/Library/texlive/2019/texmf-var/luatex-cache/generic/fonts/otl/latinmodern-math.luc" 1573964281 544946 3f44d69234b35cdda4491e9d4056837c ""
@@ -19,7 +19,7 @@
   "/Users/tetsu/Library/texlive/2019/texmf-var/luatexja/extra_ipaexmincho.luc" 1573963279 374751 4dc3a06d5ece236c4321546094254469 ""
   "/Users/tetsu/Library/texlive/2019/texmf-var/luatexja/ltj-cid-auto-adobe-japan1.luc" 1573963278 1825657 ac3c2c8422f514b411275785996ac263 ""
   "/Users/tetsu/Library/texlive/2019/texmf-var/luatexja/ltj-jisx0208.luc" 1573963279 201433 81898f6d6d5d1a3dbeab90166f71708b ""
-  "/Users/tetsu/go/src/github.com/tetsuzawa/go-research/paper/midterm.tex" 1575204741 8522 1663fedbcf05fd036dd48d64fd3d3ae0 ""
+  "/Users/tetsu/go/src/github.com/tetsuzawa/go-research/paper/midterm.tex" 1575299298 9743 6c1d032492eedf9df2afdf9f2676e424 ""
   "/usr/local/texlive/2019/texmf-dist/fonts/opentype/public/lm-math/latinmodern-math.otf" 1429396570 733736 0b8cd5044567d896491fd777c12d5cda ""
   "/usr/local/texlive/2019/texmf-dist/fonts/opentype/public/lm/lmroman10-regular.otf" 1255129361 111536 ae9d1b331000d544f47e5223081b7b54 ""
   "/usr/local/texlive/2019/texmf-dist/fonts/opentype/public/lm/lmroman12-regular.otf" 1255129361 110400 d844cffffa1af59f9d2bb1bfdb6f1a2c ""
@@ -140,11 +140,11 @@
   "/usr/local/texlive/2019/texmf-var/web2c/luatex/lualatex.fmt" 1562631752 1382556 de693455386e51000a7fff2855f350fe ""
   "/usr/local/texlive/texmf-local/fonts/truetype/cjk-gs-integrate/ipaexg.ttf" 1562754795 6099900 56123629c918115655556704aeb22838 ""
   "/usr/local/texlive/texmf-local/fonts/truetype/cjk-gs-integrate/ipaexm.ttf" 1562754795 7835672 47c3ddba7200574da77033769360d02f ""
-  "midterm.aux" 1575204753 1378 13ade32dafc3334683fe2bada6079352 "lualatex"
-  "midterm.tex" 1575204741 8522 1663fedbcf05fd036dd48d64fd3d3ae0 ""
+  "midterm.aux" 1575299511 1659 4bbb6f89a7509f78ec703dd9b0c52458 "lualatex"
+  "midterm.tex" 1575299298 9743 6c1d032492eedf9df2afdf9f2676e424 ""
   "slides/block.pdf" 1575199613 230971 d0118e7171baa68eb106fd1db5eac86d ""
   "slides/dr_spectrogram.png" 1575204672 3792951 02272ed7e53dc90764172696ca6c9538 ""
   (generated)
-  "midterm.log"
-  "midterm.pdf"
   "midterm.aux"
+  "midterm.pdf"
+  "midterm.log"
