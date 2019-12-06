@@ -15,7 +15,6 @@ const (
 	eps = 1e-5
 )
 
-
 func main() {
 
 	var (
@@ -24,7 +23,6 @@ func main() {
 		muStart float64
 		muEnd   float64
 		step    int
-		w       []float64
 	)
 
 	flag.IntVar(&L, "l", 64, "filter length")
@@ -55,16 +53,16 @@ func main() {
 	var af adf.AdaptiveFilter
 	switch adfName {
 	case "LMS":
-		af, err = adf.NewFiltLMS(L, mu, w)
+		af, err = adf.NewFiltLMS(L, mu, nil)
 		check(err)
 	case "NLMS":
-		af, err = adf.NewFiltNLMS(L, mu, eps, w)
+		af, err = adf.NewFiltNLMS(L, mu, eps, nil)
 		check(err)
 	case "AP":
-		af, err = adf.NewFiltAP(L, mu, order, eps, w)
+		af, err = adf.NewFiltAP(L, mu, order, eps, nil)
 		check(err)
 	case "RLS":
-		af, err = adf.NewFiltRLS(L, mu, eps, w)
+		af, err = adf.NewFiltRLS(L, mu, eps, nil)
 		check(err)
 	}
 
@@ -78,13 +76,14 @@ func main() {
 	var testName string
 	switch adfName {
 	case "LMS":
-		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
+		//testName = fmt.Sprintf("%v_white_mu-%f_L-%v", adfName, mu, L)
+		testName = fmt.Sprintf("%v_white_L-%v", adfName, L)
 	case "NLMS":
-		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
+		testName = fmt.Sprintf("%v_white_L-%v", adfName, L)
 	case "AP":
-		testName = fmt.Sprintf("%v_static_L-%v_order-%v", adfName, L, order)
+		testName = fmt.Sprintf("%v_white_L-%v_order-%v", adfName, L, order)
 	case "RLS":
-		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
+		testName = fmt.Sprintf("%v_white_L-%v", adfName, L)
 	}
 
 	var optadf = &research.OptStepADF{

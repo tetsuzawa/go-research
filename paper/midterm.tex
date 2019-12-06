@@ -1,5 +1,6 @@
 % latex uft-8
-\documentclass[a4paper, twocolumn]{ltjsarticle}
+% \documentclass[a4paper, twocolumn]{ltjsarticle}
+\documentclass[a4paper]{ltjsarticle}
 %
 \usepackage{graphicx}
 \usepackage{here}
@@ -151,6 +152,19 @@
     RLS         & \( \mu \symbf{X}_k \left( \alpha \symbf{I} + \symbf{X}_{1:k}^H \symbf{X}_{1:k} \right)^{-1} \symbf{\epsilon}_k\) \\ \hline
     \end{tabular}
   \end{table}
+
+  \begin{table}[]
+    \centering
+    \caption{代表的な適応アルゴリズムの係数更新式と演算量}
+    \label{tab:formula_calc}
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+         & \(\Delta \symbf{w}\)                                                                                             & 収束速度             & 計算量              \\ \hline
+    NLMS & \( \mu \left( \alpha \symbf{I} + \symbf{x}_k \symbf{x}_k^H \right)^{-1} \symbf{x}_k \symbf{\epsilon}_k \)        & 遅                & 少                \\ \hline
+    AP   & \(\mu \symbf{X}_k \left( \alpha \symbf{I} + \symbf{X}_k^H \symbf{X}_k \right)^{-1} \symbf{\epsilon}_k\)          & \(\updownarrow\) & \(\updownarrow\) \\ \hline
+    RLS  & \( \mu \symbf{X}_k \left( \alpha \symbf{I} + \symbf{X}_{1:k}^H \symbf{X}_{1:k} \right)^{-1} \symbf{\epsilon}_k\) & 速                & 多                \\ \hline
+    \end{tabular}
+    \end{table}
 
 
 % \section{使用機器}

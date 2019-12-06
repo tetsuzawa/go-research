@@ -19,6 +19,8 @@
 # Research data files
 *.csv
 *.png
+*.jpg
+*.JPG
 *.gif
 
 # Useless
