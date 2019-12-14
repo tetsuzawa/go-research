@@ -10,10 +10,10 @@
 
 
 calc_noise_mix \
--clean /Users/tetsu/.ghq/github.com/tetsuzawa/audio-SNR/data/source_clean/arctic_a0001.wav \
--noise /Users/tetsu/personal_files/Research/sample_wav/drone_10_11/wav/dr_static_5_16k.wav \
--output /Users/tetsu/personal_files/Research/sample_wav/drone_10_11/wav/noise_mixed \
--start -40 \
--end 40 \
--div 19
+ -clean /Users/tetsu/.ghq/github.com/tetsuzawa/audio-SNR/data/source_clean/arctic_a0001.wav \
+ -noise /Users/tetsu/personal_files/Research/sample_wav/drone_10_11/wav/dr_static_5_16k.wav \
+ -output /Users/tetsu/personal_files/Research/sample_wav/drone_10_11/wav/tmp\
+ -start -20 \
+ -end 20 \
+ -div 9
 
