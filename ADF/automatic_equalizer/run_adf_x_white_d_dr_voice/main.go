@@ -34,29 +34,31 @@ func main() {
 	mu := optStepADF.Mu
 	order := optStepADF.Order
 
+	applicationName := "auto"
+
 	var af adf.AdaptiveFilter
 	var testName string
 	switch adfName {
 	case "LMS":
-		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
+		testName = fmt.Sprintf("%v_%v_L-%v", adfName, applicationName, L)
 		af, err = adf.NewFiltLMS(L, mu, nil)
 		check(err)
 	case "NLMS":
-		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
+		testName = fmt.Sprintf("%v_%v_L-%v", adfName, applicationName, L)
 		af, err = adf.NewFiltNLMS(L, mu, eps, nil)
 		check(err)
 	case "AP":
-		testName = fmt.Sprintf("%v_static_L-%v_order-%v", adfName, L, order)
+		testName = fmt.Sprintf("%v_%v_L-%v_order-%v", adfName, applicationName, L, order)
 		af, err = adf.NewFiltAP(L, mu, order, eps, nil)
 		check(err)
 	case "RLS":
-		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
+		testName = fmt.Sprintf("%v_%v_L-%v", adfName, applicationName, L)
 		af, err = adf.NewFiltRLS(L, mu, eps, nil)
 		check(err)
 	}
 
 	fmt.Println("making d, x ...")
-	d, x := research.MakeData(data, L)
+	d, x := research.MakeXWhiteDData(data, L)
 
 	fmt.Println("running ...")
 	y, e, _, err := af.Run(d, x)

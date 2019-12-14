@@ -62,6 +62,27 @@ func MakeData(data []int, L int) (d []float64, x [][]float64) {
 	return d, x
 }
 
+func MakeXWhiteDData(data []int, L int) (d []float64, x [][]float64) {
+	n := len(data)
+	//input value
+	x = make([][]float64, n)
+	for i := 0; i < n; i++ {
+		x[i] = make([]float64, L)
+	}
+
+	//noise
+	//desired value
+	d = make([]float64, n)
+	var xRow = make([]float64, L)
+	for i := 0; i < n; i++ {
+		xRow = misc.Unset(xRow, 0)
+		xRow = append(xRow, float64(rand.Intn(math.MaxUint16)-(math.MaxInt16+1)))
+		copy(x[i], xRow)
+		d[i] = float64(data[i])
+	}
+	return d, x
+}
+
 func MakeDataWithNoise(data []int, L int) (d []float64, x [][]float64) {
 	rand.Seed(1)
 	n := len(data)
