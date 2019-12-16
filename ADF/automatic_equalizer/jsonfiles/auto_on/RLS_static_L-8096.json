@@ -1,1 +1,1 @@
-{"wav_name":"../wavfiles/dr_static_20.wav","adf_name":"NLMS","mu":0.989899494949495,"l":8096,"order":8}
+{"wav_name":"../wavfiles/dr_static_20.wav","adf_name":"RLS","mu":0.99,"l":8096,"order":8}

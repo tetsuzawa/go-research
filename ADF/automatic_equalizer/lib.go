@@ -180,7 +180,8 @@ func ExploreLearning(d []float64, x [][]float64, af adf.AdaptiveFilter, muStart,
 
 func SaveFilterdDataAsCSV(d, y, e []float64, dataDir string, testName string) {
 	n := len(d)
-	fw, err := os.Create(filepath.Join(dataDir, testName+".csv"))
+	outputPath := filepath.Join(dataDir, testName+".csv")
+	fw, err := os.Create(outputPath)
 	check(err)
 	writer := bufio.NewWriter(fw)
 	for i := 0; i < n; i++ {
@@ -193,6 +194,8 @@ func SaveFilterdDataAsCSV(d, y, e []float64, dataDir string, testName string) {
 	check(err)
 	err = fw.Close()
 	check(err)
+
+	fmt.Printf("\ncsv file saved at: %v\n", outputPath)
 }
 
 func check(err error) {

@@ -37,6 +37,13 @@ func main() {
 	L := optStepADF.L
 	mu := optStepADF.Mu
 	order := optStepADF.Order
+	fmt.Println("wav name:", wavName)
+	fmt.Println("adf name:", adfName)
+	fmt.Println("L:", L)
+	fmt.Println("mu:", mu)
+	if adfName == "AP" {
+		fmt.Println("order:", order)
+	}
 
 	var af adf.AdaptiveFilter
 	var testName string
@@ -61,8 +68,30 @@ func main() {
 
 	//d, x := research.MakeXWhiteDData(data, L)
 
-	d, y, e := run(data, af, L)
+	//d, y, e := run(data, af, L)
 
+	n := len(data)
+	var x = make([][]float64, n)
+	for i := 0; i < n; i++ {
+		x[i] = make([]float64, L)
+	}
+
+	d := make([]float64, n)
+	y := make([]float64, n)
+	e := make([]float64, n)
+	var xRow = make([]float64, L)
+
+	for i := 0; i < n; i++ {
+		fmt.Printf("working... %d%%\r", (i+1)*100/n)
+
+		xRow = misc.Unset(xRow, 0)
+		xRow = append(xRow, float64(rand.Intn(math.MaxUint16)-(math.MaxInt16+1)))
+		copy(x[i], xRow)
+		d[i] = float64(data[i])
+		af.Adapt(d[i], x[i])
+		y[i] = af.Predict(x[i])
+		e[i] = d[i] - y[i]
+	}
 	//y, e, _, err := af.Run(d, x)
 
 	fmt.Printf("\nwriting to csv...\n")
