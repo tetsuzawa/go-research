@@ -3,7 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/tetsuzawa/go-adflib/misc"
 	"io/ioutil"
+	"math"
+	"math/rand"
 	"os"
 
 	"github.com/tetsuzawa/go-adflib/adf"
@@ -12,7 +15,7 @@ import (
 
 const (
 	eps             = 1e-5
-	applicationName = "auto"
+	applicationName = "auto_on"
 )
 
 func main() {
@@ -56,13 +59,41 @@ func main() {
 		check(err)
 	}
 
-	fmt.Println("making d, x ...")
-	d, x := research.MakeXWhiteDData(data, L)
+	//d, x := research.MakeXWhiteDData(data, L)
 
-	fmt.Println("running ...")
-	y, e, _, err := af.Run(d, x)
+	d, y, e := run(data, af, L)
+
+	//y, e, _, err := af.Run(d, x)
+
+	fmt.Printf("\nwriting to csv...\n")
 	check(err)
 	research.SaveFilterdDataAsCSV(d, y, e, dataDir, testName)
+}
+
+func run(data []int, af adf.AdaptiveFilter, L int) (d, y, e []float64) {
+	n := len(data)
+	var x = make([][]float64, n)
+	for i := 0; i < n; i++ {
+		x[i] = make([]float64, L)
+	}
+
+	d = make([]float64, n)
+	y = make([]float64, n)
+	e = make([]float64, n)
+	var xRow = make([]float64, L)
+
+	for i := 0; i < n; i++ {
+		fmt.Printf("working... %d%%\r", (i+1)*100/n)
+
+		xRow = misc.Unset(xRow, 0)
+		xRow = append(xRow, float64(rand.Intn(math.MaxUint16)-(math.MaxInt16+1)))
+		copy(x[i], xRow)
+		d[i] = float64(data[i])
+		af.Adapt(d[i], x[i])
+		y[i] = af.Predict(x[i])
+		e[i] = d[i] - y[i]
+	}
+	return d, y, e
 }
 
 func check(err error) {
