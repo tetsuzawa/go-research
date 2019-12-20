@@ -15,13 +15,14 @@ import (
 
 const (
 	eps             = 1e-5
-	applicationName = "auto_on"
+	applicationName = "auto_on_ref"
 )
 
 func main() {
 
 	jsonName := os.Args[1]
 	dataDir := os.Args[2]
+	dWavPath := os.Args[3]
 
 	rawJSON, err := ioutil.ReadFile(jsonName)
 	check(err)
@@ -33,11 +34,13 @@ func main() {
 	wavName := optStepADF.WavName
 	adfName := optStepADF.AdfName
 
-	data := research.ReadDataFromWav(wavName)
+	xData := research.ReadDataFromWav(wavName)
+	dData := research.ReadDataFromWav(dWavPath)
 	L := optStepADF.L
 	mu := optStepADF.Mu
 	order := optStepADF.Order
 	fmt.Println("wav name:", wavName)
+	fmt.Println("d wav name:", dWavPath)
 	fmt.Println("adf name:", adfName)
 	fmt.Println("L:", L)
 	fmt.Println("mu:", mu)
@@ -66,11 +69,11 @@ func main() {
 		check(err)
 	}
 
-	//d, x := research.MakeXWhiteDData(data, L)
+	//d, x := research.MakeXWhiteDData(xData, L)
 
-	//d, y, e := run(data, af, L)
+	//d, y, e := run(xData, af, L)
 
-	n := len(data)
+	n := len(xData)
 	var x = make([][]float64, n)
 	for i := 0; i < n; i++ {
 		x[i] = make([]float64, L)
@@ -85,9 +88,9 @@ func main() {
 		fmt.Printf("working... %d%%\r", (i+1)*100/n)
 
 		xRow = misc.Unset(xRow, 0)
-		xRow = append(xRow, float64(rand.Intn(math.MaxUint16)-(math.MaxInt16+1)))
+		xRow = append(xRow, float64(xData[i]))
 		copy(x[i], xRow)
-		d[i] = float64(data[i])
+		d[i] = float64(dData[i])
 		af.Adapt(d[i], x[i])
 		y[i] = af.Predict(x[i])
 		e[i] = d[i] - y[i]

@@ -3,22 +3,100 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/tetsuzawa/go-adflib/adf"
 	"github.com/tetsuzawa/go-adflib/misc"
+	research "github.com/tetsuzawa/go-research/ADF/raw_drone_convergence"
 	"io/ioutil"
 	"math"
 	"math/rand"
 	"os"
-
-	"github.com/tetsuzawa/go-adflib/adf"
-	research "github.com/tetsuzawa/go-research/ADF/automatic_equalizer"
+	"reflect"
+	"testing"
 )
 
-const (
-	eps             = 1e-5
-	applicationName = "auto_on"
-)
+func Benchmark_run(b *testing.B) {
 
-func main() {
+
+	type args struct {
+		data []int
+		af   adf.AdaptiveFilter
+		L    int
+	}
+	tests := []struct {
+		name  string
+		args  args
+		wantD []float64
+		wantY []float64
+		wantE []float64
+	}{
+		// TODO: Add test cases.
+		{
+			name:  "test run",
+			args:  args{
+				data: 0,
+				af:   defineADF(),
+				L:    0,
+			},
+			wantD: nil,
+			wantY: nil,
+			wantE: nil,
+		},
+	}
+	for _, tt := range tests {
+		b.Run(tt.name, func(b *testing.B) {
+			gotD, gotY, gotE := run(tt.args.data, tt.args.af, tt.args.L)
+			if !reflect.DeepEqual(gotD, tt.wantD) {
+				b.Errorf("run() gotD = %v, want %v", gotD, tt.wantD)
+			}
+			if !reflect.DeepEqual(gotY, tt.wantY) {
+				b.Errorf("run() gotY = %v, want %v", gotY, tt.wantY)
+			}
+			if !reflect.DeepEqual(gotE, tt.wantE) {
+				b.Errorf("run() gotE = %v, want %v", gotE, tt.wantE)
+			}
+		})
+	}
+}
+
+func defineADF(jsonName string) adf.AdaptiveFilter {
+	rawJSON, err := ioutil.ReadFile(jsonName)
+	check(err)
+
+	var optStepADF = new(research.OptStepADF)
+	err = json.Unmarshal(rawJSON, optStepADF)
+	check(err)
+
+	wavName := optStepADF.WavName
+	adfName := optStepADF.AdfName
+	data := research.ReadDataFromWav(wavName)
+	L := optStepADF.L
+	mu := optStepADF.Mu
+	order := optStepADF.Order
+	var af adf.AdaptiveFilter
+	var testName string
+	switch adfName {
+	case "LMS":
+		testName = fmt.Sprintf("%v_%v_L-%v", adfName, applicationName, L)
+		af, err = adf.NewFiltLMS(L, mu, nil)
+		check(err)
+	case "NLMS":
+		testName = fmt.Sprintf("%v_%v_L-%v", adfName, applicationName, L)
+		af, err = adf.NewFiltNLMS(L, mu, eps, nil)
+		check(err)
+	case "AP":
+		testName = fmt.Sprintf("%v_%v_L-%v_order-%v", adfName, applicationName, L, order)
+		af, err = adf.NewFiltAP(L, mu, order, eps, nil)
+		check(err)
+	case "RLS":
+		testName = fmt.Sprintf("%v_%v_L-%v", adfName, applicationName, L)
+		af, err = adf.NewFiltRLS(L, mu, eps, nil)
+		check(err)
+	}
+
+	return data, af
+}
+
+func Benchmark_main(b *testing.B) {
 
 	jsonName := os.Args[1]
 	dataDir := os.Args[2]
@@ -37,13 +115,6 @@ func main() {
 	L := optStepADF.L
 	mu := optStepADF.Mu
 	order := optStepADF.Order
-	fmt.Println("wav name:", wavName)
-	fmt.Println("adf name:", adfName)
-	fmt.Println("L:", L)
-	fmt.Println("mu:", mu)
-	if adfName == "AP" {
-		fmt.Println("order:", order)
-	}
 
 	var af adf.AdaptiveFilter
 	var testName string
@@ -70,7 +141,7 @@ func main() {
 
 	//d, y, e := run(data, af, L)
 
-	n := len(data)
+	n := b.N
 	var x = make([][]float64, n)
 	for i := 0; i < n; i++ {
 		x[i] = make([]float64, L)
@@ -92,18 +163,15 @@ func main() {
 		y[i] = af.Predict(x[i])
 		e[i] = d[i] - y[i]
 	}
-	//y, e, _, err := af.Run(d, x)
-	_, _, w := af.GetParams()
 
-	fmt.Printf("writing to csv...\n")
+	//y, e, _, err := af.Run(d, x)
+
+	fmt.Printf("\nwriting to csv...\n")
+	check(err)
 	research.SaveFilterdDataAsCSV(d, y, e, dataDir, testName)
-	research.SaveWAsCSV(w, dataDir, testName)
-	fmt.Printf("writing to wav...\n")
-	research.SaveFilteredDataToWav(e, dataDir, testName)
-	fmt.Printf("\n")
 }
 
-func run(data []int, af adf.AdaptiveFilter, L int) (d, y, e, w []float64) {
+func run(data []int, af adf.AdaptiveFilter, L int) (d, y, e []float64) {
 	n := len(data)
 	var x = make([][]float64, n)
 	for i := 0; i < n; i++ {
@@ -126,8 +194,7 @@ func run(data []int, af adf.AdaptiveFilter, L int) (d, y, e, w []float64) {
 		y[i] = af.Predict(x[i])
 		e[i] = d[i] - y[i]
 	}
-	_, _, w = af.GetParams()
-	return d, y, e, w
+	return d, y, e
 }
 
 func check(err error) {
