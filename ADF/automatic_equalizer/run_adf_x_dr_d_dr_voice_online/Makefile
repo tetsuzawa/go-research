@@ -1,9 +1,6 @@
-BIN_NAME="dr_json"
-
 .PHONY: build
 build:
-	go build -o bin/$(BIN_NAME) .
-
+	go build -o build/$(BIN_NAME) .
 
 .PHONY: install
 install:

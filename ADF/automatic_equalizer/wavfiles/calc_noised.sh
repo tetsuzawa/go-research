@@ -10,12 +10,19 @@
 
 WAV_DIR="$(cd $(dirname $0); pwd)"
 
+#calc_noise_mix \
+# -clean /Users/tetsu/.ghq/github.com/tetsuzawa/audio-SNR/data/source_clean/arctic_a0001.wav \
+# -noise ${WAV_DIR}/dr_static_5_16k.wav \
+# -output ${WAV_DIR}/noise_mixed/ \
+# -start -20 \
+# -end 20 \
+# -div 9
+
 
 calc_noise_mix \
- -clean /Users/tetsu/.ghq/github.com/tetsuzawa/audio-SNR/data/source_clean/arctic_a0001.wav \
- -noise ${WAV_DIR}/dr_static_5_16k.wav \
+ -clean /Users/tetsu/personal_files/Research/sample_wav/fukushima_20sec.wav \
+ -noise ${WAV_DIR}/dr_static_20.wav \
  -output ${WAV_DIR}/noise_mixed/ \
  -start -20 \
  -end 20 \
  -div 9
-
