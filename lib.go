@@ -3,7 +3,6 @@ package tools
 import (
 	"bufio"
 	"fmt"
-	"gonum.org/v1/gonum/floats"
 	"math"
 	"os"
 	"path/filepath"
@@ -12,6 +11,7 @@ import (
 
 	"github.com/go-audio/audio"
 	"github.com/go-audio/wav"
+	"gonum.org/v1/gonum/floats"
 )
 
 func ReadDataFromCSV(inputPath string) (ds []float64, ys []float64, es []float64) {
