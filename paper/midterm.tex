@@ -1,5 +1,6 @@
 % latex uft-8
-\documentclass[a4paper, twocolumn]{ltjsarticle}
+% \documentclass[a4paper, twocolumn]{ltjsarticle}
+\documentclass[a4paper]{ltjsarticle}
 %
 \usepackage{graphicx}
 \usepackage{here}
@@ -8,7 +9,7 @@
 \usepackage{amssymb}
 \usepackage{comment}
 \usepackage[labelsep=space]{caption}
-\usepackage[subrefformat=parens， labelsep=space]{subcaption}
+\usepackage[subrefformat=parens, labelsep=space]{subcaption}
 \usepackage{siunitx}
 \usepackage{unicode-math}
 
@@ -31,28 +32,51 @@
 \maketitle
   
 \section{研究背景}
-  近年、コンピュータの性能は指数関数的に向上してきた。また、スマートフォンの普及が進んだことにより、組み込み製品に使われるセンサの価格が低下し、容易に入手することが可能となった。
+  % 近年、コンピュータの性能は指数関数的に向上してきた。また、スマートフォンの普及が進んだことにより、組み込み製品に使われるセンサの価格が低下し、容易に入手することが可能となった。
 
   近年、ドローンの開発がすすみ、着実に産業として根付いてきている。%盛んに行われている。
   %「ドローン」はもともと「無人機」全般を指す言葉であるが、日本では慣例的に「マルチコプター」を指す。
-  ドローンは従来の有人ヘリコプターや大型機と比べて小型・軽量なため、低コストで製造が可能という%となる。
+  ドローンは従来の有人ヘリコプターや大型機と比べて小型・軽量で、低コストで製造が可能という%となる。
   %また、人間の立ち入りが困難な場所への侵入が安全かつ容易という
   特徴から、空撮、農業、測量、災害救助、デリバリー等、様々な用途を想定して開発が進められている。
 
-  しかしながら、ドローンを使用するうえでは騒音、駆動時間が短さ、悪天候に対する弱さといった技術的課題も多く残る。
+  
 
-  本論文では、これらの問題のうち、ドローンが発生させる騒音の軽減を目指し、ADF (Adaptive Filter) を使用したシステムについて検討する。
+  本研究ではドローンの応用分野の1つとして音声収録に着目し、収録した音声信号からドローンの雑音を取り除く方法について検討する。
 
-\section{研究目的}
-  ノイズを減少させる方法には大きく分けて、材質や形状を最適化する受動騒音制御と、逆位相の音を発生してもとの音を消す能動騒音制御の2つある。
+  % しかしながら、ドローンを使用するうえでは騒音、駆動時間が短さ、悪天候に対する弱さといった技術的課題も多く残る。
 
+  % 本論文では、これらの問題のうち、ドローンが発生させる騒音の軽減を目指し、ADF (Adaptive Filter) を使用した雑音抑圧システムについて検討する。
+
+% \section{研究目的}
+  % ノイズを減少させる方法には大きく分けて、材質や形状を最適化する受動騒音制御と、逆位相の音を発生してもとの音を消す能動騒音制御の2つある。
+
+  %%%%%%%%%%%%%%%%
   % 本研究では、小型・軽量でドローンに搭載可能な計算機を使用し、能動騒音制御の適応適応フィルタ
-
-  能動騒音制御を行うには、適応アルゴリズムを使用し逆位相の音を予測するすることが一般的である。適応アルゴリズムにはFIR型、IIR型、ラティス型、周波数領域処理などいくつか種類があるが、代表的なアルゴリズムとしてFIR型のLMS、NLMS、AP、RLSアルゴリズムが挙げられる。
+  % 雑音と目的信号の混合信号から、雑音のみを取り除く方法として、動的にフィルタの係数を変化させる適応フィルタ（ADF、Adaptive Filter) を使用する方法がある。
   
-  本研究では、ドローンの雑音を能動騒音制御を実現する前段階として、小型・軽量な計算機でこれらのアルゴリズムを実装し比較評価を行うことを目的とする。
+  % 適応フィルタ使用した信号分離の実際の応用例として以下の2つに着目した。
+  %%%%%%%%%%%%%%%%
+  雑音と音声信号の分離の方法として適応フィルタ使用した以下の2つ応用方法に着目した。
+\begin{enumerate}
+  \renewcommand{\labelenumi}{(\arabic{enumi})}
+  \item 雑音の参照信号から、次サンプルの信号を予測し、人工的に雑音を逆位相で発生させて打ち消す能動騒音制御
+  \item 長時間平均で見ると雑音に対する目的信号のエネルギーが小さいことを利用し、フィルタ係数を雑音のみに適応させる適応等化問題
+\end{enumerate}  
 
-  % 本研究のシステムでは計算機としてRaspberry Piを使用する。
+
+  % 能動騒音制御を行うには、適応アルゴリズムを使用して信号を予測し、逆位相の音を発生して雑音を打ち消す方法が一般的である。したがって、適応アルゴリズムの予測性能が雑音抑圧の効果を決定づける要因となる。適応フィルタの種類にはFIR型、IIR型、ラティス型、周波数領域処理などいくつかあるが、代表的なアルゴリズムとしてFIR型のLMS、NLMS、AP、RLSアルゴリズムが挙げられる。
+  能動騒音制御および適応等化問題実行するには、適応アルゴリズムを使用して信号を予測する方法が一般的である。したがって、適応アルゴリズムの予測性能が雑音抑圧の効果を決定づける要因となる。表1に代表的な適応アルゴリズムを示す。
+  % したがって、適応アルゴリズムの予測性能が雑音抑圧の効果を決定づける要因となる。適応フィルタの種類にはFIR型、IIR型、ラティス型、周波数領域処理などいくつかあるが、代表的なアルゴリズムとしてFIR型のLMS、NLMS、AP、RLSアルゴリズムが挙げられる。
+
+  また、実際に計算を実行する媒体の実行性能も処理能力に大きく影響する。
+
+  本研究のシステムでは計算機としてRaspberry Piを使用する。
+  Raspberry Piは安価・小型なLinuxマイコンボードで、ドローンに搭載可能かつ入手が容易という理由から選定した。
+  
+  % 本研究では、ドローンの雑音を能動騒音制御を実現する前段階として、小型・軽量な計算機でこれらのアルゴリズムを実装し比較評価を行うことを目的とする。
+  本研究では、Raspberry Piでこれらのアルゴリズムを実行し雑音抑圧の比較評価を行うことを目的とする。
+
   % Raspberry Piは英国のラズベリーパイ財団によって開発されている、シングルボードコンピュータである。Raspberr Piは教育用として制作されたが、現在ではIoT製品開発などの業務や人工衛星のOBC (On Board Computer) にも使用されている。
   
   % この論文では、近年、急速に発達が進んでいるドローンにRaspberry Piを搭載し、
@@ -69,72 +93,141 @@
   %   \end{split}
   %     \label{equation:cost}
   % \end{equation}
-  LMS法はフィルタ係数を$w_k$とし、コスト関数$J$を
-  \begin{equation}
-    J = E||\symbf{w}_k - \symbf{w}_{k-1}||^2 
-    \label{equation:cost}
-  \end{equation}
-  を最小にするようフィルタ係数$\symbf{w}_k$を更新式
-  \begin{equation}
-    \symbf{w}_k = \symbf{w}_{k-1} + \mu \symbf{x}_k \symbf{\epsilon}_k
-    \label{equation:lms}
-  \end{equation}
+  % LMS法はフィルタ係数を$w_k$とし、コスト関数$J$を
+  % \begin{equation}
+    % J = E||\symbf{w}_k - \symbf{w}_{k-1}||^2 
+    % \label{equation:cost}
+  % \end{equation}
+  % を最小にするようフィルタ係数$\symbf{w}_k$を更新式
+  % \begin{equation}
+    % \symbf{w}_k = \symbf{w}_{k-1} + \mu \symbf{x}_k \symbf{\epsilon}_k
+    % \label{equation:lms}
+  % \end{equation}
 
-  \( \symbf{w}_k = \mu \symbf{w}_{k-1} + \frac{1}{\alpha + ||\symbf{x_k}||^2}\symbf{x}_k \symbf{\epsilon}_k \)
+  % \begin{eqnarray}
+  %   \symbf{w}_k = \symbf{w}_{k-1} + \mu \frac{1}{\alpha + ||\symbf{x_k}||^2}\symbf{x}_k \symbf{\epsilon}_k  \\
 
-  \(\symbf{w}_k = \symbf{w}_{k-1} + \mu \symbf{U}_k \left( \alpha \symbf{I} + \symbf{U}_k^H \symbf{U}_k \right)^{-1} \symbf{\epsilon}_k\) 
+  %   \symbf{w}_k = \symbf{w}_{k-1} + \mu \symbf{U}_k \left( \alpha \symbf{I} + \symbf{U}_k^H \symbf{U}_k \right)^{-1} \symbf{\epsilon}_k \\
 
-  \(\symbf{w}_k = \symbf{w}_{k-1} +  \symbf{g}_l \epsilon_k \) \\
-  s.t. \(P_k = ( \symbf{I} - \symbf{g}_k \symbf{x}_k^H) P_{k-1}\)
+  %   \symbf{w}_k = \symbf{w}_{k-1} +  \symbf{g}_l \epsilon_k \) \\
+  %   s.t. \(P_k = ( \symbf{I} - \symbf{g}_k \symbf{x}_k^H) P_{k-1}\)
 
-  でサンプルごとに更新するアルゴリズムである。
+  % \end{eqnarray}
 
-  その他のアルゴリズムの更新式を表\label{tab:algorithm}に示す。
 
-  \subsection*{\(\alpha\)作用のみ考慮}
-    \(\alpha\)作用のみを考慮した場合の電流密度\(I\)[A/cm^2]は次式で求められる\footnote{ここでのeは自然対数の底であることに注意} (\(\alpha\):電子の衝突電離係数，\(d\):電極間の距離 [cm])｡
-    \begin{equation}
-      I = I_0 e^{\alpha d} 
-      \label{equation:alpha_I}
-    \end{equation}
-    ただし，\(I_0\)は次式で定義される (\(e\):素電荷，\(n_0\):初期の電子の個数)｡
-    \begin{equation}
-      I_0 = e n_0
-      \label{equation:I_0}
-    \end{equation}
+  表1に示す適応アルゴリズムはそれぞれ、線形MMSE法 (線形最小二乗平均誤差法) もしくは線形LS法 (最小二乗法) に基づき、観測値と予測値の誤差を最小化するようにフィルタ係数を更新するアルゴリズムである。適応フィルタではサンプルごとに、\(w_k = w_{k-1} + \Delta w\)を計算しフィルタ係数を更新する。 各アルゴリズムの相違点は係数更新の際に生じる相関行列の逆行列 \( \left(\alpha \symbf{I} + \symbf{R}_x\right) ^ {-1} \)の計算方法である。表1のアルゴリズムは下に行くほどこの逆行列の推定に用いるサンプル数が増加する。また、これに伴い、一般に収束速度も速くなる。一方、この代償として計算量が増大する。したがって、実装するハードウェアの規模や、求められる収束速度などを考慮して、アルゴリズムを選択する必要がある。
 
-    (\ref{equation:alpha_I})式，(\ref{equation:I_0})式より
-    \begin{equation}
+  \begin{figure}[h]
+    \centering
+    % \includegraphics[width=10cm]{reflective.pdf} \\
+    \includegraphics[width=4cm]{slides/block.pdf} \\
+    \caption{適応フィルタの基本構成}
+    \label{fig:block}
+  \end{figure}
+
+  \begin{table}[h]
+    \centering
+    \caption{代表的な適応アルゴリズムの係数更新式}
+    \label{tab:formula}
+    \begin{tabular}{|c|c|}
+    \hline
+    アルゴリズム  & \(\Delta \symbf{w}\)                                                                                             \\ \hline
+    LMS         & \( \mu \symbf{x}_k \symbf{\epsilon}_k \)                                                                         \\ \hline
+    NLMS        & \( \mu \left( \alpha \symbf{I} + \symbf{x}_k \symbf{x}_k^H \right)^{-1} \symbf{x}_k \symbf{\epsilon}_k \)        \\ \hline
+    AP          & \(\mu \symbf{X}_k \left( \alpha \symbf{I} + \symbf{X}_k^H \symbf{X}_k \right)^{-1} \symbf{\epsilon}_k\)          \\ \hline
+    RLS         & \( \mu \symbf{X}_k \left( \alpha \symbf{I} + \symbf{X}_{1:k}^H \symbf{X}_{1:k} \right)^{-1} \symbf{\epsilon}_k\) \\ \hline
+    \end{tabular}
+  \end{table}
+
+  \begin{table}[h]
+    \centering
+    \caption{代表的な適応アルゴリズムの係数更新式}
+    \label{tab:formula}
+    \begin{tabular}{|c|c|}
+    \hline
+    & \(\Delta \symbf{w}\)                                                                                             \\ \hline
+    % LMS         & \( \mu \symbf{x}_k \symbf{\epsilon}_k \)                                                                         \\ \hline
+    NLMS        & \( \mu \left( \alpha \symbf{I} + \symbf{x}_k \symbf{x}_k^H \right)^{-1} \symbf{x}_k \symbf{\epsilon}_k \)        \\ \hline
+    AP          & \(\mu \symbf{X}_k \left( \alpha \symbf{I} + \symbf{X}_k^H \symbf{X}_k \right)^{-1} \symbf{\epsilon}_k\)          \\ \hline
+    RLS         & \( \mu \symbf{X}_k \left( \alpha \symbf{I} + \symbf{X}_{1:k}^H \symbf{X}_{1:k} \right)^{-1} \symbf{\epsilon}_k\) \\ \hline
+    \end{tabular}
+  \end{table}
+
+  \begin{table}[]
+    \centering
+    \caption{代表的な適応アルゴリズムの係数更新式と演算量}
+    \label{tab:formula_calc}
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+         & \(\Delta \symbf{w}\)                                                                                             & 収束速度             & 計算量              \\ \hline
+    NLMS & \( \mu \left( \alpha \symbf{I} + \symbf{x}_k \symbf{x}_k^H \right)^{-1} \symbf{x}_k \symbf{\epsilon}_k \)        & 遅                & 少                \\ \hline
+    AP   & \(\mu \symbf{X}_k \left( \alpha \symbf{I} + \symbf{X}_k^H \symbf{X}_k \right)^{-1} \symbf{\epsilon}_k\)          & \(\updownarrow\) & \(\updownarrow\) \\ \hline
+    RLS  & \( \mu \symbf{X}_k \left( \alpha \symbf{I} + \symbf{X}_{1:k}^H \symbf{X}_{1:k} \right)^{-1} \symbf{\epsilon}_k\) & 速                & 多                \\ \hline
+    \end{tabular}
+    \end{table}
+
+
+% \section{使用機器}
+% \begin{enumerate}
+%   \renewcommand{\labelenumi}{(\arabic{enumi})}
+%   \item シングルボードコンピュータ \ ラズベリーパイ財団 \ Raspberry Pi Model3B+ \ S/N.
+%   \item オーディオ入力拡張ボード \ マルツエレック株式会社 \ Pumkin Pi \ S/N.
+%   \item ドローン \ リンクスモーション株式会社 \ HQuad500
+% \end{enumerate}  
+
+\section{研究内容・結果}
+  \subsection{ADFライブラリの作成}
+    ADFフィルタのライブラリの作成を行った。使用言語はGo言語である。Go言語はGoogleが開発した言語で、速度が早く、仕様がシンプルで学習しやすく、コードの書き方が統一されやすいという特徴を持つ。また、ローカルのPCでRapberry Pi用の実行ファイルを簡単にクロスコンパイルできる。
+
+    作成したライブラリはGithub (https://github.com/tetsuzawa/go-adflib) にてOpen Source Softwareとして公開している。
+
+  \subsection{ADFライブラリのベンチマーク}
+    作成した各アルゴリズムのベンチマークを行い、1サンプルあたりの処理時間、使用メモリ、測定した。測定条件を以下に示す。なお、実行環境はRaspberry Pi Model 3Bである。
+    結果を表3に示す。
+
+    \begin{table}[]
       \centering
-      \begin{split}
-        I &= I_0 e^{\alpha d} \\
-          &= e n_0 e^{\alpha d} \\
-          &= 1.602 \times 10^{-19} \times 1 \times e^{7 \times 1} \\
-          &= 1.76 \times 10^{-16} [\si{\ampere} / \si{\centi \meter ^ 2}]
-      \end{split}
-      \label{equation:alpha_I_answer}
-    \end{equation} 
-    となる｡
+      \caption{1回のフィルタ更新・予測あたりの実行性能}
+      \label{tab:exec}
+      \begin{tabular}{|l|l|l|}
+      \hline
+           & 実行時間 [ns/op] & メモリ使用量 [B/op] \\ \hline
+      NLMS & 1.9          & 84            \\ \hline
+      AP   & 78.4         & 941           \\ \hline
+      RLS  & 52.9         & 2549          \\ \hline
+      \end{tabular}
+      \end{table}
 
+  % \subsection{ドローンの定常的な雑音の収録・解析}
+  %   ドローンの組み立てと定常的な雑音の収録を行い、周波数解析を行った。図2は解析結果のスペクトログラムである。
+  %   \begin{figure}[h]
+  %     \centering
+  %     \includegraphics[width=6cm]{slides/dr_spectrogram.png} \\
+  %     \caption{ドローンの定常動作音の周波数解析結果}
+  %     \label{fig:dr_spectrogram}
+  % \end{figure}
 
-  \subsection*{\(\alpha\)作用と\(\gamma\)作用を考慮}
-    \(\alpha\)作用と\(\gamma\)作用を考慮した場合の電流密度\(I\)[A/cm^2]は次式で求められる (\(\alpha\):電子の衝突電離係数，\(\gamma\):正イオンが陰極に衝突する際の二次電子放出係数，\(d\):電極間の距離[cm])｡
-    \begin{equation}
-      I = \frac{e^{\alpha d}}{1-\gamma (e^{\alpha d} - 1)} I_0
-      \label{equation:gamma_I}
-    \end{equation}
+  \subsection{ドローンの定常的な雑音の収録・解析}
+    ドローンの組み立てと定常的な雑音の収録を行い、周波数解析を行った。その結果、雑音の周波数帯域は100Hz~5kHzと音声帯域と重なっていることが確認できた。したがって、当初の予定通り適応フィルタを使用する必要があることが判明した。
 
-    従って，
-    \begin{equation}
-      \begin{split}
-        I &= \frac{e^{\alpha d}}{1-\gamma (e^{\alpha d} - 1)} I_0 \\
-          &= \frac{e^{\alpha d}}{1-\gamma (e^{\alpha d} - 1)} e n_0 \\
-          &= \frac{e^{7 \times 1}}{1 - 0.0009(e^{7 \times 1} - 1)} \times 1.602 \times 10^{-19} \times 1 \\
-          &= 1.26 \times 10^{-14} [\si{\ampere} / \si{\centi \meter ^ 2}]
-      \end{split}
-      \label{equation:gamma_I_answer}
-    \end{equation}
-    となる｡以上｡
+  \subsection{白色雑音とドローンの雑音の収束速度の比較}
+    LMSおよびNLMSは信号が有色となると、収束速度が低下するという特徴を持つ。
+    ドローンの定常音は明らかに有色のノイズであるため、lms、nlmsでは収束速度が低下することが予想できる。このような予測のもと各アルゴリズムの収束速度を測定・検証した。測定条件を以下に示す。
+
+    \begin{enumerate}
+      \renewcommand{\labelenumi}{(\arabic{enumi})}
+      \item 実行環境: Raspberry Pi 3B+
+      \item 未知システム: 128タップのローパスフィルタ
+      \item 入力x: 白色雑音 および ドローンの定常動作音
+      \item 観測雑音v: 入力xに対して無相関でS/N比-50dBの白色雑音
+    \end{enumerate}  
+
+    結果を図3に示す。
+    
+
+    
+    
+  
 
 
 

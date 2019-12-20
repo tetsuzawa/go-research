@@ -13,7 +13,6 @@ import (
 
 const (
 	eps = 1e-5
-	w   = "zeros"
 )
 
 func main() {
@@ -54,16 +53,16 @@ func main() {
 	var af adf.AdaptiveFilter
 	switch adfName {
 	case "LMS":
-		af, err = adf.NewFiltLMS(L, mu, w)
+		af, err = adf.NewFiltLMS(L, mu, nil)
 		check(err)
 	case "NLMS":
-		af, err = adf.NewFiltNLMS(L, mu, eps, w)
+		af, err = adf.NewFiltNLMS(L, mu, eps, nil)
 		check(err)
 	case "AP":
-		af, err = adf.NewFiltAP(L, mu, order, eps, w)
+		af, err = adf.NewFiltAP(L, mu, order, eps, nil)
 		check(err)
 	case "RLS":
-		af, err = adf.NewFiltRLS(L, mu, eps, w)
+		af, err = adf.NewFiltRLS(L, mu, eps, nil)
 		check(err)
 	}
 

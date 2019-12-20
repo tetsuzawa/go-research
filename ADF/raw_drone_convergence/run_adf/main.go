@@ -12,7 +12,6 @@ import (
 
 const (
 	eps = 1e-5
-	w   = "zeros"
 )
 
 func main() {
@@ -40,19 +39,19 @@ func main() {
 	switch adfName {
 	case "LMS":
 		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
-		af, err = adf.NewFiltLMS(L, mu, w)
+		af, err = adf.NewFiltLMS(L, mu, nil)
 		check(err)
 	case "NLMS":
 		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
-		af, err = adf.NewFiltNLMS(L, mu, eps, w)
+		af, err = adf.NewFiltNLMS(L, mu, eps, nil)
 		check(err)
 	case "AP":
 		testName = fmt.Sprintf("%v_static_L-%v_order-%v", adfName, L, order)
-		af, err = adf.NewFiltAP(L, mu, order, eps, w)
+		af, err = adf.NewFiltAP(L, mu, order, eps, nil)
 		check(err)
 	case "RLS":
 		testName = fmt.Sprintf("%v_static_L-%v", adfName, L)
-		af, err = adf.NewFiltRLS(L, mu, eps, w)
+		af, err = adf.NewFiltRLS(L, mu, eps, nil)
 		check(err)
 	}
 
