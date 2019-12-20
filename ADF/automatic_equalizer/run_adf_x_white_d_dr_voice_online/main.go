@@ -10,7 +10,7 @@ import (
 	"os"
 
 	"github.com/tetsuzawa/go-adflib/adf"
-	research "github.com/tetsuzawa/go-research/ADF/raw_drone_convergence"
+	research "github.com/tetsuzawa/go-research/ADF/automatic_equalizer"
 )
 
 const (
@@ -93,13 +93,17 @@ func main() {
 		e[i] = d[i] - y[i]
 	}
 	//y, e, _, err := af.Run(d, x)
+	_, _, w := af.GetParams()
 
-	fmt.Printf("\nwriting to csv...\n")
-	check(err)
+	fmt.Printf("writing to csv...\n")
 	research.SaveFilterdDataAsCSV(d, y, e, dataDir, testName)
+	research.SaveWAsCSV(w, dataDir, testName)
+	fmt.Printf("writing to wav...\n")
+	research.SaveFilteredDataToWav(e, dataDir, testName)
+	fmt.Printf("\n")
 }
 
-func run(data []int, af adf.AdaptiveFilter, L int) (d, y, e []float64) {
+func run(data []int, af adf.AdaptiveFilter, L int) (d, y, e, w []float64) {
 	n := len(data)
 	var x = make([][]float64, n)
 	for i := 0; i < n; i++ {
@@ -122,7 +126,8 @@ func run(data []int, af adf.AdaptiveFilter, L int) (d, y, e []float64) {
 		y[i] = af.Predict(x[i])
 		e[i] = d[i] - y[i]
 	}
-	return d, y, e
+	_, _, w = af.GetParams()
+	return d, y, e, w
 }
 
 func check(err error) {

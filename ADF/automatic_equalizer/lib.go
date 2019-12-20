@@ -3,14 +3,18 @@ package research
 import (
 	"bufio"
 	"fmt"
-	"github.com/go-audio/wav"
-	"github.com/tetsuzawa/go-adflib/adf"
-	"github.com/tetsuzawa/go-adflib/misc"
-	"gonum.org/v1/gonum/floats"
+	"github.com/tetsuzawa/go-research/tools"
 	"math"
 	"math/rand"
 	"os"
 	"path/filepath"
+
+	"github.com/go-audio/audio"
+	"github.com/go-audio/wav"
+	"gonum.org/v1/gonum/floats"
+
+	"github.com/tetsuzawa/go-adflib/adf"
+	"github.com/tetsuzawa/go-adflib/misc"
 )
 
 type OptStepADF struct {
@@ -196,6 +200,77 @@ func SaveFilterdDataAsCSV(d, y, e []float64, dataDir string, testName string) {
 	check(err)
 
 	fmt.Printf("\ncsv file saved at: %v\n", outputPath)
+}
+
+func SaveWAsCSV(w []float64, dataDir string, testName string) {
+	n := len(w)
+	outputPath := filepath.Join(dataDir, testName+"_w.csv")
+	fw, err := os.Create(outputPath)
+	check(err)
+	writer := bufio.NewWriter(fw)
+	for i := 0; i < n; i++ {
+		//_, err = fw.Write([]byte(fmt.Sprintf("%f,%f,%f\n", d[i], y[i], e[i])))
+		//_, err = writer.WriteString(fmt.Sprintf("%g,%g,%g\n", d[i], y[i], e[i]))
+		_, err = fmt.Fprintf(writer, "%g\n", w[i])
+		check(err)
+	}
+	err = writer.Flush()
+	check(err)
+	err = fw.Close()
+	check(err)
+
+	fmt.Printf("\ncsv file saved at: %v\n", outputPath)
+}
+
+func SaveFilteredDataToWav(e []float64, dataDir string, testName string) {
+	outputPath := filepath.Join(dataDir, testName+"_error.wav")
+	fw, err := os.Create(outputPath)
+	check(err)
+
+	const (
+		SampleRate    = 48000
+		BitsPerSample = 16
+		NumChannels   = 1
+		PCM           = 1
+	)
+
+	w1 := wav.NewEncoder(fw, SampleRate, BitsPerSample, NumChannels, PCM)
+	aBuf := new(audio.IntBuffer)
+	aBuf.Format = &audio.Format{
+		NumChannels: NumChannels,
+		SampleRate:  SampleRate,
+	}
+	aBuf.SourceBitDepth = BitsPerSample
+
+	e = tools.NormToMaxInt16(e)
+	aBuf.Data = float64sToInts(e)
+	err = w1.Write(aBuf)
+	check(err)
+
+	err = w1.Close()
+	check(err)
+
+	err = fw.Close()
+	check(err)
+
+	fmt.Printf("\nwav file saved at: %v\n", outputPath)
+}
+
+func float64sToInts(fs []float64) []int {
+	is := make([]int, len(fs))
+	for i, s := range fs {
+		//is[i] = int16(s * math.MaxInt16)
+		is[i] = int(s)
+	}
+	return is
+}
+
+func int16sToInts(i16s []int16) []int {
+	var is = make([]int, len(i16s))
+	for i, v := range i16s {
+		is[i] = int(v)
+	}
+	return is
 }
 
 func check(err error) {
