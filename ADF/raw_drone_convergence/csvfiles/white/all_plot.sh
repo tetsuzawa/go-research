@@ -8,7 +8,7 @@ for algo in NLMS RLS; do
   for len in 4 16 64 256 1024; do
     echo "${algo} start to plot with length ${len}"
     python /Users/tetsu/personal_files/Research/research_tools/plot_from_csv.py ${algo}_${subject}_L-${len}.csv -d ../../imgfiles/${subject}
-    mse_csv -tap 256 ${algo}_${subject}_L-${len}.csv 
+    mse -tap 256 ${algo}_${subject}_L-${len}.csv
     python /Users/tetsu/personal_files/Research/research_tools/plot_MSE_iter_from_csv.py ${algo}_${subject}_L-${len}_mse.csv -d ../../imgfiles/${subject} 
     echo -e "\n\n\n"
   done
@@ -19,7 +19,7 @@ for algo in AP; do
     for len in 4 16 64 256 1024; do
       echo "${algo} start to plot with length ${len}"
       python /Users/tetsu/personal_files/Research/research_tools/plot_from_csv.py ${algo}_${subject}_L-${len}_order-${order}.csv -d ../../imgfiles/${subject} 
-    mse_csv -tap 256 ${algo}_${subject}_L-${len}_order-${order}.csv
+    mse -tap 256 ${algo}_${subject}_L-${len}_order-${order}.csv
     python /Users/tetsu/personal_files/Research/research_tools/plot_MSE_iter_from_csv.py ${algo}_${subject}_L-${len}_order-${order}_mse.csv -d ../../imgfiles/${subject}
       echo -e "\n\n\n"
     done
