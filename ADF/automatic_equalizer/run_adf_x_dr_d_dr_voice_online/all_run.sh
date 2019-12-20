@@ -10,19 +10,19 @@ make build
 algo="NLMS"
 for len in 4 16 64 128 256; do
   echo "${algo} start calculation with length ${len}"
-  ./build/${BIN_NAME} ../jsonfiles/${DIR_NAME}/${algo}_static_L-${len}.json ../csvfiles/${DIR_NAME}
+  ./build/${BIN_NAME} ../jsonfiles/${DIR_NAME}/${algo}_static_L-${len}.json ../csvfiles/${DIR_NAME} ../wavfiles/noise_mixed/fukushima_20sec_snr0.wav
 done
 
 algo="RLS"
 for len in 4 16 64 128 256; do
   echo "${algo} start calculation with length ${len}"
-  ./build/${BIN_NAME} ../jsonfiles/${DIR_NAME}/${algo}_static_L-${len}.json ../csvfiles/${DIR_NAME}
+  ./build/${BIN_NAME} ../jsonfiles/${DIR_NAME}/${algo}_static_L-${len}.json ../csvfiles/${DIR_NAME} ../wavfiles/noise_mixed/fukushima_20sec_snr0.wav
 done
 
 algo="AP"
 for order in 8; do
   for len in 4 16 64 128 256; do
     echo "${algo} start calculation with length ${len}"
-    ./build/${BIN_NAME} ../jsonfiles/${DIR_NAME}/${algo}_static_L-${len}_order-${order}.json ../csvfiles/${DIR_NAME}
+    ./build/${BIN_NAME} ../jsonfiles/${DIR_NAME}/${algo}_static_L-${len}_order-${order}.json ../csvfiles/${DIR_NAME} ../wavfiles/noise_mixed/fukushima_20sec_snr0.wav
   done
 done
