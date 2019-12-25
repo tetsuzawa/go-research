@@ -76,6 +76,7 @@
       1. 演算速度について
       2. 使用メモリについて
       3. CPUの負荷（Raspberry Pi)
+      3. CPUの負荷（Raspberry Pi)
 
 <br>
       
