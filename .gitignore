@@ -22,6 +22,7 @@
 *.jpg
 *.JPG
 *.gif
+*.json
 
 # Useless
 *.idea/

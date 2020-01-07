@@ -23,6 +23,6 @@ calc_noise_mix \
  -clean /Users/tetsu/personal_files/Research/sample_wav/fukushima_20sec.wav \
  -noise ${WAV_DIR}/dr_static_20.wav \
  -output ${WAV_DIR}/noise_mixed/ \
- -start -20 \
- -end 20 \
+ -start -40 \
+ -end 0 \
  -div 9

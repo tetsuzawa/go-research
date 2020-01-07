@@ -3,13 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/tetsuzawa/go-adflib/misc"
 	"io/ioutil"
 	"math"
 	"math/rand"
 	"os"
 
 	"github.com/tetsuzawa/go-adflib/adf"
+	"github.com/tetsuzawa/go-adflib/misc"
 	research "github.com/tetsuzawa/go-research/ADF/automatic_equalizer"
 )
 
