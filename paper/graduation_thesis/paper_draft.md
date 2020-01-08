@@ -113,11 +113,11 @@
 
    1. 自作ライブラリの制作
       1. Goの説明
+         - 理由はQiitaから抜粋 [なぜGoを研究で使うのか](https://qiita.com/tetsuzawa/items/d279da49dca3d95f05b6)
          - Goのインストール方法
 
       2. ライブラリの設計
-         - Goを使用
-            - 理由はQiitaから抜粋 [なぜGoを研究で使うのか](https://qiita.com/tetsuzawa/items/d279da49dca3d95f05b6)
+         - [padasip](https://github.com/matousc89/padasip.git)
          
       3. インストール方法
          - `go get github.com/tetsuzawa/go-adflib/adf`
@@ -153,15 +153,16 @@
          2. audacityを使用する方法
             1. インストール方法
             2. 使い方
-         3. portaudioの自作プログラムを使用する方
+         3. portaudioの自作プログラムを使用する方法
             1. Goで書いたプログラム
             2. 使い方
          2. 収音プログラムの作成
       2. 駆動音の周波数特性について
-         1. スペクトラムサブトラクション
+         2. 帯域
+            - 無音区間に定常ノイズが乗っている
+            - スペクトラムサブトラクション
             - 理論
             - プログラム (Python)
-         2. 帯域
    2. 自作ライブラリのベンチマーク法
       1. 演算速度について
       2. 使用メモリについて
