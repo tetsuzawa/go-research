@@ -15,14 +15,15 @@ import (
 
 const (
 	eps             = 1e-5
-	applicationName = "auto_on_ref"
+	applicationName = "auto_on_ref_convo"
 )
 
 func main() {
 
 	jsonName := os.Args[1]
 	dataDir := os.Args[2]
-	dWavPath := os.Args[3]
+	xWavPath := os.Args[3]
+	dWavPath := os.Args[4]
 
 	rawJSON, err := ioutil.ReadFile(jsonName)
 	check(err)
@@ -31,15 +32,15 @@ func main() {
 	err = json.Unmarshal(rawJSON, optStepADF)
 	check(err)
 
-	wavName := optStepADF.WavName
+	//wavName := optStepADF.WavName
 	adfName := optStepADF.AdfName
 
-	xData := research.ReadDataFromWav(wavName)
+	xData := research.ReadDataFromWav(xWavPath)
 	dData := research.ReadDataFromWav(dWavPath)
 	L := optStepADF.L
 	mu := optStepADF.Mu
 	order := optStepADF.Order
-	fmt.Println("wav name:", wavName)
+	fmt.Println("x wav name:", xWavPath)
 	fmt.Println("d wav name:", dWavPath)
 	fmt.Println("adf name:", adfName)
 	fmt.Println("L:", L)
