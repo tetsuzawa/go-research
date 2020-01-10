@@ -33,7 +33,7 @@ for SNR in $(seq -40 5 0); do
   for order in 8; do
     for len in 4 16 64 128 256; do
       echo "${algo} start calculation with length ${len}"
-      ./build/${BIN_NAME} ../jsonfiles/${DIR_NAME}/${algo}_static_L-${len}_order-${order}.json ${SAVE_DIR_NAME} ../wavfiles/noise_mixed_convo_x/voice_r_20sec_ir_convolved_20sec_snr${SNR}.wav ../wavfiles/noise_mixed_convo_d/voice_l_20sec_ir_convolved_snr${SNR}.wav
+      ./build/${BIN_NAME} ../jsonfiles/${DIR_NAME}/${algo}_static_L-${len}_order-${order}.json ${SAVE_DIR_NAME} ../wavfiles/noise_mixed_convo_x/voice_r_20sec_ir_convolved_20sec_snr${SNR}.wav ../wavfiles/noise_mixed_convo_d/voice_l_20sec_ir_convolved_20sec_snr${SNR}.wav
     done
   done
 done
