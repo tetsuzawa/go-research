@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-audio/audio"
 	"github.com/go-audio/wav"
+	"github.com/mjibson/go-dsp/fft"
 	"gonum.org/v1/gonum/floats"
 )
 
@@ -168,6 +169,98 @@ func IntsToFloat64s(is []int) []float64 {
 		fs[i] = float64(s)
 	}
 	return fs
+}
+func Float64sToComplex128s(fs []float64) []complex128 {
+	cs := make([]complex128, len(fs))
+	for i, f := range fs {
+		cs[i] = complex(f, 0)
+	}
+	return cs
+}
+
+func Complex128sToFloat64s(cs []complex128) []float64 {
+	fs := make([]float64, len(cs))
+	for i, c := range cs {
+		fs[i] = real(c)
+	}
+	return fs
+}
+
+func Convolve(xs, ys []float64) []float64 {
+	var convLen, sumLen = len(xs), len(ys)
+	if convLen > sumLen {
+		ys = append(ys, make([]float64, convLen-sumLen)...)
+	} else {
+		convLen, sumLen = sumLen, convLen
+		xs = append(xs, make([]float64, convLen-sumLen)...)
+	}
+	var rs = make([]float64, convLen)
+	var nodeSum float64
+	var i, j int
+	for i = 0; i < convLen; i++ {
+		for j = 0; j < sumLen; j++ {
+			if i-j < 0 {
+				continue
+			}
+			nodeSum += xs[i-j] * ys[j]
+		}
+		rs[i] = nodeSum
+		nodeSum = 0
+	}
+	return rs
+}
+
+func ConvolveSame(xs, ys []float64) []float64 {
+	var convLen, sumLen = len(xs), len(ys)
+	if convLen > sumLen {
+		ys = append(ys, make([]float64, convLen-sumLen)...)
+	} else {
+		convLen, sumLen = sumLen, convLen
+		xs = append(xs, make([]float64, convLen-sumLen)...)
+	}
+	var rs = make([]float64, convLen)
+	var nodeSum float64
+	var i, j int
+	for i = 0; i < convLen; i++ {
+		for j = 0; j < sumLen; j++ {
+			if i-j < 0 {
+				continue
+			}
+			nodeSum += xs[i-j] * ys[j]
+		}
+		rs[i] = nodeSum
+		nodeSum = 0
+	}
+	return rs
+}
+
+func FastConvolve(xs, ys []float64) []float64 {
+	L := len(xs)
+	N := len(ys)
+	M := N + L - 1
+
+	xsz := append(xs, make([]float64, M-L)...)
+	ysz := append(ys, make([]float64, M-N)...)
+
+	var rs = make([]float64, M)
+	var Rs = make([]complex128, M)
+
+
+	fmt.Printf("calcurating fft...\n")
+
+	Xs := fft.FFT(Float64sToComplex128s(xsz))
+	Ys := fft.FFT(Float64sToComplex128s(ysz))
+
+	for i := 0; i < M; i++ {
+		// progress
+		fmt.Printf("calucurating convolution... %d%%\r", (i+1)*100/M)
+		Rs[i] = Xs[i] * Ys[i]
+	}
+	fmt.Printf("\ncalcurating ifft...\n")
+
+	rs = Complex128sToFloat64s(fft.IFFT(Rs))
+
+	return rs
 }
 
 func SplitPathAndExt(path string) (string, string) {
