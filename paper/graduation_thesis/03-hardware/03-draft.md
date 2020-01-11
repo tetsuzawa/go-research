@@ -34,7 +34,11 @@
 
 - 使用機器
    1. エレクトットコンデンサマイク XCM6035 株式会社秋月電子通商 [url](http://akizukidenshi.com/catalog/g/gP-08181/) x2
+   [エレクトットコンデンサマイク]()
+      
    2. シールドスリムロボットケーブル KRT-SW 株式会社秋月電子通商 [url](http://akizukidenshi.com/catalog/g/gP-07457/)
+
+
    3. 3.5mmΦステレオミニプラグ MP-319 株式会社秋月電子通商
 
 ### アンプについて
