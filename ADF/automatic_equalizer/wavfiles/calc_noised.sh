@@ -19,10 +19,27 @@ WAV_DIR="$(cd $(dirname $0); pwd)"
 # -div 9
 
 
+#calc_noise_mix \
+# -clean /Users/tetsu/personal_files/Research/sample_wav/fukushima_20sec.wav \
+# -noise ${WAV_DIR}/dr_static_20.wav \
+# -output ${WAV_DIR}/noise_mixed/ \
+# -start -40 \
+# -end 0 \
+# -div 9
+
+#01/10 for real x and d
 calc_noise_mix \
- -clean /Users/tetsu/personal_files/Research/sample_wav/fukushima_20sec.wav \
- -noise ${WAV_DIR}/dr_static_20.wav \
- -output ${WAV_DIR}/noise_mixed/ \
+ -clean ../DRONE_01_09/voice_l_20sec_ir_convolved_20sec.wav \
+ -noise ../DRONE_01_09/drone_subtracted_l_20sec_ir_convolved_by_r.wav \
+ -output ${WAV_DIR}/noise_mixed_convo_d/ \
+ -start -40 \
+ -end 0 \
+ -div 9
+
+calc_noise_mix \
+ -clean ../DRONE_01_09/voice_r_20sec_ir_convolved_20sec.wav \
+ -noise ../DRONE_01_09/drone_subtracted_r_20sec.wav \
+ -output ${WAV_DIR}/noise_mixed_convo_x/ \
  -start -40 \
  -end 0 \
  -div 9
