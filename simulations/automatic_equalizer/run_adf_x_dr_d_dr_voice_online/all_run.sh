@@ -7,11 +7,6 @@ DIR_NAME="auto_on_ref_convo"
 
 make build
 
-#	jsonName := os.Args[1]
-#	dataDir := os.Args[2]
-#	xWavPath := os.Args[3]
-#	dWavPath := os.Args[4]
-
 for SNR in $(seq -40 5 0); do
   echo -e "\n***start calculation with SN Rate ${SNR}***\n"
 
