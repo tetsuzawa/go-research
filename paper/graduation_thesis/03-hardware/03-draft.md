@@ -49,6 +49,8 @@
 
 Raspberry Piは英国のラズベリーパイ財団によって開発されている、ARMプロセッサを搭載したシングルボードコンピュータである。Raspberr Piは教育用として制作されたが、現在ではIoT製品開発などの業務や人工衛星のOBC (On Board Computer) にも使用されている。
 
+Raspberry Piには
+
 ### OSの選定
 
 
