@@ -33,6 +33,7 @@
 .DS_store
 *.pptx
 slide/
+*.drawio
 
 bin/
 build/
