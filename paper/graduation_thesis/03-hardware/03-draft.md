@@ -14,11 +14,31 @@
 
 使用機器を以下に示す。
 
-1. HQuad500 機体 [HQuad500](http://www.lynxmotion.com/p-1058-hquad500-hardware-only-kit.aspx)
+1. ドローンの機体 HQuad500 Hardware kit Lynxmotion株式会社 [HQuad500](http://www.lynxmotion.com/p-1058-hquad500-hardware-only-kit.aspx)
    ![HQuad500](figures/hquad500_hardware.jpg)
    ![HQuad500](figures/hquad500_parts.jpg)
-2. ESC (Electronic Speed Controller) [ESC](http://www.lynxmotion.com/p-915-12a-esc-simonk.aspx)
+
+2. ESC (Electronic Speed Controller) 12A ESC (SimonK) Lynxmotion株式会社 [ESC](http://www.lynxmotion.com/p-915-12a-esc-simonk.aspx)
    ![ESC](figures/esc.jpg)
+
+3. ブラシレスモーター Brushless Motor 28x30 1000kv Lynxmotion株式会社 [ブラシレスモーター](http://www.lynxmotion.com/p-913-brushless-motor-28x30-1000kv.aspx)]
+   ![ブラシレスモーター](figures/brushless_motor.jpg)
+
+4. フライトコントローラー Quadrino Nano Lynxmotion株式会社  [フライトコントローラー](http://www.lynxmotion.com/p-1020-lynxmotion-quadrino-nano-flight-controller-with-gps.aspx)
+   ![フライトコントローラー](figures/quadrino_nano.jpg)
+
+5. リポバッテリー充電器 18W LiPo Battery Charger Lynxmotion株式会社 [リポバッテリー充電器](http://www.lynxmotion.com/p-985-18w-lipo-battery-charger.aspx)
+   ![リポバッテリー充電器](figures/lipo_charger.jpg)
+
+1. リポバッテリー 11.1V (3S), 3500mAh 30C LiPo Battery Pack
+ Lynxmotion株式会社 [リポバッテリー充電器](http://www.lynxmotion.com/p-985-18w-lipo-battery-charger.aspx)
+   ![リポバッテリー充電器](figures/lipo_charger.jpg)
+
+1. ラジオレシーバー R9DS 10 channels 2.4GHz DSSS FHSS Receiver RadioLink株式会社 [ラジオレシーバー](http://www.radiolink.com.cn/doce/product-detail-120.html)
+   ![ラジオレシーバー](figures/r9ds.jpg)
+
+1. トランスミッタ AT9S 2.4GHz 10CH transmitter RadioLink株式会社 [トランスミッタ](http://www.radiolink.com.cn/doce/product-detail-119.html)
+   ![トランスミッタ](figures/at9s.jpg)
 
 
 ### 組み立ておよび動作確認
@@ -81,7 +101,46 @@ Raspberry Piは英国のラズベリーパイ財団によって開発されて�
 
 Raspberry Piには
 
+- Linux系のOSで動作するためソフトウェア開発に強みをもち、GPIOピンを通してSPI、I2C、I2Sなどの通信を行えるため、センサなどを用いた開発を容易に行える。また、USB端子を搭載し、WI-FI、Bluetooth接続も可能で プロタイプ開発に適したデバイスとなっている。
+
 ### OSの選定
+
+Raspberry Piで使用可能なOSには
+
+- 電子工作などに適した公式OS Raspbian
+- LinuxディストリビューションのUbuntuから派生した Ubuntu MATE
+- Microsoft Windows 10
+
+などが存在する。
+
+本研究では主にGPIOを使用して開発を行うため、Raspbianを使用した。
+
+### 初期設定について
+
+1. OSのインストール
+2. 地域、言語の設定
+   `sudo raspi-config`  
+   Localization Options
+
+2. sshの設定
+   `sudo raspi-config`  
+   Interfacing Options  
+   SSH  
+
+3. アップデート
+   ```shell
+   sudo apt update 
+   sudo apt upgrade -y 
+   sudo apt dist-upgrade
+   sudo rpi-update
+   sudo reboot
+   ```
+
+- @TODO セキュリティに関する設定は省略
+
+### AD変換用の拡張ボードについて
+
+Raspberry PiはADC（ADコンバータ）を搭載していないため、
 
 
 
