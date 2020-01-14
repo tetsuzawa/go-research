@@ -128,6 +128,7 @@ Raspberry Piで使用可能なOSには
    SSH  
 
 3. アップデート
+
    ```shell
    sudo apt update 
    sudo apt upgrade -y 
@@ -140,7 +141,34 @@ Raspberry Piで使用可能なOSには
 
 ### AD変換用の拡張ボードについて
 
-Raspberry PiはADC（ADコンバータ）を搭載していないため、
+Raspberry PiはADC（ADコンバータ）を搭載していないため、マイクからの入力信号を扱うにはADコンバータを導入する必要がある。  
+
+本研究で用いたのはマルツエレック株式会社の[Pumpkin Pi](http://select.marutsu.co.jp/list/detail.php?id=258)である。Pumpkin Piは計測用とオーディオ用のデュアルA-Dコンバータを搭載しており、Raspberry Piにオーディオ入力、アナログ入力機能を加えることが可能となる。
+
+Pumpkin Piの使用を以下に示す。
+
+- 対応OS Raspbian
+- 対応機種	Raspberry Pi Model B+/Raspberry Pi 2 Model B/Raspberry Pi 3 Model B
+- LED出力	1点
+- 赤外線リモコン機能	送受信
+- オーディオコネクタ	φ3.5mmステレオミニジャック
+- オーディオ入力	量子化ビット数=24,サンプリング周波数=48/96KHz
+- 計測用AD変換	2チャンネル,16ビット
+- 本体寸法	65(W)×56(D)mm
+- 本体重量	約25g
+
+![PumpkinPi](figures/pumpkin_pi.jpg)
+
+[PumpkinPi](http://select.marutsu.co.jp/list/detail.php?id=258)
+[PumpkinPi](https://www.marutsu.co.jp/pc/i/833515/)
+
+
+
+ 
+
+
+
+
 
 
 
