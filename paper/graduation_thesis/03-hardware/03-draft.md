@@ -129,10 +129,12 @@ Raspberry Piで使用可能なOSには
    `sudo raspi-config`  
    Localization Options
 
-2. sshの設定
+3. sshの設定
    `sudo raspi-config`  
    Interfacing Options  
    SSH  
+
+4. プロキシに関する設定
 
 3. アップデート
 
@@ -143,6 +145,7 @@ Raspberry Piで使用可能なOSには
    sudo rpi-update
    sudo reboot
    ```
+
 
 - @TODO セキュリティに関する設定は省略
 
