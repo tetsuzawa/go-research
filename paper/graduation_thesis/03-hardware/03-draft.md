@@ -57,6 +57,8 @@
    ![drone_bloc](drone_block.png)
 
 4. 動作確認
+   [instructin](http://www.lynxmotion.com/images/document/PDF/LynxmotionUAV-QuadrinoNano-UserGuideV1.1.pdf)
+   に従い、動作確認を行った。
 
 
 
@@ -118,7 +120,7 @@ Raspberry Piで使用可能なOSには
 
 などが存在する。
 
-本研究では主にGPIOを使用して開発を行うため、Raspbianを使用した。
+本研究では主にGPIOを使用して開発を行うため、Raspbianを使用した。なお、バージョンは@TODO
 
 ### 初期設定について
 
@@ -150,7 +152,7 @@ Raspberry PiはADC（ADコンバータ）を搭載していないため、マイ
 
 本研究で用いたのはマルツエレック株式会社の[Pumpkin Pi](http://select.marutsu.co.jp/list/detail.php?id=258)である。Pumpkin Piは計測用とオーディオ用のデュアルA-Dコンバータを搭載しており、Raspberry Piにオーディオ入力、アナログ入力機能を加えることが可能となる。
 
-Pumpkin Piの使用を以下に示す。
+Pumpkin Piの仕様を以下に示す。
 
 - 対応OS Raspbian
 - 対応機種	Raspberry Pi Model B+/Raspberry Pi 2 Model B/Raspberry Pi 3 Model B
@@ -166,6 +168,71 @@ Pumpkin Piの使用を以下に示す。
 
 [PumpkinPi](http://select.marutsu.co.jp/list/detail.php?id=258)
 [PumpkinPi](https://www.marutsu.co.jp/pc/i/833515/)
+
+### セットアップ
+
+Pumpkin Piのセットアップは[トランジスタ技術 2017年1月号 オールDIPで1日製作!　音声認識ハイレゾPiレコーダ「Pumpkin Pi」](https://toragi.cqpub.co.jp/tabid/829/Default.aspx)
+にしたがって行った。以下に簡易的な手順を示す。
+
+1. Pumpkin Piを使用するためのRaspberry Pi固有の設定
+
+   まず適当な作業ディレクトリで以下のコマンドを実行する。  
+
+   ```shell
+   wget http://einstlab.web.fc2.com/RaspberryPi/PumpkinPi.tar
+   tar xvf PumpkinPi.tar
+   cd PumpkinPi
+   ./setup.sh  # @参考文献では ./PumpkinPi.sh と表記されている
+   ```
+
+2. カーネルとデバイス・ドライバのバージョンの確認  
+
+   カーネルのバージョンとデバイス・ドライバのバージョンは同じである必要がある。カーネルのバージョンは`uname -r`で、デバイス・ドライバのバージョンは`modinfo snd_soc_pcm1808_adc.ko`でそれぞれ確認できる。
+
+3. ADコンバータ用のデバイス・ドライバのインストール
+
+   次の2つのデバイス・ドライバをインストールする。
+
+   1. pcm1808-adc.ko  
+      PCM1808固有の動作を決定するドライバ。 
+   2. snd_soc_pcm1808_adc.ko  
+      Raspberry Piのサウンドとして属性を決定するドライバ 
+
+   まず、ホームディレクトリにPumpkinPi.tarをダウンロードして展開する。
+
+   ```shell
+   cd 
+   wget http://einstlab.web.fc2.com/RaspberryPi/PumpkinPi.tar
+   tar xvf PumpkinPi.tar
+   cd PumpkinPi/Driver
+   ```
+
+   次にデバイス・ドライバをインストールする。
+
+   ```shell
+   sudo cp Backup/pcm1808-adc.bak/ /lib/modules/`uname -r`/kernel/sound/soc/codecs/pcm1808-adc.ko
+   sudo cp Backup/snd_soc_pcm1808_adc.bak /lib/modules/`uname -r`/kernel/sound/soc/bcm/snd_soc_pcm1808_adc.ko
+   sudo depmod -a  # 依存関係を調整
+   ```
+
+   OSのカーネル4.4以降ではデバイス・ツリー構造を導入してあるため、デバイス・ツリー情報ファイルをコピーする。
+
+   ```shell
+   sudo cp pcm1808-adc.dtbo /boot/oberlays/
+   ```
+
+   最後にデバイス・ドライバが電源起動時に自動的に読み込まれるように`/boot/config.txt`につぎの1行を追加する。
+
+   ```shell
+   dtoverlay=pcm1808-adc
+   ```
+
+   以上の作業を完了した後、再起動することで設定が適用される。
+
+
+
+
+
 
 
 
