@@ -93,6 +93,38 @@ waveを使用した自作音声入出力モジュールを@に示す。
 
 pythonで記述された適応信号処理のライブラリとして[Padasip](https://matousc89.github.io/padasip/index.html#padasip)というものが存在する。Padasipは信号のフィルタリング、予測、復元、分類といった適応信号処理を簡易化するために設計されたライブラリである。PadasipではLMS・NLMS、AP、RLSをはじめとする主要なアルゴリズムが一通り実装されている。
 
+## ADFライブラリの制作（Go言語）
+
+### ライブラリの設計
+
+pythonで記述された適応信号処理のライブラリとして[Padasip](https://matousc89.github.io/padasip/index.html#padasip)というものが存在する。Padasipは信号のフィルタリング、予測、復元、分類といった適応信号処理を簡易化するために設計されたライブラリである。PadasipではLMS・NLMS、AP、RLSをはじめとする主要なアルゴリズムが一通り実装されている。
+
+本研究で制作したADFライブラリはPadasipを参考に設計し、Go言語で実装した。
+
+ライブラリのコードを@に示す。
 
 
+### インストール方法
+
+製作したライブラリは[GitHub](https://github.com/tetsuzawa/go-adflib)で公開したため、次のコマンドを実行することでインストールすることができる。
+
+### 使用方法
+
+以下に基本的なライブラリの使用方法を示す。
+
+- インスタンスの作成
+   `NewFilt***`
+- フィルタ更新方法
+   - リアルタイム処理する場合
+      `Adapt`
+   - 測定したデータに対して後から処理する場合
+      `Run`
+- 最適なステップサイズを探す場合
+   `ExploreLearning`
+- 各種パラメータを取得する場合
+   `GetParams`
+
+詳しい使い方は[GoDoc](https://godoc.org/github.com/tetsuzawa/go-adflib)（Goのパッケージリファレンス）を参照されたい。
+
+サンプルプログラムを@に示す。
 
