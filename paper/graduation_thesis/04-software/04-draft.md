@@ -63,54 +63,35 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
       @calc_covolution_wav.py
    - ステレオ音声ファイルをLRモノラル音声に分割するスクリプト
       @calc_stereo2monoLR.py
-   - 
+   - 目的の音声ファイルからノイズの音声ファイルに含まれる成分を取り除くスクリプト（スペクトラムサブトラクション法）
+      @calc_subtracted_wav.py
+   - 指定秒数分の白色雑音をサンプリング周波数48kHzで生成するスクリプト
+      @generate_white_noise_as_wav.py
+   - csvファイルからmp4またはgif画像を生成するスクリプト
+      @plot_animation_from_csv.py
+   - csvファイルから波形をプロットするスクリプト
+      @plot_from_csv.py
+   - 複数のwavファイルから一枚の図に波形をプロットするスクリプト
+      @plot_multiwave.py
+   - スペクトログラムを表示するスクリプト
+      @plot_spectrogram_librosa.py
+
 
 
 @TODO ディレクトリ構造
 
 waveを使用した自作音声入出力モジュールを@に示す。
 
+### 定常なFIRフィルタの動作確認
 
 
 
+@TODO
 
 
+### 既存のADFライブラリについて
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+pythonで記述された適応信号処理のライブラリとして[Padasip](https://matousc89.github.io/padasip/index.html#padasip)というものが存在する。
 
 
 
