@@ -91,7 +91,7 @@ waveを使用した自作音声入出力モジュールを@に示す。
 
 ### 既存のADFライブラリについて
 
-pythonで記述された適応信号処理のライブラリとして[Padasip](https://matousc89.github.io/padasip/index.html#padasip)というものが存在する。
+pythonで記述された適応信号処理のライブラリとして[Padasip](https://matousc89.github.io/padasip/index.html#padasip)というものが存在する。Padasipは信号のフィルタリング、予測、復元、分類といった適応信号処理を簡易化するために設計されたライブラリである。PadasipではLMS・NLMS、AP、RLSをはじめとする主要なアルゴリズムが一通り実装されている。
 
 
 
