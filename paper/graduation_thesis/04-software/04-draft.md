@@ -42,39 +42,69 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
 
 @TODO wavファイル
 
-- モジュール
-   - 波形プロットモジュール
-      波形プロット簡易化のモジュールを@に示す。
-      @plot_tools.py
+### Python
+   - モジュール
+      - 波形プロットモジュール
+         波形プロット簡易化のモジュールを@に示す。
+         @plot_tools.py
 
-   - 音声ファイル入出力モジュール
-      音声ファイル入出力のモジュールを@に示す。
-      @wave_handler.py
+      - 音声ファイル入出力モジュール
+         音声ファイル入出力のモジュールを@に示す。
+         @wave_handler.py
 
-- デコレータ
-   - 関数の実行時間計測用デコレータ
-      @decorators.py
+   - デコレータ
+      - 関数の実行時間計測用デコレータ
+         @decorators.py
 
-   - 関数の情報表示用デコレータ
-      @decorators.py
+      - 関数の情報表示用デコレータ
+         @decorators.py
 
-- ツール
-   - 音声ファイル畳み込み用スクリプト
-      @calc_covolution_wav.py
-   - ステレオ音声ファイルをLRモノラル音声に分割するスクリプト
-      @calc_stereo2monoLR.py
-   - 目的の音声ファイルからノイズの音声ファイルに含まれる成分を取り除くスクリプト（スペクトラムサブトラクション法）
-      @calc_subtracted_wav.py
-   - 指定秒数分の白色雑音をサンプリング周波数48kHzで生成するスクリプト
-      @generate_white_noise_as_wav.py
-   - csvファイルからmp4またはgif画像を生成するスクリプト
-      @plot_animation_from_csv.py
-   - csvファイルから波形をプロットするスクリプト
-      @plot_from_csv.py
-   - 複数のwavファイルから一枚の図に波形をプロットするスクリプト
-      @plot_multiwave.py
-   - スペクトログラムを表示するスクリプト
-      @plot_spectrogram_librosa.py
+   - ツール
+      - 音声ファイル畳み込み用スクリプト
+         @calc_covolution_wav.py
+      - ステレオ音声ファイルをLRモノラル音声に分割するスクリプト
+         @calc_stereo2monoLR.py
+      - 目的の音声ファイルからノイズの音声ファイルに含まれる成分を取り除くスクリプト（スペクトラムサブトラクション法）
+         @calc_subtracted_wav.py
+      - 指定秒数分の白色雑音をサンプリング周波数48kHzで生成するスクリプト
+         @generate_white_noise_as_wav.py
+      - csvファイルからmp4またはgif画像を生成するスクリプト
+         @plot_animation_from_csv.py
+      - csvファイルから波形をプロットするスクリプト
+         @plot_from_csv.py
+      - 複数のwavファイルから一枚の図に波形をプロットするスクリプト
+         @plot_multiwave.py
+      - スペクトログラムを表示するスクリプト
+         @plot_spectrogram_librosa.py
+
+Go言語
+
+- ライブラリ
+   後述のツールで使用するライブラリ
+
+- プログラム
+   エラーハンドリングはデバッグと簡易化のために`panic`を使用しているが本来はコマンドラインツールには使用するべきではない。
+
+   - 指定した音圧差で音声を合成するプログラム
+      - @calc_noise_mix
+   - 2つのwavファイルを畳み込むプログラム
+      - @convolve_wav
+   - 2つのwavファイルを畳み込むプログラム（フーリエ変換を用いた高速版）
+      - @convolve_wav_fast
+   - 2つのwavファイルもしくはcsvファイルを畳み込むプログラム（フーリエ変換を用いた高速版）
+      - @convolve_wav_fast
+   - csvファイルのデータからwavファイルを生成するプログラム
+      - @csv_to_wav
+   - @の実験で用いるADFの設定を記述したJSONファイルを生成するプログラム
+      - @drone_json_generator
+   - csvファイルのデータから指定したサンプルの平均二乗誤差（MSE）を計算し、csvファイルに新たな列として追記するプログラム
+     - @calc_mse_csv
+   - PortAudioを使用した多チャンネル収音用プログラム
+     - @multirecord
+   - DSBファイルからwavファイルに変換するプログラム
+     - @wav_to_DSB
+
+
 
 
 
