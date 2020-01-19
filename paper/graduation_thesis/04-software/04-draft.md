@@ -133,10 +133,15 @@ pythonで記述された適応信号処理のライブラリとして[Padasip](h
 
 ライブラリのコードを@に示す。
 
+ライブラリの各関数にはユニットテストが書かれており、GitHub Actionsを利用して自動テストが行われるため、一定の質が担保されている。
+
+また、ライセンスはMITを採用しているため、使用、再配布、商用利用などが許可されている。詳しくは[MIT LICENCE](https://raw.githubusercontent.com/tetsuzawa/go-adflib/master/LICENSE)を参照されたい。
 
 ### インストール方法
 
 製作したライブラリは[GitHub](https://github.com/tetsuzawa/go-adflib)で公開したため、次のコマンドを実行することでインストールすることができる。
+
+`go get github.com/tetsuzawa/go-adflib/adf`
 
 ### 使用方法
 
