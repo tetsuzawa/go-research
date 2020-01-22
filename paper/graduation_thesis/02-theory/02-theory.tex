@@ -2,10 +2,10 @@
 \section{理論}\label{ux7406ux8ad6}}
 
 \
-\subsection{適応フィルタの基礎}\label{ux9069ux5fdcux30d5ux30a3ux30ebux30bfux306eux57faux790e}}
+\section{適応フィルタの基礎}\label{ux9069ux5fdcux30d5ux30a3ux30ebux30bfux306eux57faux790e}}
 
 \
-\subsubsection{ウィナーフィルタ}\label{ux30a6ux30a3ux30caux30fcux30d5ux30a3ux30ebux30bf}}
+\subsection{ウィナーフィルタ}\label{ux30a6ux30a3ux30caux30fcux30d5ux30a3ux30ebux30bf}}
 
 \
 \paragraph{ウィナーフィルタの構造}\label{ux30a6ux30a3ux30caux30fcux30d5ux30a3ux30ebux30bfux306eux69cbux9020}}
@@ -132,7 +132,7 @@ J =\sigma\emph{d\^{}2 + - \bm{w}\^{}H \bm{r}}\{xd\} -\bm{r}\_\{dx\}
 \$\$
 
 \
-\subsubsection{適応フィルタにおける最小二乗法（LS法）}\label{ux9069ux5fdcux30d5ux30a3ux30ebux30bfux306bux304aux3051ux308bux6700ux5c0fux4e8cux4e57ux6cd5lsux6cd5}}
+\subsection{適応フィルタにおける最小二乗法（LS法）}\label{ux9069ux5fdcux30d5ux30a3ux30ebux30bfux306bux304aux3051ux308bux6700ux5c0fux4e8cux4e57ux6cd5lsux6cd5}}
 
 適応フィルタにおけるLS法は、ウィナーフィルタの近似解を有限のサンプルから求めるものであり、@RLS
 節で述べるRLS法の基礎となっている。
@@ -164,7 +164,7 @@ J = \sum\_\{k=1\}\^{}\{L\_s\} \textbar{}\epsilon\emph{k\textbar\^{}2 =
 \$\$
 
 \
-\subsubsection{最急降下法}\label{ux6700ux6025ux964dux4e0bux6cd5}}
+\subsection{最急降下法}\label{ux6700ux6025ux964dux4e0bux6cd5}}
 
 @ウィナーフィルタ
 節で述べたウィナーフィルタでは、二乗平均誤差を最小とするフィルタ\(\bm{w}\)を、正規方程式の解として求めた。ここでは、この解を反復法を用いて逐次的に求める。
@@ -226,10 +226,10 @@ e\_k := d\_k - \bm{w}\_\{k-1\}\^{}H \bm{x}\_k
 \$\$
 
 \
-\subsection{代表的な適応アルゴリズム}\label{ux4ee3ux8868ux7684ux306aux9069ux5fdcux30a2ux30ebux30b4ux30eaux30baux30e0}}
+\section{代表的な適応アルゴリズム}\label{ux4ee3ux8868ux7684ux306aux9069ux5fdcux30a2ux30ebux30b4ux30eaux30baux30e0}}
 
 \
-\subsubsection{最小二乗法平均法（LMS法）}\label{ux6700ux5c0fux4e8cux4e57ux6cd5ux5e73ux5747ux6cd5lmsux6cd5}}
+\subsection{最小二乗法平均法（LMS法）}\label{ux6700ux5c0fux4e8cux4e57ux6cd5ux5e73ux5747ux6cd5lmsux6cd5}}
 
 リアルタイムシステムを構築する場合などは、メモリや演算量に制約があることがある。最急降下法の更新式はシンプルだが、期待値演算をサンプル平均で実装することになり、メモリや演算量を必要とする。この点を改良したのが最小二乗平均法（LMS法）である。LMS法では、式@最急降下法最後における期待値演算を用いた勾配の推定を、次式のように、瞬時値の推定値に置き換える。
 
@@ -327,7 +327,7 @@ J \&= \textbar\textbar{}\bm{w}\emph{k -
 \$\$
 
 \
-\subsubsection{アフィン射影法（APA法）}\label{ux30a2ux30d5ux30a3ux30f3ux5c04ux5f71ux6cd5apaux6cd5}}
+\subsection{アフィン射影法（APA法）}\label{ux30a2ux30d5ux30a3ux30f3ux5c04ux5f71ux6cd5apaux6cd5}}
 
 アフィン射影法は、NLMS法には、NLMS法における拘束付き最適化問題の拘束条件を次式のように複数に拡張することにより導くことができる。
 
@@ -364,7 +364,7 @@ min \textbar\textbar{}\bm{w}\emph{k -
 NLMS法と同様にラグランジュの未定乗数法を用いた、最適解を導出により、次式のフィルタ更新式が得られる。
 
 \
-\subsubsection{再帰最小二乗法（RLS法）}\label{ux518dux5e30ux6700ux5c0fux4e8cux4e57ux6cd5rlsux6cd5}}
+\subsection{再帰最小二乗法（RLS法）}\label{ux518dux5e30ux6700ux5c0fux4e8cux4e57ux6cd5rlsux6cd5}}
 
 再帰最小二乗法（RLS法）は。LS法の解を再帰的に求める手法である。
 
@@ -504,7 +504,7 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 表@のアルゴリズムはしたに行くほど予測に用いるサンプル数が増加する。これに伴い、一般に収束速度も速くなる。一方、この代償として計算量が増大する。したがって、実装するハードウェアの規模や、求められる収束速度などを考慮して、アルゴリズムを選択する必要がある。
 
 \
-\subsubsection{適応フィルタを使用した雑音低減の手法}\label{ux9069ux5fdcux30d5ux30a3ux30ebux30bfux3092ux4f7fux7528ux3057ux305fux96d1ux97f3ux4f4eux6e1bux306eux624bux6cd5}}
+\subsection{適応フィルタを使用した雑音低減の手法}\label{ux9069ux5fdcux30d5ux30a3ux30ebux30bfux3092ux4f7fux7528ux3057ux305fux96d1ux97f3ux4f4eux6e1bux306eux624bux6cd5}}
 
 \
 \paragraph{アクティブノイズコントロール（ANC）}\label{ux30a2ux30afux30c6ux30a3ux30d6ux30ceux30a4ux30baux30b3ux30f3ux30c8ux30edux30fcux30ebanc}}
