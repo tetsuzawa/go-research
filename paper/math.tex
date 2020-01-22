@@ -40,7 +40,7 @@ s.t. \( \bm{g}_k = \bm{P}_{k-1} \bm{x}_k \left(  1 + \bm{x}_k^H \bm{P}_{k-1} \bm
 s.t. \(P_k = ( \bm{I} - \bm{g}_k \bm{x}_k^H) P_{k-1}\
 
 
-\begin{table}[]
+\begin{table}[H]
     \centering
     \caption{代表的な適応アルゴリズムの係数更新式}
     \label{tab:formula}
@@ -52,4 +52,18 @@ s.t. \(P_k = ( \bm{I} - \bm{g}_k \bm{x}_k^H) P_{k-1}\
     AP   & \(\mu \symbf{X}_k \left( \alpha \symbf{I} + \symbf{X}_k^H \symbf{X}_k \right)^{-1} \symbf{\epsilon}_k\)          \\ \hline
     RLS  & \( \mu \symbf{X}_k \left( \alpha \symbf{I} + \symbf{X}_{1:k}^H \symbf{X}_{1:k} \right)^{-1} \symbf{\epsilon}_k\) \\ \hline
     \end{tabular}
-    \end{table}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{代表的な適応アルゴリズムの係数更新式}
+    \label{tab:formula}
+    \begin{tabular}{|c|c|}
+    \hline
+         & \(\Delta \bm{w}\)                                                                                             \\ \hline
+    LMS  & \( \mu \bm{x}_k \bm{\epsilon}_k \)                                                                         \\ \hline
+    NLMS & \( \mu \left( \alpha \bm{I} + \bm{x}_k \bm{x}_k^H \right)^{-1} \bm{x}_k \bm{\epsilon}_k \)        \\ \hline
+    AP   & \(\mu \bm{X}_k \left( \alpha \bm{I} + \bm{X}_k^H \bm{X}_k \right)^{-1} \bm{\epsilon}_k\)          \\ \hline
+    RLS  & \( \mu \bm{X}_k \left( \alpha \bm{I} + \bm{X}_{1:k}^H \bm{X}_{1:k} \right)^{-1} \bm{\epsilon}_k\) \\ \hline
+    \end{tabular}
+\end{table}
