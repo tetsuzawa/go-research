@@ -1,19 +1,19 @@
 \
-\section{雑音低減の予備実験}\label{ux96d1ux97f3ux4f4eux6e1bux306eux4e88ux5099ux5b9fux9a13}}
+\section{雑音低減の予備実験}\label{ux96d1ux97f3ux4f4eux6e1bux306eux4e88ux5099ux5b9fux9a13}
 
 \
-\section{ドローンの駆動音のサンプル収音}\label{ux30c9ux30edux30fcux30f3ux306eux99c6ux52d5ux97f3ux306eux30b5ux30f3ux30d7ux30ebux53ceux97f3}}
+\section{ドローンの駆動音のサンプル収音}\label{ux30c9ux30edux30fcux30f3ux306eux99c6ux52d5ux97f3ux306eux30b5ux30f3ux30d7ux30ebux53ceux97f3}
 
 \
-\subsection{実験目的}\label{ux5b9fux9a13ux76eeux7684}}
+\subsection{実験目的}\label{ux5b9fux9a13ux76eeux7684}
 
 @で述べたように、本研究で用いるアルゴリズムは参照信号が有色性を持つと収束性能が低下する特徴を持つ。したがって、リアルタイム処理が目的の場合、参照信号の周波数特性が処理効果に影響を及ぼすことになる。したがって、ドローンの駆動音の周波数特性を調べるため、サンプル収音を行った。
 
 \
-\subsection{実験方法}\label{ux5b9fux9a13ux65b9ux6cd5}}
+\subsection{実験方法}\label{ux5b9fux9a13ux65b9ux6cd5}
 
 \
-\paragraph{収音のためのハードウェア構成について}\label{ux53ceux97f3ux306eux305fux3081ux306eux30cfux30fcux30c9ux30a6ux30a7ux30a2ux69cbux6210ux306bux3064ux3044ux3066}}
+\paragraph{収音のためのハードウェア構成について}\label{ux53ceux97f3ux306eux305fux3081ux306eux30cfux30fcux30c9ux30a6ux30a7ux30a2ux69cbux6210ux306bux3064ux3044ux3066}
 
 収音はドローンとバイノーラルマイクを使用し、@のブロック図の構成で行った。
 
@@ -25,7 +25,7 @@
 \includegraphics{figures/pre-ex_block.pdf}
 
 \
-\paragraph{収音に使用するソフトウェアについて}\label{ux53ceux97f3ux306bux4f7fux7528ux3059ux308bux30bdux30d5ux30c8ux30a6ux30a7ux30a2ux306bux3064ux3044ux3066}}
+\paragraph{収音に使用するソフトウェアについて}\label{ux53ceux97f3ux306bux4f7fux7528ux3059ux308bux30bdux30d5ux30c8ux30a6ux30a7ux30a2ux306bux3064ux3044ux3066}
 
 音声の収録にはGo言語で記述した自作の収音用コマンドラインツールを使用した。
 @。
@@ -64,7 +64,7 @@
 \end{itemize}
 
 \
-\subsection{実験結果}\label{ux5b9fux9a13ux7d50ux679c}}
+\subsection{実験結果}\label{ux5b9fux9a13ux7d50ux679c}
 
 収録したドローンの駆動音の波形を@のプログラムを使用し、描画した図を@に示す。また、@のプログラムを使用し、周波数特性を解析した。駆動音のスペクトログラムを@に示す。
 
@@ -80,23 +80,23 @@
 \includegraphics{figures/drone_subtracted_spectrogram.png}
 
 \
-\subsection{考察}\label{ux8003ux5bdf}}
+\subsection{考察}\label{ux8003ux5bdf}
 
 @より、駆動音は100Hz付近の低域成分とその倍音成分、5kHz付近の中域成分、18kHz付近の高域成分を合わせた周波数特性を示すことがわかる。このうち、低域と中域の成分はドローンの羽音およびモータの回転音によるものであると思われる。また、高域成分はブラシレスモータの回転数を制御するインバータ回路によるものと思われる。
 
 以上、ドローンの駆動音を有色性の周波数特性を持つことが確認できた。
 
 \
-\section{信号の有色性に対するADFの性能への影響}\label{ux4fe1ux53f7ux306eux6709ux8272ux6027ux306bux5bfeux3059ux308badfux306eux6027ux80fdux3078ux306eux5f71ux97ff}}
+\section{信号の有色性に対するADFの性能への影響}\label{ux4fe1ux53f7ux306eux6709ux8272ux6027ux306bux5bfeux3059ux308badfux306eux6027ux80fdux3078ux306eux5f71ux97ff}
 
 \
-\subsection{実験目的}\label{ux5b9fux9a13ux76eeux7684-1}}
+\subsection{実験目的}\label{ux5b9fux9a13ux76eeux7684-1}
 
 本節ではADFに対する参照信号を@で収音したドローンの駆動音とした場合と白色雑音とした場合の収束に要するサンプル数（収束速度）、収束した後の精度（推定精度）を比較する。
 これにより、各適応アルゴリズムの信号の有色性に対する収束性能への影響を評価することを目的とする。
 
 \
-\subsection{実験方法}\label{ux5b9fux9a13ux65b9ux6cd5-1}}
+\subsection{実験方法}\label{ux5b9fux9a13ux65b9ux6cd5-1}
 
 実験方法を以下に示す。
 
@@ -116,7 +116,7 @@
 ただし、本実験におけるADFのフィルタ長は4サンプル、付与雑音は参照信号に対して-30dBの振幅、MSEのタップ数は512サンプルとした。
 
 \
-\subsection{実験結果}\label{ux5b9fux9a13ux7d50ux679c-1}}
+\subsection{実験結果}\label{ux5b9fux9a13ux7d50ux679c-1}
 
 信号に駆動音を使用した場合の各アルゴリズムの収束特性を@に示す。同様に、白色雑音を使用した場合の各アルゴリズムの収束特性を@に示す。
 
@@ -124,17 +124,17 @@
 \includegraphics{figures/algo_white_L-4_mse.png}
 
 \
-\subsection{考察}\label{ux8003ux5bdf-1}}
+\subsection{考察}\label{ux8003ux5bdf-1}
 
 @@より、信号に駆動音を使用した場合、理論通り収束性能が低下していることがわかる。特にRLSアルゴリズムの場合、収束時のMSEが約80dBから約50dBとなり、収束するまでに必要なサンプル数も約300,000サンプル程度まで増加していることがわかる。サンプリング周波数は48kHzであるので収束までに約6秒かかることになる。一方、NLMSアルゴリズムとAPアルゴリズムは収束時のMSEは10dBほど悪化しているが、RLSアルゴリズムほど大きい性能低下は見られなかった。
 
 以上より、リアルタイム処理を目的とする場合NLMS・APアルゴリズムの使用が適していると思われる。
 
 \
-\section{ADFライブラリのベンチマーク}\label{adfux30e9ux30a4ux30d6ux30e9ux30eaux306eux30d9ux30f3ux30c1ux30deux30fcux30af}}
+\section{ADFライブラリのベンチマーク}\label{adfux30e9ux30a4ux30d6ux30e9ux30eaux306eux30d9ux30f3ux30c1ux30deux30fcux30af}
 
 \
-\subsection{実験目的}\label{ux5b9fux9a13ux76eeux7684-2}}
+\subsection{実験目的}\label{ux5b9fux9a13ux76eeux7684-2}
 
 ADFの性能を評価する尺度の1つとして、収束速度、推定精度の他に演算時間（演算量）が存在する。
 特にリアルタイムでフィルタ処理を行う場合、プログラムの実行速度は雑音低減の性能に大きな影響を及ぼす。
@@ -142,7 +142,7 @@ ADFの性能を評価する尺度の1つとして、収束速度、推定精度�
 本節では、Go言語で自作したADFライブラリのベンチマークを行い、各アルゴリズムの実行に要する演算時間を評価することを目的とする。
 
 \
-\subsection{実験方法}\label{ux5b9fux9a13ux65b9ux6cd5-2}}
+\subsection{実験方法}\label{ux5b9fux9a13ux65b9ux6cd5-2}
 
 本実験ではGo言語に標準で実装されているベンチマークの仕組みを利用して行った。
 
@@ -156,7 +156,7 @@ Go言語ではテストファイルに\texttt{func\ BenchmarkXxx(b\ *testing.B)}
 (13-inch, 2019)上でもベンチマークを実行した。
 
 \
-\subsection{実験結果}\label{ux5b9fux9a13ux7d50ux679c-2}}
+\subsection{実験結果}\label{ux5b9fux9a13ux7d50ux679c-2}
 
 1サンプルあたりのフィルタ係数更新・次サンプルの予測にかかる演算時間とメモリ使用量の測定結果を@に示す。
 
@@ -175,10 +175,10 @@ Go言語ではテストファイルに\texttt{func\ BenchmarkXxx(b\ *testing.B)}
 3.25 \textbar{} 2920 \textbar{}
 
 \
-\subsection{考察}\label{ux8003ux5bdf-2}}
+\subsection{考察}\label{ux8003ux5bdf-2}
 
 \
-\paragraph{メモリ使用量について}\label{ux30e1ux30e2ux30eaux4f7fux7528ux91cfux306bux3064ux3044ux3066}}
+\paragraph{メモリ使用量について}\label{ux30e1ux30e2ux30eaux4f7fux7528ux91cfux306bux3064ux3044ux3066}
 
 @より、各アルゴリズムのメモリ使用量はNLMSアルゴリズムが一番少なく、APアルゴリズム、RLSアルゴリズムと多くなっている。これは理論式に即した物となっており、妥当な値である。
 
@@ -187,7 +187,7 @@ Pi 3 Model
 Bのメモリは1GBと潤沢であるため、使用メモリに関しては実用範囲内であると思われる。
 
 \
-\paragraph{演算時間について}\label{ux6f14ux7b97ux6642ux9593ux306bux3064ux3044ux3066}}
+\paragraph{演算時間について}\label{ux6f14ux7b97ux6642ux9593ux306bux3064ux3044ux3066}
 
 @より、NLMSアルゴリズムの演算時間はAP・RLSに比べて数十倍高速であることがわかる。一方、Raspberry
 Piの演算時間はMacBook Proに比べるて十倍程度長いことがわかる。

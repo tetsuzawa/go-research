@@ -1,10 +1,10 @@
-\chapter{理論}\label{theory}}
+\chapter{理論}\label{theory}
 
-\section{適応フィルタの基礎}\label{basis-adf}}
+\section{適応フィルタの基礎}\label{basis-adf}
 
-\subsection{ウィナーフィルタ}\label{wiener}}
+\subsection{ウィナーフィルタ}\label{wiener}
 
-\paragraph{ウィナーフィルタの構造}\label{wiener-structure}}
+\paragraph{ウィナーフィルタの構造}\label{wiener-structure}
 
 ウィナーフィルタは線形MMSE法（最小平均二乗誤差法）を定常な時系列に適用した特殊型であり、後述の適応アルゴリズムの基礎となる。
 
@@ -22,7 +22,7 @@
 
 \begin{equation}
 
-y_k = \bm{w}^{}H \bm{x}_k
+y_k = \bm{w}^H \bm{x}_k
 
 \end{equation}
 
@@ -30,7 +30,7 @@ y_k = \bm{w}^{}H \bm{x}_k
 
 \begin{equation}
 
-\bm{w}^{}H = {[}w_1^{}\emph{, \cdots, w_{K}^{}}{]}^{}T
+\bm{w}^H = {[}w_1^*, \cdots, w_{K}^}{]}^T
 
 \end{equation}
 
@@ -39,7 +39,7 @@ y_k = \bm{w}^{}H \bm{x}_k
 
 \begin{equation}
 
-\bm{x}_k = {[}x_k, x_{k-1}, \cdots, x_{k-K+1}{]}^{}T
+\bm{x}_k = {[}x_k, x_{k-1}, \cdots, x_{k-K+1}{]}^T
 
 \end{equation}
 
@@ -47,7 +47,7 @@ y_k = \bm{w}^{}H \bm{x}_k
 
 \begin{equation}
 
-y_k = \sum\emph{{i=1}^{}K w_i^{}* x}{k-i+1}
+y_k = \sum_{i=1}^K w_i^* x}{k-i+1}
 
 \end{equation}
 
@@ -67,16 +67,16 @@ y_k = \sum\emph{{i=1}^{}K w_i^{}* x}{k-i+1}
 フィルタの学習過程では、信号\(d_k\)を教師として与え、\(d_k\)と\(\bm{x}_k\)の関係を表す係数\(\bm{w}\)を学習する。
 一方、フィルタリング過程では、信号\(d_k\)が未知の場合について、観測値\(\bm{x}_k\)と学習済みのフィルタ係数\(\bm{w}\)から、信号の推定値\(\hat{d_k} (= y_k)\)を得る。学習過程で望みの応答\(d_k\)をどうやって与えるかは、応用に依存する@。
 
-\paragraph{ウィナーフィルタの導出}\label{wiener-introduction}}
+\paragraph{ウィナーフィルタの導出}\label{wiener-introduction}
 
 ウィナーフィルタでは、観測値\(\bm{x}_k\)から信号\(d_k\)を推定する。フィルタの学習過程では、次式の二乗平均誤差をコスト関数として最小化する。
 
 \begin{equation}
 \begin{split}
-J &= E{[}\textbar{}\epsilon_k\textbar^{}2{]} &= E{[} (d_k -
-\bm{w}^{}H \bm{x}_k) (d_k - \bm{w}^{}H \bm{x}_k)^{}H {]} &= E{[}
-d_k d_k^{}H{]} - \bm{w}^{}H E{[}\bm{x}_k d_k^{}H{]} - E{[}d_k
-\bm{x}_k^{}H {]} \bm{w}
+J &= E{[}\textbar{}\epsilon_k\textbar^2{]} &= E{[} (d_k -
+\bm{w}^H \bm{x}_k) (d_k - \bm{w}^H \bm{x}_k)^H {]} &= E{[}
+d_k d_k^H{]} - \bm{w}^H E{[}\bm{x}_k d_k^H{]} - E{[}d_k
+\bm{x}_k^H {]} \bm{w}
 \end{split}
 
 \end{equation}
@@ -85,9 +85,9 @@ d_k d_k^{}H{]} - \bm{w}^{}H E{[}\bm{x}_k d_k^{}H{]} - E{[}d_k
 
 \begin{equation}
 
-\sigma\emph{d^{}2 := E{[}d_k d_k^{}H{]} 、 \bm{r}}{xd} :=
-\bm{x}\emph{k d_k^{}H 、 \bm{r}}{dx} := d_k \bm{x}_k^{}H 、
-\bm{R}_x := E{[}\bm{x}_k \bm{x}_k^{}H{]}
+\sigma*d^2 := E{[}d_k d_k^H{]} 、 \bm{r}}{xd} :=
+\bm{x}*k d_k^H 、 \bm{r}}{dx} := d_k \bm{x}_k^H 、
+\bm{R}_x := E{[}\bm{x}_k \bm{x}_k^H{]}
 
 \end{equation}
 
@@ -95,12 +95,12 @@ d_k d_k^{}H{]} - \bm{w}^{}H E{[}\bm{x}_k d_k^{}H{]} - E{[}d_k
 
 \begin{equation}
 
-J =\sigma\emph{d^{}2 + - \bm{w}^{}H \bm{r}}{xd} -\bm{r}_{dx}
-\bm{w} + \bm{w}^{}H \bm{R}_x \bm{w}
+J =\sigma*d^2 + - \bm{w}^H \bm{r}}{xd} -\bm{r}_{dx}
+\bm{w} + \bm{w}^H \bm{R}_x \bm{w}
 
 \end{equation}
 
-コスト関数を\bm{w}^{}*について偏微分すると次式のようになる。
+コスト関数を\bm{w}^*について偏微分すると次式のようになる。
 
 \begin{equation}
 
@@ -123,12 +123,12 @@ J =\sigma\emph{d^{}2 + - \bm{w}^{}H \bm{r}}{xd} -\bm{r}_{dx}
 
 \begin{equation}
 
-\hat{\bm{w}_{WF}} = \bm{R}\emph{u^{}{-1} \bm{r}}{xd}
+\hat{\bm{w}_{WF}} = \bm{R}*u^{-1} \bm{r}}{xd}
 
 \end{equation}
 
 \
-\subsection{適応フィルタにおける最小二乗法（LS法）}\label{ux9069ux5fdcux30d5ux30a3ux30ebux30bfux306bux304aux3051ux308bux6700ux5c0fux4e8cux4e57ux6cd5lsux6cd5}}
+\subsection{適応フィルタにおける最小二乗法（LS法）}\label{ux9069ux5fdcux30d5ux30a3ux30ebux30bfux306bux304aux3051ux308bux6700ux5c0fux4e8cux4e57ux6cd5lsux6cd5}
 
 適応フィルタにおけるLS法は、ウィナーフィルタの近似解を有限のサンプルから求めるものであり、@RLS
 節で述べるRLS法の基礎となっている。
@@ -137,9 +137,9 @@ J =\sigma\emph{d^{}2 + - \bm{w}^{}H \bm{r}}{xd} -\bm{r}_{dx}
 
 \begin{equation}
 
-J = \sum_{k=1}^{}{L_s} \textbar{}\epsilon\emph{k\textbar^{}2 =
-\sum}{k=1}^{}{L_s} \textbar d_k - \bm{w}^{}H
-\bm{x}_k\textbar^{}2
+J = \sum_{k=1}^{L_s} \textbar{}\epsilon*k\textbar^2 =
+\sum}{k=1}^{L_s} \textbar d_k - \bm{w}^H
+\bm{x}_k\textbar^2
 
 \end{equation}
 
@@ -155,12 +155,12 @@ J = \sum_{k=1}^{}{L_s} \textbar{}\epsilon\emph{k\textbar^{}2 =
 
 \begin{equation}
 
-\hat{\bm{w}_{LS}} = \hat{\bm{R}_x}^{}{-1} \hat{\bm{r}_xd}
+\hat{\bm{w}_{LS}} = \hat{\bm{R}_x}^{-1} \hat{\bm{r}_xd}
 
 \end{equation}
 
 \
-\subsection{最急降下法}\label{ux6700ux6025ux964dux4e0bux6cd5}}
+\subsection{最急降下法}\label{ux6700ux6025ux964dux4e0bux6cd5}
 
 @ウィナーフィルタ
 節で述べたウィナーフィルタでは、二乗平均誤差を最小とするフィルタ\(\bm{w}\)を、正規方程式の解として求めた。ここでは、この解を反復法を用いて逐次的に求める。
@@ -171,9 +171,9 @@ J = \sum_{k=1}^{}{L_s} \textbar{}\epsilon\emph{k\textbar^{}2 =
 
 \begin{equation}
 
-\nabra J(\bm{w}\emph{{k-1}) :=
+\nabra J(\bm{w}*{k-1}) :=
 \frac{\partial J(\bm{w})}{\partial \bm{w}^*} \textbar{}}{\bm{w} =
-\bm{w}\emph{{k-1}} = - \bm{r}}{xd} + \bm{R}\emph{x \bm{w}}{k-1}
+\bm{w}*{k-1}} = - \bm{r}}{xd} + \bm{R}*x \bm{w}}{k-1}
 
 \end{equation}
 
@@ -189,8 +189,8 @@ J = \sum_{k=1}^{}{L_s} \textbar{}\epsilon\emph{k\textbar^{}2 =
 
 \begin{equation}
 \begin{split}
-\bm{w}\emph{k &= \bm{w}}{k-1} + \Delta \bm{w} &= \bm{w}\emph{{k-1}
-+ \mu (\bm{r}}{xd} - \bm{R}\emph{x \bm{w}}{k-1})
+\bm{w}*k &= \bm{w}}{k-1} + \Delta \bm{w} &= \bm{w}*{k-1}
++ \mu (\bm{r}}{xd} - \bm{R}*x \bm{w}}{k-1})
 \end{split}
 
 \end{equation}
@@ -200,9 +200,9 @@ J = \sum_{k=1}^{}{L_s} \textbar{}\epsilon\emph{k\textbar^{}2 =
 \begin{equation}
 
 \begin{split}
-\bm{w}\emph{k &= \bm{w}}{k-1} + \mu (E{[}\bm{x}_k d_k^{}*{]} -
-E{[}\bm{x}\emph{k \bm{x}}^{}H{]} \bm{w}\emph{{k-1}) &=
-\bm{w}}{k-1} + \mu E{[}\bm{x}_k (d_k^{}* - \bm{x}\emph{k^{}H
+\bm{w}*k &= \bm{w}}{k-1} + \mu (E{[}\bm{x}_k d_k^*{]} -
+E{[}\bm{x}*k \bm{x}}^H{]} \bm{w}*{k-1}) &=
+\bm{w}}{k-1} + \mu E{[}\bm{x}_k (d_k^* - \bm{x}*k^H
 \bm{w}}{k-1}){]}
 \end{split}
 
@@ -212,7 +212,7 @@ E{[}\bm{x}\emph{k \bm{x}}^{}H{]} \bm{w}\emph{{k-1}) &=
 
 \begin{equation}
 
-e_k := d_k - \bm{w}_{k-1}^{}H \bm{x}_k
+e_k := d_k - \bm{w}_{k-1}^H \bm{x}_k
 
 \end{equation}
 
@@ -220,21 +220,21 @@ e_k := d_k - \bm{w}_{k-1}^{}H \bm{x}_k
 
 \begin{equation}
 
-\bm{w}\emph{k = \bm{w}}{k-1} + \mu E{[}\bm{x}_k e_k^{}*{]}
+\bm{w}*k = \bm{w}}{k-1} + \mu E{[}\bm{x}_k e_k^*{]}
 
 \end{equation}
 
 \
-\section{代表的な適応アルゴリズム}\label{ux4ee3ux8868ux7684ux306aux9069ux5fdcux30a2ux30ebux30b4ux30eaux30baux30e0}}
+\section{代表的な適応アルゴリズム}\label{ux4ee3ux8868ux7684ux306aux9069ux5fdcux30a2ux30ebux30b4ux30eaux30baux30e0}
 
 \
-\subsection{最小二乗法平均法（LMS法）}\label{ux6700ux5c0fux4e8cux4e57ux6cd5ux5e73ux5747ux6cd5lmsux6cd5}}
+\subsection{最小二乗法平均法（LMS法）}\label{ux6700ux5c0fux4e8cux4e57ux6cd5ux5e73ux5747ux6cd5lmsux6cd5}
 
 リアルタイムシステムを構築する場合などは、メモリや演算量に制約があることがある。最急降下法の更新式はシンプルだが、期待値演算をサンプル平均で実装することになり、メモリや演算量を必要とする。この点を改良したのが最小二乗平均法（LMS法）である。LMS法では、式@最急降下法最後における期待値演算を用いた勾配の推定を、次式のように、瞬時値の推定値に置き換える。
 
 \begin{equation}
 
-\bm{w}\emph{k = \bm{w}}{k-1} + \mu \bm{x}_k e_k^{}*
+\bm{w}*k = \bm{w}}{k-1} + \mu \bm{x}_k e_k^*
 
 \end{equation}
 
@@ -242,8 +242,8 @@ e_k := d_k - \bm{w}_{k-1}^{}H \bm{x}_k
 
 \begin{equation}
 
-min \textbar\textbar{}\bm{w}\emph{k -
-\bm{w}}{k-1}\textbar\textbar^{}2 subject to \bm{w}_k^{}H \bm{x}_k
+min \textbar\textbar{}\bm{w}*k -
+\bm{w}}{k-1}\textbar\textbar^2 subject to \bm{w}_k^H \bm{x}_k
 = d_k
 
 \end{equation}
@@ -253,11 +253,11 @@ min \textbar\textbar{}\bm{w}\emph{k -
 \begin{equation}
 \begin{split}
 
-J &= \textbar\textbar{}\bm{w}\emph{k -
-\bm{w}}{k-1}\textbar\textbar^{}2 + Re(\lambda (d_k - \bm{w}_k^{}H
-\bm{x}_k)) &= (\bm{w}\emph{k - \bm{w}}{k-1})^{}H (\bm{w}\emph{k -
-\bm{w}}{k-1}) + \lambda (d_k - \bm{w}_k^{}H \bm{x}_k) + (d_k -
-\bm{w}_k^{}H \bm{x}_k))^{}H \lambda^{}H
+J &= \textbar\textbar{}\bm{w}*k -
+\bm{w}}{k-1}\textbar\textbar^2 + Re(\lambda (d_k - \bm{w}_k^H
+\bm{x}_k)) &= (\bm{w}*k - \bm{w}}{k-1})^H (\bm{w}*k -
+\bm{w}}{k-1}) + \lambda (d_k - \bm{w}_k^H \bm{x}_k) + (d_k -
+\bm{w}_k^H \bm{x}_k))^H \lambda^H
 
 \end{split}
 \end{equation}
@@ -266,7 +266,7 @@ J &= \textbar\textbar{}\bm{w}\emph{k -
 
 \begin{equation}
 
-\frac{\partial J}{\partial \bm{w}_k^*} = \bm{w}\emph{k - \bm{w}}{k-1}
+\frac{\partial J}{\partial \bm{w}_k^*} = \bm{w}*k - \bm{w}}{k-1}
 - \lambda \bm{x}_k
 
 \end{equation}
@@ -275,7 +275,7 @@ J &= \textbar\textbar{}\bm{w}\emph{k -
 
 \begin{equation}
 
-\bm{w}\emph{k - \bm{w}}{k-1} = \lambda \bm{x}_k
+\bm{w}*k - \bm{w}}{k-1} = \lambda \bm{x}_k
 
 \end{equation}
 
@@ -283,7 +283,7 @@ J &= \textbar\textbar{}\bm{w}\emph{k -
 
 \begin{equation}
 
-\lambda = \frac{1}{\bm{x}_k^H \bm{x}_k} \bm{x}_k^{}H (\bm{w}\emph{k -
+\lambda = \frac{1}{\bm{x}_k^H \bm{x}_k} \bm{x}_k^H (\bm{w}*k -
 \bm{w}}{k-1})
 
 \end{equation}
@@ -293,8 +293,8 @@ J &= \textbar\textbar{}\bm{w}\emph{k -
 
 \begin{equation}
 
-\lambda = \frac{1}{ ||\bm{x}_k||^2 } (d_k^{}* - \bm{x}\emph{k^{}H
-\bm{w}}{k-1}) = \frac{1}{||\bm{x}_k||^2} e_k^{}*
+\lambda = \frac{1}{ ||\bm{x}_k||^2 } (d_k^* - \bm{x}*k^H
+\bm{w}}{k-1}) = \frac{1}{||\bm{x}_k||^2} e_k^*
 
 \end{equation}
 
@@ -303,7 +303,7 @@ J &= \textbar\textbar{}\bm{w}\emph{k -
 
 \begin{equation}
 
-\Delta \bm{w} = \frac{1}{||\bm{x}_k||^2} \bm{x}_k e_k^{}*
+\Delta \bm{w} = \frac{1}{||\bm{x}_k||^2} \bm{x}_k e_k^*
 
 \end{equation}
 
@@ -311,31 +311,31 @@ J &= \textbar\textbar{}\bm{w}\emph{k -
 
 \begin{equation}
 
-\bm{w}\emph{k = \bm{w}}{k-1} + \lambda \frac{1}{||\bm{x}_k||^2}
-\bm{x}_k e_k^{}*
+\bm{w}*k = \bm{w}}{k-1} + \lambda \frac{1}{||\bm{x}_k||^2}
+\bm{x}_k e_k^*
 
 \end{equation}
 
 実際の運用では、入力信号のパワー\(||\bm{x}_k||^2\)が非常に小さいときに更新式が不安定になるのを防ぐため、\$
-1 / \textbar\textbar{}\bm{x}_k\textbar\textbar^{}2 \$
+1 / \textbar\textbar{}\bm{x}_k\textbar\textbar^2 \$
 の分母に小さい正の定数 \(\alpha\) を加えた、次式を用いる。
 
 \begin{equation}
 
-\bm{w}\emph{k = \bm{w}}{k-1} +
-\lambda \frac{1}{\alpha + ||\bm{x}_k||^2} \bm{x}_k e_k^{}*
+\bm{w}*k = \bm{w}}{k-1} +
+\lambda \frac{1}{\alpha + ||\bm{x}_k||^2} \bm{x}_k e_k^*
 
 \end{equation}
 
 \
-\subsection{アフィン射影法（APA法）}\label{ux30a2ux30d5ux30a3ux30f3ux5c04ux5f71ux6cd5apaux6cd5}}
+\subsection{アフィン射影法（APA法）}\label{ux30a2ux30d5ux30a3ux30f3ux5c04ux5f71ux6cd5apaux6cd5}
 
 アフィン射影法は、NLMS法には、NLMS法における拘束付き最適化問題の拘束条件を次式のように複数に拡張することにより導くことができる。
 
 \begin{equation}
 
-min \textbar\textbar{}\bm{w}\emph{k -
-\bm{w}}{k-1}\textbar\textbar^{}2 subject to \bm{w}_k^{}H \bm{X}_k
+min \textbar\textbar{}\bm{w}*k -
+\bm{w}}{k-1}\textbar\textbar^2 subject to \bm{w}_k^H \bm{X}_k
 = d_k
 \end{equation}
 
@@ -355,7 +355,7 @@ min \textbar\textbar{}\bm{w}\emph{k -
 \begin{equation}
 
 
-\bm{x}_k := {[}\bm{x}\emph{{k}, \cdots, \bm{x}}{k-L_s+1}{]}^{}T
+\bm{x}_k := {[}\bm{x}*{k}, \cdots, \bm{x}}{k-L_s+1}{]}^T
 
 \end{equation}
 
@@ -364,7 +364,7 @@ min \textbar\textbar{}\bm{w}\emph{k -
 NLMS法と同様にラグランジュの未定乗数法を用いた、最適解を導出により、次式のフィルタ更新式が得られる。
 
 \
-\subsection{再帰最小二乗法（RLS法）}\label{ux518dux5e30ux6700ux5c0fux4e8cux4e57ux6cd5rlsux6cd5}}
+\subsection{再帰最小二乗法（RLS法）}\label{ux518dux5e30ux6700ux5c0fux4e8cux4e57ux6cd5rlsux6cd5}
 
 再帰最小二乗法（RLS法）は。LS法の解を再帰的に求める手法である。
 
@@ -372,15 +372,15 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 
 \begin{equation}
 
-\hat{\bm{R}_k} := \sum_{i=1}^{}k \bm{x}\emph{i \bm{x}\emph{i^{}H =
-\bm{X}}{1:k} \bm{X}}{1:k}^{}H
+\hat{\bm{R}_k} := \sum_{i=1}^k \bm{x}*i \bm{x}*i^H =
+\bm{X}}{1:k} \bm{X}}{1:k}^H
 \end{equation}
 
 \begin{equation}
 
 
-\hat{\bm{r}_k} := \sum\emph{{i=1}^{}k \bm{x}\emph{i d_i^{}* =
-\bm{X}}{1:k} \bm{d}}{1:k}^{}H
+\hat{\bm{r}_k} := \sum*{i=1}^k \bm{x}*i d_i^* =
+\bm{X}}{1:k} \bm{d}}{1:k}^H
 \end{equation}
 
 \begin{equation}
@@ -403,7 +403,7 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 
 \begin{equation}
 
-\bm{x}_{k} := {[}x_k, \cdots, u_{k-K+1}{]}^{}T
+\bm{x}_{k} := {[}x_k, \cdots, u_{k-K+1}{]}^T
 
 \end{equation}
 
@@ -411,13 +411,13 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 
 
 \begin{equation}
-\hat{\bm{R}_k} = \hat{\bm{R}_{k-1}} + \bm{x}_k \bm{x}_k^{}H
+\hat{\bm{R}_k} = \hat{\bm{R}_{k-1}} + \bm{x}_k \bm{x}_k^H
 
 \end{equation}
 
 
 \begin{equation}
-\hat{\bm{r}_k} = \hat{\bm{r}_{k-1}} + \bm{x}_k d_k^{}*
+\hat{\bm{r}_k} = \hat{\bm{r}_{k-1}} + \bm{x}_k d_k^*
 
 \end{equation}
 
@@ -425,7 +425,7 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 
 
 \begin{equation}
-\bm{P}\emph{k = \bm{P}}{k-1} -
+\bm{P}*k = \bm{P}}{k-1} -
 \frac{\bm{P}_{k-1} \bm{x}_k \bm{x}_k^H \bm{P}_{k-1}}{1 + \bm{x}_k^H \bm{P}_{k-1} \bm{x}_k}
 
 \end{equation}
@@ -451,15 +451,15 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 
 
 \begin{equation}
-\bm{P}\emph{k = \bm{P}}{k-1} - \bm{g}_k \bm{x}\emph{k^{}H
-\bm{P}}{k-1} = (\bm{I} - \bm{g}_k \bm{x}\emph{k^{}H) \bm{P}}{k-1}
+\bm{P}*k = \bm{P}}{k-1} - \bm{g}_k \bm{x}*k^H
+\bm{P}}{k-1} = (\bm{I} - \bm{g}_k \bm{x}*k^H) \bm{P}}{k-1}
 \end{equation}
 
 一方、式@三個前から、次式を得る。
 
 \begin{equation}
 
-\bm{g}_k = (\bm{I} - \bm{g}_k \bm{x}\emph{k^{}H) \bm{P}}{k-1}
+\bm{g}_k = (\bm{I} - \bm{g}_k \bm{x}*k^H) \bm{P}}{k-1}
 \bm{x}_k
 \end{equation}
 
@@ -477,8 +477,8 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 
 \begin{equation}
 \begin{split}
-\bm{w}_k &= \bm{P}_k (\hat{\bm{r}_{k-1}} + \bm{x}_k d_k^{}*) &=
-\bm{w}_{k-1} + \bm{g}_k (d_k^{}* - \bm{x}\emph{k^{}H
+\bm{w}_k &= \bm{P}_k (\hat{\bm{r}_{k-1}} + \bm{x}_k d_k^*) &=
+\bm{w}_{k-1} + \bm{g}_k (d_k^* - \bm{x}*k^H
 \bm{w}}{k-1})
 \end{split}
 \end{equation}
@@ -487,11 +487,11 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 最後に、式@一個前 に式@三個前 を代入して、次式の更新式を得る。
 
 \begin{equation}
-\bm{w}\emph{k = \bm{w}}{k-1} + \gm{g}_k e_k^{}*
+\bm{w}*k = \bm{w}}{k-1} + \gm{g}_k e_k^*
 \end{equation}
 
 
-\paragraph{適応アルゴリズムの比較}\label{ux9069ux5fdcux30a2ux30ebux30b4ux30eaux30baux30e0ux306eux6bd4ux8f03}}
+\paragraph{適応アルゴリズムの比較}\label{ux9069ux5fdcux30a2ux30ebux30b4ux30eaux30baux30e0ux306eux6bd4ux8f03}
 
 表@は代表的な適応アルゴリズムの関係をニュートン法を使用して整理したものである。
 
@@ -504,10 +504,10 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 表@のアルゴリズムはしたに行くほど予測に用いるサンプル数が増加する。これに伴い、一般に収束速度も速くなる。一方、この代償として計算量が増大する。したがって、実装するハードウェアの規模や、求められる収束速度などを考慮して、アルゴリズムを選択する必要がある。
 
 \
-\subsection{適応フィルタを使用した雑音低減の手法}\label{ux9069ux5fdcux30d5ux30a3ux30ebux30bfux3092ux4f7fux7528ux3057ux305fux96d1ux97f3ux4f4eux6e1bux306eux624bux6cd5}}
+\subsection{適応フィルタを使用した雑音低減の手法}\label{ux9069ux5fdcux30d5ux30a3ux30ebux30bfux3092ux4f7fux7528ux3057ux305fux96d1ux97f3ux4f4eux6e1bux306eux624bux6cd5}
 
 \
-\paragraph{アクティブノイズコントロール（ANC）}\label{ux30a2ux30afux30c6ux30a3ux30d6ux30ceux30a4ux30baux30b3ux30f3ux30c8ux30edux30fcux30ebanc}}
+\paragraph{アクティブノイズコントロール（ANC）}\label{ux30a2ux30afux30c6ux30a3ux30d6ux30ceux30a4ux30baux30b3ux30f3ux30c8ux30edux30fcux30ebanc}
 
 アクティブノイズコントロール（ANC）とは、マイクやスピーカ等の機器を利用し、対象とする騒音と逆位相の音を重ね合わせることで音を低減する手法である。
 
@@ -524,7 +524,7 @@ ANCのブロック図を@に示す。
 したがって、適応アルゴリズムの予測性能が駆動音抑圧の効果を決定づける要因となる。
 
 \
-\paragraph{自動等化器}\label{ux81eaux52d5ux7b49ux5316ux5668}}
+\paragraph{自動等化器}\label{ux81eaux52d5ux7b49ux5316ux5668}
 
 自動等化器はアクティブノイズコントロールとは異なり、計算機内部で信号の処理を行う手法である。
 一般に、適応フィルタに対する入力信号は長期間で平均をとると、ドローンの駆動音に対して音声のエネルギーが小さい。自動等化器では、フィルタの更新係数を小さくすることで係数がドローンの駆動音のみに適応することを利用し、フィルタ出力\(y_k\)との誤差\(e_k\)を目的信号の予測値として取り出す手法である。
