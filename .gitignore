@@ -47,6 +47,7 @@ build/
 
 
 ### Core latex/pdflatex auxiliary files:
+*/*.aux
 *.aux
 *.lof
 *.log
