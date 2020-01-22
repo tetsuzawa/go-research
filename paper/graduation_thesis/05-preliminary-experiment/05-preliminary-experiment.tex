@@ -1,0 +1,202 @@
+\hypertarget{ux96d1ux97f3ux4f4eux6e1bux306eux4e88ux5099ux5b9fux9a13}{%
+\section{雑音低減の予備実験}\label{ux96d1ux97f3ux4f4eux6e1bux306eux4e88ux5099ux5b9fux9a13}}
+
+\hypertarget{ux30c9ux30edux30fcux30f3ux306eux99c6ux52d5ux97f3ux306eux30b5ux30f3ux30d7ux30ebux53ceux97f3}{%
+\subsection{ドローンの駆動音のサンプル収音}\label{ux30c9ux30edux30fcux30f3ux306eux99c6ux52d5ux97f3ux306eux30b5ux30f3ux30d7ux30ebux53ceux97f3}}
+
+\hypertarget{ux5b9fux9a13ux76eeux7684}{%
+\subsubsection{実験目的}\label{ux5b9fux9a13ux76eeux7684}}
+
+@で述べたように、本研究で用いるアルゴリズムは参照信号が有色性を持つと収束性能が低下する特徴を持つ。したがって、リアルタイム処理が目的の場合、参照信号の周波数特性が処理効果に影響を及ぼすことになる。したがって、ドローンの駆動音の周波数特性を調べるため、サンプル収音を行った。
+
+\hypertarget{ux5b9fux9a13ux65b9ux6cd5}{%
+\subsubsection{実験方法}\label{ux5b9fux9a13ux65b9ux6cd5}}
+
+\hypertarget{ux53ceux97f3ux306eux305fux3081ux306eux30cfux30fcux30c9ux30a6ux30a7ux30a2ux69cbux6210ux306bux3064ux3044ux3066}{%
+\paragraph{収音のためのハードウェア構成について}\label{ux53ceux97f3ux306eux305fux3081ux306eux30cfux30fcux30c9ux30a6ux30a7ux30a2ux69cbux6210ux306bux3064ux3044ux3066}}
+
+収音はドローンとバイノーラルマイクを使用し、@のブロック図の構成で行った。
+
+ただし、前述のバイノーラルマイクのみでは十分な入力電圧が得られないため、収音にはマイクロフォンアンプを使用する必要がある。本実験では株式会社オーディオテクニカのマイクロフォンアンプAT-MA2を使用した。
+
+なお、本研究では室内でサンプル収音を行ったため、据え置き型のマイクロフォンアンプを使用したが、実際にドローンに搭載する際は別途小型のマイクロフォンアンプが必要と推察される。
+
+\includegraphics{figures/pre-ex_block.png}
+\includegraphics{figures/pre-ex_block.pdf}
+
+\hypertarget{ux53ceux97f3ux306bux4f7fux7528ux3059ux308bux30bdux30d5ux30c8ux30a6ux30a7ux30a2ux306bux3064ux3044ux3066}{%
+\paragraph{収音に使用するソフトウェアについて}\label{ux53ceux97f3ux306bux4f7fux7528ux3059ux308bux30bdux30d5ux30c8ux30a6ux30a7ux30a2ux306bux3064ux3044ux3066}}
+
+音声の収録にはGo言語で記述した自作の収音用コマンドラインツールを使用した。
+@。
+このプログラムは\href{http://sox.sourceforge.net/}{SoX}(コマンドラインベースの音声編集ソフトウェア)の\texttt{rec}コマンドを参考に設計した。
+オーディオ入出力APIの\href{http://www.portaudio.com/}{PortAudio}を利用しており、多チャンネルでの収音に対応している他、独自の機能として音声データを本研究で主に使用されている形式（.DSB
+- 符号付き整数型16bitバイナリファイル)
+で保存することが可能となっている。
+
+本実験では自作のソフトウェアを使用したが、.wavなどの一般的な音声データ形式を使用する場合、前述のSoXを利用しても同様に収音が可能である。また、同じくPortAudioをベースとしたGUIの音声編集ソフトウェアである\href{https://www.audacityteam.org/}{Audacity}も有力な候補となる。いずれのソフトウェアも無料で使用可能である。
+
+@TODO 使い方
+
+使用機器を以下に示す
+
+\begin{itemize}
+\tightlist
+\item
+  使用機器
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    ドローン\\
+    @を参照。
+  \item
+    マイク @のバイノーラルマイクを1chのみ使用した。詳細は@を参照。
+  \item
+    マイクロフォンアンプ AT-MA2 株式会社オーディオテクニカ
+    \href{https://www.audio-technica.co.jp/product/AT-MA2}{at-ma2}
+    \includegraphics{figures/at-ma2.jpg}
+  \item
+    オーディオインターフェース ローランド株式会社 DUO-CAPTURE EX S/N.
+    Z6C6056
+    \href{https://www.roland.com/jp/products/duo-capture_ex/}{duo-capture}
+  \end{enumerate}
+\end{itemize}
+
+\hypertarget{ux5b9fux9a13ux7d50ux679c}{%
+\subsubsection{実験結果}\label{ux5b9fux9a13ux7d50ux679c}}
+
+収録したドローンの駆動音の波形を@のプログラムを使用し、描画した図を@に示す。また、@のプログラムを使用し、周波数特性を解析した。駆動音のスペクトログラムを@に示す。
+
+\includegraphics{figures/drone_raw.png}
+\includegraphics{figures/drone_raw_spectrogram.png}
+
+@、@における最初および最後の区間はドローンを停止させた無音区間となっている。しかしながら、無音区間に定常な雑音が存在することが明らかなため純粋なドローンの駆動音を解析するためには、この定常雑音を取り除く必要がある。
+
+そこで、@のプログラムを使用し、スペクトラルサブトラクション法@により、無音区間の周波数成分の平均を全体から取り除いた。
+スペクトラルサブトラクション法適用後の波形を@に、スペクトログラムを@に示す。
+
+\includegraphics{figures/drone_subtracted.png}
+\includegraphics{figures/drone_subtracted_spectrogram.png}
+
+\hypertarget{ux8003ux5bdf}{%
+\subsubsection{考察}\label{ux8003ux5bdf}}
+
+@より、駆動音は100Hz付近の低域成分とその倍音成分、5kHz付近の中域成分、18kHz付近の高域成分を合わせた周波数特性を示すことがわかる。このうち、低域と中域の成分はドローンの羽音およびモータの回転音によるものであると思われる。また、高域成分はブラシレスモータの回転数を制御するインバータ回路によるものと思われる。
+
+以上、ドローンの駆動音を有色性の周波数特性を持つことが確認できた。
+
+\hypertarget{ux4fe1ux53f7ux306eux6709ux8272ux6027ux306bux5bfeux3059ux308badfux306eux6027ux80fdux3078ux306eux5f71ux97ff}{%
+\subsection{信号の有色性に対するADFの性能への影響}\label{ux4fe1ux53f7ux306eux6709ux8272ux6027ux306bux5bfeux3059ux308badfux306eux6027ux80fdux3078ux306eux5f71ux97ff}}
+
+\hypertarget{ux5b9fux9a13ux76eeux7684-1}{%
+\subsubsection{実験目的}\label{ux5b9fux9a13ux76eeux7684-1}}
+
+本節ではADFに対する参照信号を@で収音したドローンの駆動音とした場合と白色雑音とした場合の収束に要するサンプル数（収束速度）、収束した後の精度（推定精度）を比較する。
+これにより、各適応アルゴリズムの信号の有色性に対する収束性能への影響を評価することを目的とする。
+
+\hypertarget{ux5b9fux9a13ux65b9ux6cd5-1}{%
+\subsubsection{実験方法}\label{ux5b9fux9a13ux65b9ux6cd5-1}}
+
+実験方法を以下に示す。
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  @で収音した雑音処理完了後の音声（以下、駆動音とする）に対して、ADFの各アルゴリズムにおける最適なステップサイズを求める。
+\item
+  1で求めたADFに対して、駆動音を参照信号、駆動音に白色雑音を加えたものを目的信号として十分な時間フィルタリングを実行
+\item
+  同様に、白色雑音を参照信号、白色雑音にの別の白色雑音を加えたものを目的信号として十分な時間フィルタリングを実行
+\item
+  フィルタ誤差をMSEで平滑化したものをグラフ化し、各アルゴリズムで比較・評価
+\end{enumerate}
+
+ただし、本実験におけるADFのフィルタ長は4サンプル、付与雑音は参照信号に対して-30dBの振幅、MSEのタップ数は512サンプルとした。
+
+\hypertarget{ux5b9fux9a13ux7d50ux679c-1}{%
+\subsubsection{実験結果}\label{ux5b9fux9a13ux7d50ux679c-1}}
+
+信号に駆動音を使用した場合の各アルゴリズムの収束特性を@に示す。同様に、白色雑音を使用した場合の各アルゴリズムの収束特性を@に示す。
+
+\includegraphics{figures/algo_dr_L-4_mse.png}
+\includegraphics{figures/algo_white_L-4_mse.png}
+
+\hypertarget{ux8003ux5bdf-1}{%
+\subsubsection{考察}\label{ux8003ux5bdf-1}}
+
+@@より、信号に駆動音を使用した場合、理論通り収束性能が低下していることがわかる。特にRLSアルゴリズムの場合、収束時のMSEが約80dBから約50dBとなり、収束するまでに必要なサンプル数も約300,000サンプル程度まで増加していることがわかる。サンプリング周波数は48kHzであるので収束までに約6秒かかることになる。一方、NLMSアルゴリズムとAPアルゴリズムは収束時のMSEは10dBほど悪化しているが、RLSアルゴリズムほど大きい性能低下は見られなかった。
+
+以上より、リアルタイム処理を目的とする場合NLMS・APアルゴリズムの使用が適していると思われる。
+
+\hypertarget{adfux30e9ux30a4ux30d6ux30e9ux30eaux306eux30d9ux30f3ux30c1ux30deux30fcux30af}{%
+\subsection{ADFライブラリのベンチマーク}\label{adfux30e9ux30a4ux30d6ux30e9ux30eaux306eux30d9ux30f3ux30c1ux30deux30fcux30af}}
+
+\hypertarget{ux5b9fux9a13ux76eeux7684-2}{%
+\subsubsection{実験目的}\label{ux5b9fux9a13ux76eeux7684-2}}
+
+ADFの性能を評価する尺度の1つとして、収束速度、推定精度の他に演算時間（演算量）が存在する。
+特にリアルタイムでフィルタ処理を行う場合、プログラムの実行速度は雑音低減の性能に大きな影響を及ぼす。
+
+本節では、Go言語で自作したADFライブラリのベンチマークを行い、各アルゴリズムの実行に要する演算時間を評価することを目的とする。
+
+\hypertarget{ux5b9fux9a13ux65b9ux6cd5-2}{%
+\subsubsection{実験方法}\label{ux5b9fux9a13ux65b9ux6cd5-2}}
+
+本実験ではGo言語に標準で実装されているベンチマークの仕組みを利用して行った。
+
+Go言語ではテストファイルに\texttt{func\ BenchmarkXxx(b\ *testing.B)}のように関数を宣言することで容易にベンチマークを実装することができる。また、\texttt{for\ i\ :=\ 0;\ i\ \textless{}\ b.N;\ i++}のようにfor文を記述することで、自動的に1秒あたりの実行回数を測定・出力することが可能である。なお、ベンチマークはテストファイルと同じディレクトリで\texttt{go\ test\ -bench\ .\ -benchmem}を実行することで行える。
+
+ベンチマークのプログラムを@に示す。
+
+ベンチマークはそれぞれ信号として白色雑音を使用し、フィルタ長は8タップとした。
+
+実行環境はRaspberry Pi 3 Model Bである。また、比較対象としてMacBook Pro
+(13-inch, 2019)上でもベンチマークを実行した。
+
+\hypertarget{ux5b9fux9a13ux7d50ux679c-2}{%
+\subsubsection{実験結果}\label{ux5b9fux9a13ux7d50ux679c-2}}
+
+1サンプルあたりのフィルタ係数更新・次サンプルの予測にかかる演算時間とメモリ使用量の測定結果を@に示す。
+
+@TODO rpi \textbar{} アルゴリズム \textbar{} 演算時間{[}ms/op{]}
+\textbar{} メモリ使用量{[}B/op{]} \textbar{}
+\textbar:------------:\textbar:---------------:\textbar:------------------:\textbar{}
+\textbar{} NLMS \textbar{} 1.9 \textbar{} 84 \textbar{} \textbar{} AP
+\textbar{} 78.4 \textbar{} 941 \textbar{} \textbar{} RLS \textbar{} 52.9
+\textbar{} 2549 \textbar{}
+
+@TODO macbook pro \textbar{} アルゴリズム \textbar{} 演算時間{[}ms/op{]}
+\textbar{} メモリ使用量{[}B/op{]} \textbar{}
+\textbar:------------:\textbar:---------------:\textbar:------------------:\textbar{}
+\textbar{} NLMS \textbar{} 0.13 \textbar{} 96 \textbar{} \textbar{} AP
+\textbar{} 5.40 \textbar{} 1248 \textbar{} \textbar{} RLS \textbar{}
+3.25 \textbar{} 2920 \textbar{}
+
+\hypertarget{ux8003ux5bdf-2}{%
+\subsubsection{考察}\label{ux8003ux5bdf-2}}
+
+\hypertarget{ux30e1ux30e2ux30eaux4f7fux7528ux91cfux306bux3064ux3044ux3066}{%
+\paragraph{メモリ使用量について}\label{ux30e1ux30e2ux30eaux4f7fux7528ux91cfux306bux3064ux3044ux3066}}
+
+@より、各アルゴリズムのメモリ使用量はNLMSアルゴリズムが一番少なく、APアルゴリズム、RLSアルゴリズムと多くなっている。これは理論式に即した物となっており、妥当な値である。
+
+Go言語にはガーベッジコレクションが実装されており、メモリセーフである。また、Raspberry
+Pi 3 Model
+Bのメモリは1GBと潤沢であるため、使用メモリに関しては実用範囲内であると思われる。
+
+\hypertarget{ux6f14ux7b97ux6642ux9593ux306bux3064ux3044ux3066}{%
+\paragraph{演算時間について}\label{ux6f14ux7b97ux6642ux9593ux306bux3064ux3044ux3066}}
+
+@より、NLMSアルゴリズムの演算時間はAP・RLSに比べて数十倍高速であることがわかる。一方、Raspberry
+Piの演算時間はMacBook Proに比べるて十倍程度長いことがわかる。
+
+ここで、これらのアルゴリズムをアクティブノイズコントロールに適用することを考える。
+参照信号用のマイクと目的信号用のマイクの距離が30cmであることを仮定すると、音波が2つのマイク間を移動するためにかかる時間は約0.88msである（音速は340m/sとした)。
+したがって、ADFのフィルタ実行時間以外を無視した理想条件で最低でも0.88ms/op以上の演算速度が必要なことになる。
+また、これはフィルタ長が約43タップに相当する距離である。実験で用いたフィルタ長は8タップであるため、全くフィルタ長が足りず、システムの同定が不可能であることを示す。
+したがって、したアクティブノイズコントロールの実装は、制作したライブラリを使用する場合には現実的でないことが結論づけられる。
+一方、自動等化器の実装には空間的制約が無いため、@TODO
+
+また、APアルゴリズムの演算時間がRLSアルゴリズムに比べて長いことが表よりわかる。理論上の演算量はRLSアルゴリズムが上回っているため、アルゴリズムの実装を見直す必要があると考えられる。これについては今後の課題としたい。

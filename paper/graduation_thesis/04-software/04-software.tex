@@ -15,16 +15,12 @@ Pythonは、汎用のプログラミング言語である。コードがシン�
 
 このような特徴から、様々な試行をしながら行う開発に適している。本研究ではこの特性を活かし、予備実験・データ処理・グラフ作成にPythonを使用している。
 
-@TODO pythonのインストール方法
-
 \hypertarget{goux8a00ux8a9eux306bux3064ux3044ux3066}{%
 \subsubsection{Go言語について}\label{goux8a00ux8a9eux306bux3064ux3044ux3066}}
 
 Googleで開発された、汎用のプログラミング言語である。Goは、静的型付け、C言語の伝統に則ったコンパイル言語、メモリ安全性、ガベージコレクション、並行性などの特徴を持つ。また、軽量スレッディングのための機能、Pythonのような動的型付け言語のようなプログラミングの容易性、などの特徴もある。
 
 また、GoはPythonのようにシンプルな記法をもち、誰が書いても同じコードになりやすく学習しやすいため、研究用途に適した言語である。
-
-@TODO goのインストール方法
 
 \hypertarget{ux30d7ux30edux30b0ux30e9ux30dfux30f3ux30b0ux8a00ux8a9eux306eux4f7fux3044ux5206ux3051ux306bux3064ux3044ux3066}{%
 \subsubsection{プログラミング言語の使い分けについて}\label{ux30d7ux30edux30b0ux30e9ux30dfux30f3ux30b0ux8a00ux8a9eux306eux4f7fux3044ux5206ux3051ux306bux3064ux3044ux3066}}
@@ -77,28 +73,33 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
   ツール
 
   \begin{itemize}
-  \tightlist
   \item
-    音声ファイル畳み込み用スクリプト @calc\_covolution\_wav.py
+    音声ファイル畳み込み用プログラム @calc\_covolution\_wav.py
   \item
-    ステレオ音声ファイルをLRモノラル音声に分割するスクリプト
+    ステレオ音声ファイルをLRモノラル音声に分割するプログラム
     @calc\_stereo2monoLR.py
   \item
-    目的の音声ファイルからノイズの音声ファイルに含まれる成分を取り除くスクリプト（スペクトラムサブトラクション法）
+    2つのwavファイル間の伝達関数を求めるプログラム
+    @calc\_pseudo\_ir\_between\_wav\_files.py
+  \item
+    csvファイルの各列のデータをそれぞれwavファイルに変換するプログラム
+    @csv\_to\_wav\_each\_column.py
+  \item
+    目的の音声ファイルからノイズの音声ファイルに含まれる成分を取り除くプログラム（スペクトラムサブトラクション法）
     @calc\_subtracted\_wav.py
   \item
-    指定秒数分の白色雑音をサンプリング周波数48kHzで生成するスクリプト
+    指定秒数分の白色雑音をサンプリング周波数48kHzで生成するプログラム
     @generate\_white\_noise\_as\_wav.py
   \item
-    csvファイルからmp4またはgif画像を生成するスクリプト
+    csvファイルからmp4またはgif画像を生成するプログラム
     @plot\_animation\_from\_csv.py
   \item
-    csvファイルから波形をプロットするスクリプト @plot\_from\_csv.py
+    csvファイルから波形をプロットするプログラム @plot\_from\_csv.py
   \item
-    複数のwavファイルから一枚の図に波形をプロットするスクリプト
+    複数のwavファイルから一枚の図に波形をプロットするプログラム
     @plot\_multiwave.py
   \item
-    スペクトログラムを表示するスクリプト @plot\_spectrogram\_librosa.py
+    スペクトログラムを表示するプログラム @plot\_spectrogram\_librosa.py
   \end{itemize}
 \end{itemize}
 

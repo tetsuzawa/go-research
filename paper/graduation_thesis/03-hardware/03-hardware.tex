@@ -1,0 +1,312 @@
+\hypertarget{ux30cfux30fcux30c9ux30a6ux30a7ux30a2ux306eux88fdux4f5c}{%
+\section{ハードウェアの製作}\label{ux30cfux30fcux30c9ux30a6ux30a7ux30a2ux306eux88fdux4f5c}}
+
+この章では本研究で使用するドローン、マイク、Raspberry
+Piといったハードウェアの構成と製作について述べる。
+
+\hypertarget{ux30b7ux30b9ux30c6ux30e0ux306eux5916ux89b3}{%
+\subsection{システムの外観}\label{ux30b7ux30b9ux30c6ux30e0ux306eux5916ux89b3}}
+
+まず、ドローンの本体のシステムについて述べる。
+
+\hypertarget{ux30c9ux30edux30fcux30f3ux306bux3064ux3044ux3066}{%
+\subsection{ドローンについて}\label{ux30c9ux30edux30fcux30f3ux306bux3064ux3044ux3066}}
+
+ドローンはリンクスモーション株式会社の組み立て式ドローン (Hquad500)
+を使用した。このドローンは機体にカーボンファイバーを採用しており、軽量、高強度、高剛性を兼ね備えている。また、拡張性が高く､
+容易に機能の追加が可能で様々な研究用途に適した製品である。
+
+\hypertarget{ux4f7fux7528ux6a5fux5668}{%
+\subsubsection{使用機器}\label{ux4f7fux7528ux6a5fux5668}}
+
+使用機器を以下に示す。
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  ドローンの機体 HQuad500 Hardware kit Lynxmotion株式会社
+  \href{http://www.lynxmotion.com/p-1058-hquad500-hardware-only-kit.aspx}{HQuad500}
+  \includegraphics{figures/hquad500_hardware.jpg}
+  \includegraphics{figures/hquad500_parts.jpg}
+\item
+  ESC (Electronic Speed Controller) 12A ESC (SimonK) Lynxmotion株式会社
+  \href{http://www.lynxmotion.com/p-915-12a-esc-simonk.aspx}{ESC}
+  \includegraphics{figures/esc.jpg}
+\item
+  ブラシレスモーター Brushless Motor 28x30 1000kv Lynxmotion株式会社
+  \href{http://www.lynxmotion.com/p-913-brushless-motor-28x30-1000kv.aspx}{ブラシレスモーター}{]}
+  \includegraphics{figures/brushless_motor.jpg}
+\item
+  フライトコントローラー Quadrino Nano Lynxmotion株式会社
+  \href{http://www.lynxmotion.com/p-1020-lynxmotion-quadrino-nano-flight-controller-with-gps.aspx}{フライトコントローラー}
+  \includegraphics{figures/quadrino_nano.jpg}
+\item
+  リポバッテリー充電器 18W LiPo Battery Charger Lynxmotion株式会社
+  \href{http://www.lynxmotion.com/p-985-18w-lipo-battery-charger.aspx}{リポバッテリー充電器}
+  \includegraphics{figures/lipo_charger.jpg}
+\item
+  リポバッテリー 11.1V (3S), 3500mAh 30C LiPo Battery Pack
+  Lynxmotion株式会社
+  \href{http://www.lynxmotion.com/p-985-18w-lipo-battery-charger.aspx}{リポバッテリー充電器}
+  \includegraphics{figures/lipo_charger.jpg}
+\item
+  ラジオレシーバー R9DS 10 channels 2.4GHz DSSS FHSS Receiver
+  RadioLink株式会社
+  \href{http://www.radiolink.com.cn/doce/product-detail-120.html}{ラジオレシーバー}
+  \includegraphics{figures/r9ds.jpg}
+\item
+  トランスミッタ AT9S 2.4GHz 10CH transmitter RadioLink株式会社
+  \href{http://www.radiolink.com.cn/doce/product-detail-119.html}{トランスミッタ}
+  \includegraphics{figures/at9s.jpg}
+\end{enumerate}
+
+\hypertarget{ux7d44ux307fux7acbux3066ux304aux3088ux3073ux52d5ux4f5cux78baux8a8d}{%
+\subsubsection{組み立ておよび動作確認}\label{ux7d44ux307fux7acbux3066ux304aux3088ux3073ux52d5ux4f5cux78baux8a8d}}
+
+ドローンの組み立ては@に従い、次のように行った。
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  内容物の確認
+
+  \begin{itemize}
+  \tightlist
+  \item
+    表でリスト
+  \item
+    写真 \includegraphics{drone_parts.png}
+  \end{itemize}
+\item
+  機体の組み立て・源および信号線の配線
+  \includegraphics{figures/drone_block.pdf}
+  \includegraphics{figures/drone_block.png}
+\item
+  動作確認
+  \href{http://www.lynxmotion.com/images/document/PDF/LynxmotionUAV-QuadrinoNano-UserGuideV1.1.pdf}{ドローンの取扱説明書}
+  に従い、動作確認を行った。
+\end{enumerate}
+
+\hypertarget{ux30d0ux30a4ux30ceux30fcux30e9ux30ebux30deux30a4ux30afux306eux88fdux4f5c}{%
+\subsection{バイノーラルマイクの製作}\label{ux30d0ux30a4ux30ceux30fcux30e9ux30ebux30deux30a4ux30afux306eux88fdux4f5c}}
+
+\hypertarget{ux30deux30a4ux30afux306bux3064ux3044ux3066}{%
+\subsubsection{マイクについて}\label{ux30deux30a4ux30afux306bux3064ux3044ux3066}}
+
+収音には、音像定位実験のために製作したバイノーラルマイクを流用した。
+
+使用した素子は秋月電子のエレクトレットコンデンサーマイクロホン（ECM）\href{http://akizukidenshi.com/catalog/g/gP-08181/}{エレクトットコンデンサマイク}である。製作は@のようにLRそれぞれエレクトットコンデンサマイクをはんだ付けし、ロボットケーブルを経由してステレオミニプラグと接続した。
+
+\begin{itemize}
+\tightlist
+\item
+  使用機器
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    エレクトットコンデンサマイク XCM6035 株式会社秋月電子通商
+    \href{http://akizukidenshi.com/catalog/g/gP-08181/}{url} x2
+    \includegraphics{figures/microphone.jpg}
+    \includegraphics{figures/microphone_size.jpg}
+  \item
+    シールドスリムロボットケーブル KRT-SW 株式会社秋月電子通商
+    \href{http://akizukidenshi.com/catalog/g/gP-07457/}{url}
+    \includegraphics{figures/sielded_robot_cable.jpg}
+    \includegraphics{figures/sielded_robot_cable_size.jpg}
+  \item
+    3.5mmΦステレオミニプラグ MP-319 株式会社秋月電子通商
+    \includegraphics{figures/mini_plug.jpg}
+    \includegraphics{figures/mini_plug_size.jpg}
+  \end{enumerate}
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{@TODO}
+\caption{バイノーラルマイクの製作}
+\end{figure}
+
+\hypertarget{raspberry-piux306bux3064ux3044ux3066}{%
+\subsection{Raspberry
+Piについて}\label{raspberry-piux306bux3064ux3044ux3066}}
+
+Raspberry
+Piは英国のラズベリーパイ財団によって開発されている、ARMプロセッサを搭載したシングルボードコンピュータである。Raspberr
+Piは教育用として制作されたが、現在ではIoT製品開発などの業務や人工衛星のOBC
+(On Board Computer) にも使用されている。
+
+Raspberry Piには
+
+\begin{itemize}
+\tightlist
+\item
+  Linux系のOSで動作するためソフトウェア開発に強みをもち、GPIOピンを通してSPI、I2C、I2Sなどの通信を行えるため、センサなどを用いた開発を容易に行える。また、USB端子を搭載し、Wi-Fi、Bluetooth接続も可能で
+  プロタイプ開発に適したデバイスとなっている。
+\end{itemize}
+
+\hypertarget{osux306eux9078ux5b9a}{%
+\subsubsection{OSの選定}\label{osux306eux9078ux5b9a}}
+
+Raspberry Piで使用可能なOSには
+
+\begin{itemize}
+\tightlist
+\item
+  電子工作などに適した公式OS Raspbian
+\item
+  LinuxディストリビューションのUbuntuから派生した Ubuntu MATE
+\item
+  Microsoft Windows 10
+\end{itemize}
+
+などが存在する。
+
+本研究では主にGPIOを使用して開発を行うため、Raspbianを使用した。なお、OSのバージョンは10.1
+Buster Liteである。また、カーネルのバージョンは4.19.75-v7である。
+
+\hypertarget{ux521dux671fux8a2dux5b9aux306bux3064ux3044ux3066}{%
+\subsubsection{初期設定について}\label{ux521dux671fux8a2dux5b9aux306bux3064ux3044ux3066}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  OSのインストール
+\item
+  地域、言語の設定 \texttt{sudo\ raspi-config}\\
+  Localization Options
+\item
+  sshの設定 \texttt{sudo\ raspi-config}\\
+  Interfacing Options\\
+  SSH
+\item
+  プロキシに関する設定
+\item
+  アップデート
+
+\begin{verbatim}
+sudo apt update 
+sudo apt upgrade -y 
+sudo apt dist-upgrade
+sudo rpi-update
+sudo reboot
+\end{verbatim}
+\end{enumerate}
+
+\hypertarget{adux5909ux63dbux7528ux306eux62e1ux5f35ux30dcux30fcux30c9ux306bux3064ux3044ux3066}{%
+\subsubsection{AD変換用の拡張ボードについて}\label{adux5909ux63dbux7528ux306eux62e1ux5f35ux30dcux30fcux30c9ux306bux3064ux3044ux3066}}
+
+Raspberry
+PiはADC（ADコンバータ）を搭載していないため、マイクからの入力信号を扱うにはADコンバータを導入する必要がある。
+
+本研究で用いたのはマルツエレック株式会社の\href{http://select.marutsu.co.jp/list/detail.php?id=258}{Pumpkin
+Pi}である。Pumpkin
+Piは計測用とオーディオ用のデュアルA-Dコンバータを搭載しており、Raspberry
+Piにオーディオ入力、アナログ入力機能を加えることが可能となる。
+
+Pumpkin Piの仕様を以下に示す。
+
+\begin{itemize}
+\tightlist
+\item
+  対応OS Raspbian
+\item
+  対応機種 Raspberry Pi Model B+/Raspberry Pi 2 Model B/Raspberry Pi 3
+  Model B
+\item
+  LED出力 1点
+\item
+  赤外線リモコン機能 送受信
+\item
+  オーディオコネクタ φ3.5mmステレオミニジャック
+\item
+  オーディオ入力 量子化ビット数=24,サンプリング周波数=48/96KHz
+\item
+  計測用AD変換 2チャンネル,16ビット
+\item
+  本体寸法 65(W)×56(D)mm
+\item
+  本体重量 約25g
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{figures/pumpkin_pi.jpg}
+\caption{PumpkinPi}
+\end{figure}
+
+\href{http://select.marutsu.co.jp/list/detail.php?id=258}{PumpkinPi}
+\href{https://www.marutsu.co.jp/pc/i/833515/}{PumpkinPi}
+
+\hypertarget{ux30bbux30c3ux30c8ux30a2ux30c3ux30d7}{%
+\subsubsection{セットアップ}\label{ux30bbux30c3ux30c8ux30a2ux30c3ux30d7}}
+
+Pumpkin
+Piのセットアップは\href{https://toragi.cqpub.co.jp/tabid/829/Default.aspx}{トランジスタ技術
+2017年1月号 オールDIPで1日製作!　音声認識ハイレゾPiレコーダ「Pumpkin
+Pi」} にしたがって行った。以下に簡易的な手順を示す。
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Pumpkin Piを使用するためのRaspberry Pi固有の設定
+
+  まず適当な作業ディレクトリで以下のコマンドを実行する。
+
+\begin{verbatim}
+wget http://einstlab.web.fc2.com/RaspberryPi/PumpkinPi.tar
+tar xvf PumpkinPi.tar
+cd PumpkinPi
+./setup.sh  # @参考文献では ./PumpkinPi.sh と表記されている
+\end{verbatim}
+\item
+  カーネルとデバイス・ドライバのバージョンの確認
+
+  カーネルのバージョンとデバイス・ドライバのバージョンは同じである必要がある。カーネルのバージョンは\texttt{uname\ -r}で、デバイス・ドライバのバージョンは\texttt{modinfo\ snd\_soc\_pcm1808\_adc.ko}でそれぞれ確認できる。
+\item
+  ADコンバータ用のデバイス・ドライバのインストール
+
+  次の2つのデバイス・ドライバをインストールする。
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \tightlist
+  \item
+    pcm1808-adc.ko\\
+    PCM1808固有の動作を決定するドライバ。
+  \item
+    snd\_soc\_pcm1808\_adc.ko\\
+    Raspberry Piのサウンドとして属性を決定するドライバ
+  \end{enumerate}
+
+  まず、ホームディレクトリにPumpkinPi.tarをダウンロードして展開する。
+
+\begin{verbatim}
+cd 
+wget http://einstlab.web.fc2.com/RaspberryPi/PumpkinPi.tar
+tar xvf PumpkinPi.tar
+cd PumpkinPi/Driver
+\end{verbatim}
+
+  次にデバイス・ドライバをインストールする。
+
+\begin{verbatim}
+sudo cp Backup/pcm1808-adc.bak/ /lib/modules/`uname -r`/kernel/sound/soc/codecs/pcm1808-adc.ko
+sudo cp Backup/snd_soc_pcm1808_adc.bak /lib/modules/`uname -r`/kernel/sound/soc/bcm/snd_soc_pcm1808_adc.ko
+sudo depmod -a  # 依存関係を調整
+\end{verbatim}
+
+  OSのカーネル4.4以降ではデバイス・ツリー構造を導入してあるため、デバイス・ツリー情報ファイルをコピーする。
+
+\begin{verbatim}
+sudo cp pcm1808-adc.dtbo /boot/oberlays/
+\end{verbatim}
+
+  最後にデバイス・ドライバが電源起動時に自動的に読み込まれるように\texttt{/boot/config.txt}につぎの1行を追加する。
+
+\begin{verbatim}
+dtoverlay=pcm1808-adc
+\end{verbatim}
+
+  以上の作業を完了した後、再起動することで設定が適用される。
+\end{enumerate}
