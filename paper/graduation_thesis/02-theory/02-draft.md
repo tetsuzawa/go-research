@@ -80,7 +80,7 @@ $$
 
 $$
 
-\sigma_d^2 := E[d_k d_k^H] 、 \bm{r}_{xd} := \bm{x}_k d_k^H 、 \bm{r}_{dx} := d_k \bm{x}_k^H 、 \bm{R}_x := E[\bm{x}_k \bm{x}_k^H]
+\sigma_d^2 := E[d_k d_k^H], \bm{r}_{xd} := \bm{x}_k d_k^H, \bm{r}_{dx} := d_k \bm{x}_k^H, \bm{R}_x := E[\bm{x}_k \bm{x}_k^H]
 
 $$
 
@@ -153,7 +153,7 @@ $$
 
 $$
 
-\nabra J(\bm{w}_{k-1}) := \frac{\partial J(\bm{w})}{\partial \bm{w}^*} |_{\bm{w} = \bm{w}_{k-1}} = - \bm{r}_{xd} + \bm{R}_x \bm{w}_{k-1}
+\nabla J(\bm{w}_{k-1}) := \frac{\partial J(\bm{w})}{\partial \bm{w}^*} |_{\bm{w} = \bm{w}_{k-1}} = - \bm{r}_{xd} + \bm{R}_x \bm{w}_{k-1}
 
 $$
 
@@ -437,7 +437,7 @@ $$
 
 $$
 
-\bm{w}_k = \bm{w}_{k-1} + \gm{g}_k e_k^*
+\bm{w}_k = \bm{w}_{k-1} + \bm{g}_k e_k^*
 
 $$
 

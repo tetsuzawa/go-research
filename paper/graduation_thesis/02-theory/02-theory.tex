@@ -27,37 +27,29 @@ y_k = \bm{w}^H \bm{x}_k
 ここで、\( \bm{w}^H\) は次式で与えられるフィルタ係数ベクトルである。
 
 \begin{equation}
-
-\bm{w}^H = {[}w_1^*, \cdots, w_{K}^}{]}^T
-
+\bm{w}^H = [w_1^*, \cdots, w_{K}^*]^T
 \end{equation}
 
 一方、フィルタ入力は次式のような時系列 \({x_k}\)
 を逆順に並べたものとなる。
 
 \begin{equation}
-
-\bm{x}_k = {[}x_k, x_{k-1}, \cdots, x_{k-K+1}{]}^T
-
+\bm{x}_k = [x_k, x_{k-1}, \cdots, x_{k-K+1}]^T
 \end{equation}
 
 これは、式@により、次式のような時間領域の畳み込み演算を表すためである。
 
 \begin{equation}
-
-y_k = \sum_{i=1}^K w_i^* x}{k-i+1}
-
+y_k = \sum_{i=1}^K w_i^* x_{k-i+1}
 \end{equation}
 
-これにより、式@はフィルタ係数\({w_i^*}\)を持つ時間領域のFIRフィルタを表すことになる。入力時系列{x_k}については、平均値
+これにより、式@はフィルタ係数\({w_i^*}\)を持つ時間領域のFIRフィルタを表すことになる。入力時系列\({x_k}\)については、平均値
 \(E[x_k]=0\) の実数あるいは複素数を仮定している。
 
 ウィナーフィルタで推定すべき値は、実数あるいは複素数のスカラー量\(d_k\)となる。\(d_k\)は望みの応答と呼ばれ、フィルタ出力\(y_k\)により、望みの応答を推定する。すなわち、\(\hat{d_k} = y_k\)となる。フィルタの推定過程では、次式で定義される推定誤差を、次式で述べる規範のもとに最小化する。
 
 \begin{equation}
-
 \epsilon_k := d_k - y_k
-
 \end{equation}
 
 上述のように、適応フィルタの目的は、入力信号\(\bm{x}_k\)から\(d_k\)を推定することである。
@@ -71,48 +63,35 @@ y_k = \sum_{i=1}^K w_i^* x}{k-i+1}
 
 \begin{equation}
 \begin{split}
-J &= E{[}\textbar{}\epsilon_k\textbar^2{]} &= E{[} (d_k -
-\bm{w}^H \bm{x}_k) (d_k - \bm{w}^H \bm{x}_k)^H {]} &= E{[}
-d_k d_k^H{]} - \bm{w}^H E{[}\bm{x}_k d_k^H{]} - E{[}d_k
-\bm{x}_k^H {]} \bm{w}
+J &= E[|\epsilon_k|^2] \\
+  &= E[ (d_k - \bm{w}^H \bm{x}_k) (d_k - \bm{w}^H \bm{x}_k)^H ] \\
+  &= E[ d_k d_k^H] - \bm{w}^H E[\bm{x}_k d_k^H] - E[d_k \bm{x}_k^H ] \bm{w} 
 \end{split}
-
 \end{equation}
 
 ここで次式を定義する。
 
 \begin{equation}
-
-\sigma*d^2 := E{[}d_k d_k^H{]} 、 \bm{r}}{xd} :=
-\bm{x}*k d_k^H 、 \bm{r}}{dx} := d_k \bm{x}_k^H 、
-\bm{R}_x := E{[}\bm{x}_k \bm{x}_k^H{]}
-
+\sigma_d^2 := E[d_k d_k^H], \bm{r}_{xd} := \bm{x}_k d_k^H, \bm{r}_{dx} := d_k \bm{x}_k^H, \bm{R}_x := E[\bm{x}_k \bm{x}_k^H]
 \end{equation}
 
 \(\bm{r}_{xd}\)および\(\bm{r}_{dx}\)は、入力ベクトル\(\bm{x}_k\)と望みの応答\(d_k\)との相互相関ベクトル、\(\bm{R}_u\)は、\(\bm{x}_k\)の自己相関行列である。これらを用いて式@は次式のように書き直せる。
 
 \begin{equation}
-
-J =\sigma*d^2 + - \bm{w}^H \bm{r}}{xd} -\bm{r}_{dx}
-\bm{w} + \bm{w}^H \bm{R}_x \bm{w}
-
+J =\sigma_d^2 + - \bm{w}^H \bm{r}_{xd} -\bm{r}_{dx} \bm{w} + \bm{w}^H \bm{R}_x \bm{w}
 \end{equation}
 
-コスト関数を\bm{w}^*について偏微分すると次式のようになる。
+コスト関数を\()\bm{w}^*\)について偏微分すると次式のようになる。
 
 \begin{equation}
-
-\frac{\partial J}{\partial \bm{w}^*} = - \bm{r}_{xd} + \bm{R}_x
+\frac{\partial J}{\partial \bm{w}^*} = - \bm{r}_{xd} + \bm{R}_x \bm{w}
 \bm{w}
-
 \end{equation}
 
 式@一個前 を\(\bm{0}_{K \times 1}\)とおくと、次式を得る。
 
 \begin{equation}
-
 \bm{R}_x \bm{w} = \bm{r}_xd
-
 \end{equation}
 
 式@一個前
@@ -120,9 +99,7 @@ J =\sigma*d^2 + - \bm{w}^H \bm{r}}{xd} -\bm{r}_{dx}
 を解くことにより最適フィルタは、次式のように求まる@。
 
 \begin{equation}
-
-\hat{\bm{w}_{WF}} = \bm{R}*u^{-1} \bm{r}}{xd}
-
+\hat{\bm{w}_{WF}} = \bm{R}_u^{-1} \bm{r}_{xd}
 \end{equation}
 
 \
@@ -134,30 +111,21 @@ J =\sigma*d^2 + - \bm{w}^H \bm{r}}{xd} -\bm{r}_{dx}
 適応フィルタにおけるLS法では、次式に示す誤差の二乗和が最小化される。
 
 \begin{equation}
-
-J = \sum_{k=1}^{L_s} \textbar{}\epsilon*k\textbar^2 =
-\sum}{k=1}^{L_s} \textbar d_k - \bm{w}^H
-\bm{x}_k\textbar^2
-
+J = \sum_{k=1}^{L_s} |\epsilon_k|^2 = \sum_{k=1}^{L_s} |d_k - \bm{w}^H \bm{x}_k|^2
 \end{equation}
 
 ここで、\(L_s\)はサンプル数である。ウィナーフィルタの導出過程における期待値をサンプル平均に置き換え、同様に正規方程式を求めると次式が導かれる。
 
 \begin{equation}
-
 \hat{\bm{R}_x} \bm{w} = \hat{\bm{r}_xd}
-
 \end{equation}
 
 これより、LS法における最適解は、次式のようになる。
 
 \begin{equation}
-
 \hat{\bm{w}_{LS}} = \hat{\bm{R}_x}^{-1} \hat{\bm{r}_xd}
-
 \end{equation}
 
-\
 \subsection{最急降下法}\label{sd}
 
 @ウィナーフィルタ
@@ -168,57 +136,47 @@ J = \sum_{k=1}^{L_s} \textbar{}\epsilon*k\textbar^2 =
 から、次式のように求まる。
 
 \begin{equation}
+  \nabla=\nabla
+\end{equation}
 
-\nabra J(\bm{w}*{k-1}) :=
-\frac{\partial J(\bm{w})}{\partial \bm{w}^*} \textbar{}}{\bm{w} =
-\bm{w}*{k-1}} = - \bm{r}}{xd} + \bm{R}*x \bm{w}}{k-1}
-
+\begin{equation}
+\nabla J(\bm{w}_{k-1}) := \frac{\partial J(\bm{w})}{\partial \bm{w}^*} |_{\bm{w} = \bm{w}_{k-1}} = - \bm{r}_{xd} + \bm{R}_x \bm{w}_{k-1}
 \end{equation}
 
 次回の反復で勾配とは逆方向に係数を変化させるため、フィルタ係数ベクトルの変化分は次式のようになる。
 
 \begin{equation}
-
 \Delta \bm{w} = - \mu \nabla J(\bm{w}_{k-1})
-
 \end{equation}
 
 \(\mu\)は1回の更新量を決定する性の定数であり、ステップサイズパラメータと呼ばれる。これを用いて、フィルタの更新式は、次式のようになる。
 
 \begin{equation}
 \begin{split}
-\bm{w}*k &= \bm{w}}{k-1} + \Delta \bm{w} &= \bm{w}*{k-1}
-+ \mu (\bm{r}}{xd} - \bm{R}*x \bm{w}}{k-1})
+\bm{w}_k &= \bm{w}_{k-1} + \Delta \bm{w} \\
+         &= \bm{w}_{k-1} + \mu (\bm{r}_{xd} - \bm{R}_x \bm{w}_{k-1})
 \end{split}
-
 \end{equation}
 
 また、式@は次式のように書き直すことができる。
 
 \begin{equation}
-
 \begin{split}
-\bm{w}*k &= \bm{w}}{k-1} + \mu (E{[}\bm{x}_k d_k^*{]} - E{[}\bm{x}*k \bm{x}}^H{]} \bm{w}*{k-1}) \\
-         &=\bm{w}}{k-1} + \mu E{[}\bm{x}_k (d_k^* - \bm{x}*k^H
-\bm{w}}{k-1}){]}
+\bm{w}_k &= \bm{w}_{k-1} + \mu (E[\bm{x}_k d_k^*] - E[\bm{x}_k \bm{x}_^H] \bm{w}_{k-1}) \\
+         &= \bm{w}_{k-1} + \mu E[\bm{x}_k (d_k^* - \bm{x}_k^H \bm{w}_{k-1})]
 \end{split}
-
 \end{equation}
 
 ここで、次式の事前推定誤差を定義する。
 
 \begin{equation}
-
 e_k := d_k - \bm{w}_{k-1}^H \bm{x}_k
-
 \end{equation}
 
 式@二個前 に式@一個前 を代入して、次式を得る。
 
 \begin{equation}
-
-\bm{w}*k = \bm{w}}{k-1} + \mu E{[}\bm{x}_k e_k^*{]}
-
+\bm{w}_k = \bm{w}_{k-1} + \mu E[\bm{x}_k e_k^*]
 \end{equation}
 
 
@@ -229,97 +187,68 @@ e_k := d_k - \bm{w}_{k-1}^H \bm{x}_k
 リアルタイムシステムを構築する場合などは、メモリや演算量に制約があることがある。最急降下法の更新式はシンプルだが、期待値演算をサンプル平均で実装することになり、メモリや演算量を必要とする。この点を改良したのが最小二乗平均法（LMS法）である。LMS法では、式@最急降下法最後における期待値演算を用いた勾配の推定を、次式のように、瞬時値の推定値に置き換える。
 
 \begin{equation}
-
-\bm{w}*k = \bm{w}}{k-1} + \mu \bm{x}_k e_k^*
-
+\bm{w}_k = \bm{w}_{k-1} + \mu \bm{x}_k e_k^*
 \end{equation}
 
 また、式@一個前を入力のパワーで正規化したものは、学習同定法（NLMS法）と呼ばれる。NLMS法は、次式の拘束月最適化問題空導くことができる。
 
 \begin{equation}
-
-min \textbar\textbar{}\bm{w}*k -
-\bm{w}}{k-1}\textbar\textbar^2 subject to \bm{w}_k^H \bm{x}_k
-= d_k
-
+min ||\bm{w}_k - \bm{w}_{k-1}||^2 subject to \bm{w}_k^H \bm{x}_k = d_k
 \end{equation}
 
 この最適化問題は、ラグランジュの未定乗数法を用いて解くことができる。ラグランジュの未定乗数法では、次式のコスト関数を最小化する。
 
 \begin{equation}
 \begin{split}
-
-J &= \textbar\textbar{}\bm{w}*k -
-\bm{w}}{k-1}\textbar\textbar^2 + Re(\lambda (d_k - \bm{w}_k^H \bm{x}_k)) \\
-  &= (\bm{w}*k - \bm{w}}{k-1})^H (\bm{w}*k -
-\bm{w}}{k-1}) + \lambda (d_k - \bm{w}_k^H \bm{x}_k) + (d_k -\bm{w}_k^H \bm{x}_k))^H \lambda^H
-
+J &= ||\bm{w}_k - \bm{w}_{k-1}||^2  + Re(\lambda (d_k - \bm{w}_k^H \bm{x}_k)) \\
+  &= (\bm{w}_k - \bm{w}_{k-1})^H (\bm{w}_k - \bm{w}_{k-1}) + \lambda (d_k - \bm{w}_k^H \bm{x}_k) + (d_k - \bm{w}_k^H \bm{x}_k))^H \lambda^H
 \end{split}
 \end{equation}
 
 コスト関数\(J\)を\(\bm{w}_k^*\)について偏微分すると
 
 \begin{equation}
-
-\frac{\partial J}{\partial \bm{w}_k^*} = \bm{w}*k - \bm{w}}{k-1}
-- \lambda \bm{x}_k
-
+\frac{\partial J}{\partial \bm{w}_k^*} = \bm{w}_k - \bm{w}_{k-1} - \lambda \bm{x}_k
 \end{equation}
 
 これを\(\bm{0}_{K \times 1}\)とすることにより、次式を得る。
 
 \begin{equation}
-
-\bm{w}*k - \bm{w}}{k-1} = \lambda \bm{x}_k
-
+\bm{w}_k - \bm{w}_{k-1} = \lambda \bm{x}_k
 \end{equation}
 
 式@一個前 の左から\(\bm{x}_k^H\)を乗じ、\(\lambda\)について解くと
 
 \begin{equation}
-
-\lambda = \frac{1}{\bm{x}_k^H \bm{x}_k} \bm{x}_k^H (\bm{w}*k -
-\bm{w}}{k-1})
-
+\lambda = \frac{1}{\bm{x}_k^H \bm{x}_k} \bm{x}_k^H (\bm{w}_k - \bm{w}_{k-1})
 \end{equation}
 
 これに拘束条件（式@NLMSのやつ
 ）および事前推定誤差（式@最急降下法の最後から一個前 ）
 
 \begin{equation}
-
-\lambda = \frac{1}{ ||\bm{x}_k||^2 } (d_k^* - \bm{x}*k^H
-\bm{w}}{k-1}) = \frac{1}{||\bm{x}_k||^2} e_k^*
-
+\lambda = \frac{1}{ ||\bm{x}_k||^2 } (d_k^* - \bm{x}_k^H \bm{w}_{k-1}) = \frac{1}{||\bm{x}_k||^2} e_k^*
 \end{equation}
 
 式@一個前
 を再び式@３個前に代入することにより、フィルタの変化量\(\Delta \bm{w}\)は次式のように求まる。
 
 \begin{equation}
-
 \Delta \bm{w} = \frac{1}{||\bm{x}_k||^2} \bm{x}_k e_k^*
-
 \end{equation}
 
 以上より、NLMS方のフィルタベクトル更新式は次式のようになる。
 
 \begin{equation}
-
-\bm{w}*k = \bm{w}}{k-1} + \lambda \frac{1}{||\bm{x}_k||^2}
-\bm{x}_k e_k^*
-
+\bm{w}_k = \bm{w}_{k-1} + \lambda \frac{1}{||\bm{x}_k||^2} \bm{x}_k e_k^*
 \end{equation}
 
 実際の運用では、入力信号のパワー\(||\bm{x}_k||^2\)が非常に小さいときに更新式が不安定になるのを防ぐため、\(
-1 / \textbar\textbar{}\bm{x}_k\textbar\textbar^2 \)
+1 / ||{}\bm{x}_k||^2 \)
 の分母に小さい正の定数 \(\alpha\) を加えた、次式を用いる。
 
 \begin{equation}
-
-\bm{w}*k = \bm{w}}{k-1} +
-\lambda \frac{1}{\alpha + ||\bm{x}_k||^2} \bm{x}_k e_k^*
-
+\bm{w}_k = \bm{w}_{k-1} + \lambda \frac{1}{\alpha + ||\bm{x}_k||^2} \bm{x}_k e_k^*
 \end{equation}
 
 \subsection{アフィン射影法（APA法）}\label{apa}
@@ -327,10 +256,7 @@ J &= \textbar\textbar{}\bm{w}*k -
 アフィン射影法は、NLMS法には、NLMS法における拘束付き最適化問題の拘束条件を次式のように複数に拡張することにより導くことができる。
 
 \begin{equation}
-
-min \textbar\textbar{}\bm{w}*k -
-\bm{w}}{k-1}\textbar\textbar^2 subject to \bm{w}_k^H \bm{X}_k
-= d_k
+min ||\bm{w}_k - \bm{w}_{k-1}||^2 subject to \bm{w}_k^H \bm{X}_k = d_k
 \end{equation}
 
 
@@ -338,26 +264,21 @@ min \textbar\textbar{}\bm{w}*k -
 
 
 \begin{equation}
-\bm{d}_k := {[}d_{k-L_s+1}, \cdots, d_k{]}
-
+\bm{d}_k := [d_{k-L_s+1}, \cdots, d_k]
 \end{equation}
 
 \begin{equation}
-\bm{X}_k := {[}\bm{x}_{k-L_s+1}, \cdots, \bm{x}_k{]}
+\bm{X}_k := [\bm{x}_{k-L_s+1}, \cdots, \bm{x}_k]
 \end{equation}
 
 \begin{equation}
-
-
-\bm{x}_k := {[}\bm{x}*{k}, \cdots, \bm{x}}{k-L_s+1}{]}^T
-
+\bm{x}_k := [\bm{x}_{k}, \cdots, \bm{x}_{k-L_s+1}]^T
 \end{equation}
 
 拘束条件は、次式の\(L_s\)個の拘束条件を行列・ベクトル形式で表したものである。
 
 NLMS法と同様にラグランジュの未定乗数法を用いた、最適解を導出により、次式のフィルタ更新式が得られる。
 
-\
 \subsection{再帰最小二乗法（RLS法）}\label{rls}
 
 再帰最小二乗法（RLS法）は。LS法の解を再帰的に求める手法である。
@@ -365,40 +286,25 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 サンプル平均による自己相関行列および相互相関ベクトルの推定値\(\hat{\bm{R}_x}\)および\(\hat{\bm{r}_{xd}}\)を次式に示す。
 
 \begin{equation}
-
-\hat{\bm{R}_k} := \sum_{i=1}^k \bm{x}*i \bm{x}*i^H =
-\bm{X}}{1:k} \bm{X}}{1:k}^H
+\hat{\bm{R}_k} := \sum_{i=1}^k \bm{x}_i \bm{x}_i^H = \bm{X}_{1:k} \bm{X}_{1:k}^H
 \end{equation}
 
 \begin{equation}
-
-
-\hat{\bm{r}_k} := \sum*{i=1}^k \bm{x}*i d_i^* =
-\bm{X}}{1:k} \bm{d}}{1:k}^H
+\hat{\bm{r}_k} := \sum_{i=1}^k \bm{x}_i d_i^* = \bm{X}_{1:k} \bm{d}_{1:k}^H
 \end{equation}
-
-\begin{equation}
 
 ここで、\(\bm{d}_{1:k}\)および\(\bm{X}_{1:k}\)
 
-\end{equation}
 \begin{equation}
-
-\bm{d}_{1:k} := {[}d_1, \cdots, d_k{]}
-
-
-\end{equation}
-\begin{equation}
-
-\bm{X}_{1:k} := {[}\bm{x}_1, \cdots, \bm{x}_k{]}
-
-
+\bm{d}_{1:k} := [d_1, \cdots, d_k]
 \end{equation}
 
 \begin{equation}
+\bm{X}_{1:k} := [\bm{x}_1, \cdots, \bm{x}_k]
+\end{equation}
 
-\bm{x}_{k} := {[}x_k, \cdots, u_{k-K+1}{]}^T
-
+\begin{equation}
+\bm{x}_{k} := [x_k, \cdots, u_{k-K+1}]^T
 \end{equation}
 
 時刻kにおける\(\hat{\bm{R}_x}\)および\(\hat{\bm{r}_x}\)は、一時刻前\((k-1)\)の値を用いて、次式のように再帰的に表すことができる。
@@ -406,22 +312,18 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 
 \begin{equation}
 \hat{\bm{R}_k} = \hat{\bm{R}_{k-1}} + \bm{x}_k \bm{x}_k^H
-
 \end{equation}
 
 
 \begin{equation}
 \hat{\bm{r}_k} = \hat{\bm{r}_{k-1}} + \bm{x}_k d_k^*
-
 \end{equation}
 
 逆行列の補助定理を用いると、自己相関行列の逆行列\(P_k := \hat{\bm{R}_k^{-1}}\)も、次式のように再帰的に求めることができる。
 
 
 \begin{equation}
-\bm{P}*k = \bm{P}}{k-1} -
-\frac{\bm{P}_{k-1} \bm{x}_k \bm{x}_k^H \bm{P}_{k-1}}{1 + \bm{x}_k^H \bm{P}_{k-1} \bm{x}_k}
-
+\bm{P}_k = \bm{P}_{k-1} - \frac{\bm{P}_{k-1} \bm{x}_k \bm{x}_k^H \bm{P}_{k-1}}{1 + \bm{x}_k^H \bm{P}_{k-1} \bm{x}_k} 
 \end{equation}
 
 式@二個前、式@一個前
@@ -435,26 +337,20 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 ここで、更新式における演算を簡略化するため、次式のゲインベクトルを定義する。
 
 \begin{equation}
-
-\bm{g}_k :=
-\frac{\bm{P}_{k-1} \bm{x}_k}{1 + \bm{x}_k^H \bm{P}_{k-1} \bm{x}_k}
-
+\bm{g}_k := \frac{\bm{P}_{k-1} \bm{x}_k}{1 + \bm{x}_k^H \bm{P}_{k-1} \bm{x}_k}
 \end{equation}
 
 これを用いて式@三個前を書き直すと
 
 
 \begin{equation}
-\bm{P}*k = \bm{P}}{k-1} - \bm{g}_k \bm{x}*k^H
-\bm{P}}{k-1} = (\bm{I} - \bm{g}_k \bm{x}*k^H) \bm{P}}{k-1}
+\bm{P}_k = \bm{P}_{k-1} - \bm{g}_k \bm{x}_k^H \bm{P}_{k-1} = (\bm{I} - \bm{g}_k \bm{x}_k^H) \bm{P}_{k-1}
 \end{equation}
 
 一方、式@三個前から、次式を得る。
 
 \begin{equation}
-
-\bm{g}_k = (\bm{I} - \bm{g}_k \bm{x}*k^H) \bm{P}}{k-1}
-\bm{x}_k
+\bm{g}_k = (\bm{I} - \bm{g}_k \bm{x}_k^H) \bm{P}_{k-1} \bm{x}_k
 \end{equation}
 
 
@@ -472,7 +368,7 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 \begin{equation}
 \begin{split}
 \bm{w}_k &= \bm{P}_k (\hat{\bm{r}_{k-1}} + \bm{x}_k d_k^*) \\
-         &= \bm{w}_{k-1} + \bm{g}_k (d_k^* - \bm{x}*k^H\bm{w}}{k-1})
+         &= \bm{w}_{k-1} + \bm{g}_k (d_k^* - \bm{x}_k^H \bm{w}_{k-1})
 \end{split}
 \end{equation}
 
@@ -480,7 +376,7 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 最後に、式@一個前 に式@三個前 を代入して、次式の更新式を得る。
 
 \begin{equation}
-\bm{w}*k = \bm{w}}{k-1} + \gm{g}_k e_k^*
+\bm{w}_k = \bm{w}_{k-1} + \bm{g}_k e_k^*
 \end{equation}
 
 

@@ -12,7 +12,7 @@
 \subsection{実験方法}\label{instruction-drone}
 
 \
-\paragraph{収音のためのハードウェア構成について}\label{hardware-for-record}
+\subsubsection{収音のためのハードウェア構成について}\label{hardware-for-record}
 
 収音はドローンとバイノーラルマイクを使用し、@のブロック図の構成で行った。
 
@@ -24,7 +24,7 @@
 \includegraphics{figures/pre-ex_block.pdf}
 
 \
-\paragraph{収音に使用するソフトウェアについて}\label{software-for-record}
+\subsubsection{収音に使用するソフトウェアについて}\label{software-for-record}
 
 音声の収録にはGo言語で記述した自作の収音用コマンドラインツールを使用した。
 @。
@@ -177,7 +177,7 @@ Go言語ではテストファイルに\texttt{func\ BenchmarkXxx(b\ *testing.B)}
 \subsection{考察}\label{consideration-color}
 
 \
-\paragraph{メモリ使用量について}\label{about-memory}
+\subsubsection{メモリ使用量について}\label{about-memory}
 
 @より、各アルゴリズムのメモリ使用量はNLMSアルゴリズムが一番少なく、APアルゴリズム、RLSアルゴリズムと多くなっている。これは理論式に即した物となっており、妥当な値である。
 
@@ -186,7 +186,7 @@ Pi 3 Model
 Bのメモリは1GBと潤沢であるため、使用メモリに関しては実用範囲内であると思われる。
 
 \
-\paragraph{演算時間について}\label{about-time}
+\subsubsection{演算時間について}\label{about-time}
 
 @より、NLMSアルゴリズムの演算時間はAP・RLSに比べて数十倍高速であることがわかる。一方、Raspberry
 Piの演算時間はMacBook Proに比べるて十倍程度長いことがわかる。
