@@ -1,24 +1,24 @@
 \
-\section{適応フィルタを用いた駆動音低減法の検討}\label{ux9069ux5fdcux30d5ux30a3ux30ebux30bfux3092ux7528ux3044ux305fux99c6ux52d5ux97f3ux4f4eux6e1bux6cd5ux306eux691cux8a0e}
+\chapter{適応フィルタを用いた駆動音低減法の検討}\label{adf-practice}
 
 \
-\section{実験目的}\label{ux5b9fux9a13ux76eeux7684}
+\section{実験目的}\label{purpose-practice}
 
 本実験では、実際の使用の際に入力される信号を模擬し、ADFによる雑音低減の効果を検討する。
 これにより、予備実験と合わせて雑音低減の実現可能性を総合的に評価することを目的とする。
 
 \
-\section{実験方法}\label{ux5b9fux9a13ux65b9ux6cd5}
+\section{実験方法}\label{instruction-practice}
 
 本実験は以下の手順で行った。
 
 \
-\subsection{ドローンのマイクの取り付け}\label{ux30c9ux30edux30fcux30f3ux306eux30deux30a4ux30afux306eux53d6ux308aux4ed8ux3051}
+\subsection{ドローンのマイクの取り付け}\label{installment-mic}
 
 @のように簡易的にマイクを木材と粘着テープで固定し、取り付けた。
 
 \
-\subsection{音声信号の音源から2つのマイクまでの伝達関数の測定}\label{ux97f3ux58f0ux4fe1ux53f7ux306eux97f3ux6e90ux304bux30892ux3064ux306eux30deux30a4ux30afux307eux3067ux306eux4f1dux9054ux95a2ux6570ux306eux6e2cux5b9a}
+\subsection{音声信号の音源から2つのマイクまでの伝達関数の測定}\label{observation-tf}
 
 目的音源からマイクまでの伝達関数を測定した。これにより、任意の音声信号を畳み込むことで、様々な条件での雑音低減のシミュレーションを行うことができる。
 
@@ -33,31 +33,31 @@
 \end{figure}
 
 \
-\subsection{ドローンの駆動音に対する2つのマイクの擬似的な伝達関数の計算}\label{ux30c9ux30edux30fcux30f3ux306eux99c6ux52d5ux97f3ux306bux5bfeux3059ux308b2ux3064ux306eux30deux30a4ux30afux306eux64ecux4f3cux7684ux306aux4f1dux9054ux95a2ux6570ux306eux8a08ux7b97}
+\subsection{ドローンの駆動音に対する2つのマイクの擬似的な伝達関数の計算}\label{pseudo-tf}
 
 2つのマイク間の疑似伝達関数を計算するためにはそれぞれのマイクで駆動音を収音する必要がある。収音は@の構成を2chに拡張して行った。
 
 疑似伝達関数は2つの駆動音をフーリエ変換し、除算したものを逆フーリエ変換することで得られる。この処理は@calc\_pseudo\_ir\_between\_wav\_files.pyを実行して行った。
 
 \
-\subsection{駆動音と音声信号それぞれで参照信号と目的信号用の伝達関数を畳み込み}\label{ux99c6ux52d5ux97f3ux3068ux97f3ux58f0ux4fe1ux53f7ux305dux308cux305eux308cux3067ux53c2ux7167ux4fe1ux53f7ux3068ux76eeux7684ux4fe1ux53f7ux7528ux306eux4f1dux9054ux95a2ux6570ux3092ux7573ux307fux8fbcux307f}
+\subsection{駆動音と音声信号それぞれで参照信号と目的信号用の伝達関数を畳み込み}\label{convolve-each}
 
 @ @
 で各伝達関数を求めたので、駆動音・音声信号それぞれ@calc\_convolve\_fastのプログラムを実行して伝達関数を畳込み、参照信号と目的信号を生成した。
 
 \
-\subsection{指定したSN比で駆動音と音声信号を合成}\label{ux6307ux5b9aux3057ux305fsnux6bd4ux3067ux99c6ux52d5ux97f3ux3068ux97f3ux58f0ux4fe1ux53f7ux3092ux5408ux6210}
+\subsection{指定したSN比で駆動音と音声信号を合成}\label{mix-snr}
 
 @calc\_noise\_mix
 を実行し、-40dBから0dBまで5dB刻みで駆動音と音声信号を合成した。これにより、
 
 \
-\subsection{合成した参照信号と目的信号でADFを実行}\label{ux5408ux6210ux3057ux305fux53c2ux7167ux4fe1ux53f7ux3068ux76eeux7684ux4fe1ux53f7ux3067adfux3092ux5b9fux884c}
+\subsection{合成した参照信号と目的信号でADFを実行}\label{exec-adf}
 
 @と同様に合成した参照信号と目的信号に対して、ADFの各アルゴリズムにおける最適なステップサイズを求め、十分な時間フィルタリングを実行。
 
 \
-\section{実験結果}\label{ux5b9fux9a13ux7d50ux679c}
+\section{実験結果}\label{result-practice}
 
 SN比を-40dB、-20dB、0dB、フィルタ長を4、64、256とした場合の各アルゴリズムの収束特性を図@に示す。ただし、それぞれの図において、縦軸はMSE{[}dB{]}、横軸はIterationを示している。
 
@@ -68,7 +68,7 @@ SN比を-40dB、-20dB、0dB、フィルタ長を4、64、256とした場合の�
 \end{figure}
 
 \
-\section{考察}\label{ux8003ux5bdf}
+\section{考察}\label{consideration-practice}
 
 @onepageより、音声が波形として見られるのはAPアルゴリズムのSN比0dB、フィルタ長4タップのものとSN比0dBのRLSアルゴリズムのみであった。実際の運用ではSN比が0dBよりも悪化することが予想されるため、適切に駆動音を低減し、音声を抽出することは難しいと思われる。
 
