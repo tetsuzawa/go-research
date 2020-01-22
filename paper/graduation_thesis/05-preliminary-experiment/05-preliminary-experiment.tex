@@ -1,12 +1,12 @@
 \
-\chapter{雑音低減の予備実験}\label{noise-pre-experiment}
+\chapter{駆動音低減のための予備実験}\label{noise-pre-experiment}
 
 \
 \section{ドローンの駆動音のサンプル収音}\label{record-drone}
 
 \subsection{実験目的}\label{purpose-drone}
 
-@で述べたように、本研究で用いるアルゴリズムは参照信号が有色性を持つと収束性能が低下する特徴を持つ。したがって、リアルタイム処理が目的の場合、参照信号の周波数特性が処理効果に影響を及ぼすことになる。したがって、ドローンの駆動音の周波数特性を調べるため、サンプル収音を行った。
+本研究で用いるLMS・AP・RLSアルゴリズムは参照信号が有色性を持つと収束性能が低下する特徴を持つ。したがって、リアルタイム処理が目的の場合、参照信号の周波数特性が処理効果に影響を及ぼすことになる。したがって、ドローンの駆動音の周波数特性を調べるため、サンプル収音を行った。
 
 \
 \subsection{実験方法}\label{instruction-drone}
@@ -19,53 +19,58 @@
 ただし、前述のバイノーラルマイクのみでは十分な入力電圧が得られないため、収音にはマイクロフォンアンプを使用する必要がある。本実験では株式会社オーディオテクニカのマイクロフォンアンプAT-MA2を使用した。
 
 なお、本研究では室内でサンプル収音を行ったため、据え置き型のマイクロフォンアンプを使用したが、実際にドローンに搭載する際は別途小型のマイクロフォンアンプが必要と推察される。
-
-\includegraphics[width=13cm]{figures/pre-ex_block.png}
-\includegraphics[width=13cm]{figures/pre-ex_block.pdf}
+\begin{figure}[H]
+\centering
+\includegraphics[width=10cm]{figures/pre-ex_block.pdf}
+\caption{ドローンの駆動音サンプル収音のブロック図}
+\label{fig:pre-ex_block}
+\end{figure}
 
 \
 \subsubsection{収音に使用するソフトウェアについて}\label{software-for-record}
 
-音声の収録にはGo言語で記述した自作の収音用コマンドラインツールを使用した。
-@。
-このプログラムは\cite{http://sox.sourceforge.net/}{SoX}(コマンドラインベースの音声編集ソフトウェア)の\texttt{rec}コマンドを参考に設計した。
-オーディオ入出力APIの\cite{http://www.portaudio.com/}{PortAudio}を利用しており、多チャンネルでの収音に対応している他、独自の機能として音声データを本研究で主に使用されている形式（.DSB
-- 符号付き整数型16bitバイナリファイル)
-で保存することが可能となっている。
+音声の収録にはGo言語で記述した自作の収音用コマンドラインツール（\ref{code:multirecord}）を使用した。
+このプログラムはSoX（コマンドラインベースの音声編集ソフトウェア)\cite{sox:online}の\texttt{rec}コマンドを参考に設計した。
+オーディオ入出力APIのPortAudio\cite{portaudio:online}を利用しており、多チャンネルでの収音に対応している他、独自の機能として音声データを本研究で主に使用されている形式（.DSB - 符号付き整数型16bitバイナリファイル）で保存することが可能となっている。
 
-本実験では自作のソフトウェアを使用したが、.wavなどの一般的な音声データ形式を使用する場合、前述のSoXを利用しても同様に収音が可能である。また、同じくPortAudioをベースとしたGUIの音声編集ソフトウェアである\cite{https://www.audacityteam.org/}{Audacity}も有力な候補となる。いずれのソフトウェアも無料で使用可能である。
+本実験では自作のソフトウェアを使用したが、.wavなどの一般的な音声データ形式を使用する場合、前述のSoXを利用しても同様に収音が可能である。また、同じくPortAudioをベースとしたGUIの音声編集ソフトウェアであるAudacity\cite{audacity:online}も有力な候補となる。いずれのソフトウェアも無料で使用可能である。
 
-@TODO 使い方
+\subsection{使用機器}\label{used-equipments-drone}
 
-使用機器を以下に示す
+使用機器を以下に示す。
 
-\begin{itemize}
-\tightlist
+\begin{enumerate}
+\renewcommand{\labelenumi}{(\arabic{enumi})}
 \item
-  使用機器
+  ドローン\\
+  \ref{about-drone}節を参照。
+\item
+  マイク \\
+  \ref{binaural-mic}節のバイノーラルマイクを1chのみ使用した。詳細は@を参照。
+\item
+  マイクロフォンアンプ AT-MA2 株式会社オーディオテクニカ
+  \begin{figure}[H]
+  \centering
+  \includegraphics[width=13cm]{figures/at-ma2.jpg}
+  \caption{マイクロフォンアンプ}
+  \label{fig:at-ma2}
+  \end{figure}
 
-  \begin{enumerate}
-  \renewcommand{\labelenumi}{(\arabic{enumi})}
-  \item
-    ドローン\\
-    @を参照。
-  \item
-    マイク @のバイノーラルマイクを1chのみ使用した。詳細は@を参照。
-  \item
-    マイクロフォンアンプ AT-MA2 株式会社オーディオテクニカ
-    \cite{https://www.audio-technica.co.jp/product/AT-MA2}{at-ma2}
-    \includegraphics[width=13cm]{figures/at-ma2.jpg}
-  \item
-    オーディオインターフェース ローランド株式会社 DUO-CAPTURE EX S/N.
-    Z6C6056
-    \cite{https://www.roland.com/jp/products/duo-capture_ex/}{duo-capture}
-  \end{enumerate}
-\end{itemize}
+\item
+  オーディオインターフェース ローランド株式会社 DUO-CAPTURE EX S/N.Z6C6056
+  \cite{audio_interface:online}
+  \begin{figure}[H]
+  \centering
+  \includegraphics[width=13cm]{figures/duo-capture.jpg}
+  \caption{オーディオインターフェース}
+  \label{fig:duo-capture}
+  \end{figure}
+\end{enumerate}
 
 \
 \subsection{実験結果}\label{result-drone}
 
-収録したドローンの駆動音の波形を@のプログラムを使用し、描画した図を@に示す。また、@のプログラムを使用し、周波数特性を解析した。駆動音のスペクトログラムを@に示す。
+収録したドローンの駆動音の波形を\ref{}のプログラムを使用し、描画した図を@に示す。また、@のプログラムを使用し、周波数特性を解析した。駆動音のスペクトログラムを@に示す。
 
 \includegraphics[width=13cm]{figures/drone_raw.png}
 \includegraphics[width=13cm]{figures/drone_raw_spectrogram.png}

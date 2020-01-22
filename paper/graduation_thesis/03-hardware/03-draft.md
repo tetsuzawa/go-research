@@ -68,12 +68,12 @@
 
 収音には、音像定位実験のために製作したバイノーラルマイクを流用した。
 
-使用した素子は秋月電子のエレクトレットコンデンサーマイクロホン（ECM）[エレクトットコンデンサマイク](http://akizukidenshi.com/catalog/g/gP-08181/)である。製作は@のようにLRそれぞれエレクトットコンデンサマイクをはんだ付けし、ロボットケーブルを経由してステレオミニプラグと接続した。
+使用した素子は秋月電子のエレクトレットコンデンサーマイクロホン（ECM）[エレクトレットコンデンサマイク](http://akizukidenshi.com/catalog/g/gP-08181/)である。製作は@のようにLRそれぞれエレクトレットコンデンサマイクをはんだ付けし、ロボットケーブルを経由してステレオミニプラグと接続した。
 
 - 使用機器
-   1. エレクトットコンデンサマイク XCM6035 株式会社秋月電子通商 [url](http://akizukidenshi.com/catalog/g/gP-08181/) x2
-   ![エレクトットコンデンサマイク](figures/microphone.jpg)
-   ![エレクトットコンデンサマイク](figures/microphone_size.jpg)
+   1. エレクトレットコンデンサマイク XCM6035 株式会社秋月電子通商 [url](http://akizukidenshi.com/catalog/g/gP-08181/) x2
+   ![エレクトレットコンデンサマイク](figures/microphone.jpg)
+   ![エレクトレットコンデンサマイク](figures/microphone_size.jpg)
       
    2. シールドスリムロボットケーブル KRT-SW 株式会社秋月電子通商 [url](http://akizukidenshi.com/catalog/g/gP-07457/)
    ![シールドスリムロボットケーブル](figures/sielded_robot_cable.jpg)

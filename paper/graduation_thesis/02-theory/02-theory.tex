@@ -12,7 +12,7 @@
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=13cm]{figures/block_jp.png}
+\includegraphics[width=10cm]{figures/block_jp.png}
 \caption{ウィナーフィルタのブロック図}
 \label{block_jp}
 \end{figure}
@@ -56,7 +56,7 @@ y_k = \sum_{i=1}^K w_i^* x_{k-i+1}
 上述のように、適応フィルタの目的は、入力信号\(\bm{x}_k\)から\(d_k\)を推定することである。
 これを達成するための過程として、フィルタ\(\bm{w}\)の係数を決定する学習過程と、\equref{simple_y}により\(\hat{d}_k\)を推定するフィルタリング過程とに分けられる。
 フィルタの学習過程では、信号\(d_k\)を教師として与え、\(d_k\)と\(\bm{x}_k\)の関係を表す係数\(\bm{w}\)を学習する。
-一方、フィルタリング過程では、信号\(d_k\)が未知の場合について、観測値\(\bm{x}_k\)と学習済みのフィルタ係数\(\bm{w}\)から、信号の推定値\(\hat{d_k} (= y_k)\)を得る。学習過程で望みの応答\(d_k\)をどうやって与えるかは、応用に依存する\cite{signal_proccesing_for_array}。
+一方、フィルタリング過程では、信号\(d_k\)が未知の場合について、観測値\(\bm{x}_k\)と学習済みのフィルタ係数\(\bm{w}\)から、信号の推定値\(\hat{d_k} (= y_k)\)を得る。学習過程で望みの応答\(d_k\)をどうやって与えるかは、応用に依存する\cite{signal_processing_for_array}。
 
 \subsubsection{ウィナーフィルタの導出}\label{wiener-introduction}
 
@@ -431,7 +431,7 @@ ANCのブロック図を\figref{fig:anc_block}に示す。
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=13cm]{figures/anc.png}
+\includegraphics[width=10cm]{figures/anc.png}
 \caption{ドローンの駆動音に対するANCの想定ブロック図}
 \label{fig:anc_block}
 \end{figure}
@@ -445,7 +445,7 @@ ANCのブロック図を\figref{fig:anc_block}に示す。
 自動等化器はアクティブノイズコントロールとは異なり、計算機内部で信号の処理を行う手法である。
 一般に、適応フィルタに対する入力信号は長期間で平均をとると、ドローンの駆動音に対して音声のエネルギーが小さい。自動等化器では、フィルタの更新係数を小さくすることで係数がドローンの駆動音のみに適応することを利用し、フィルタ出力\(y_k\)との誤差\(e_k\)を目的信号の予測値として取り出す手法である。
 
-自動等化器のブロック図を\equref{equ:automatic_equlizer_block}に示す。
+自動等化器のブロック図を\figref{equ:automatic_equlizer_block}に示す。
 
 \begin{figure}[H]
 \centering
