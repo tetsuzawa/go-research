@@ -13,18 +13,23 @@
 本実験は以下の手順で行った。
 
 \
-\subsection{ドローンのマイクの取り付け}\label{installment-mic}
+\subsubsection{ドローンのマイクの取り付け}\label{installment-mic}
 
-@のように簡易的にマイクを木材と粘着テープで固定し、取り付けた。
+\figref{fig:drone_experiment}のように簡易的にマイクを木材と粘着テープで固定し、取り付けた。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=13cm]{figures/drone_experiment_picture_caption.png}
+\caption{ドローンと各マイクの取り付け}
+\label{fig:drone_experiment}
+\end{figure}
 
 \
-\subsection{音声信号の音源から2つのマイクまでの伝達関数の測定}\label{observation-tf}
+\subsubsection{音声信号の音源から2つのマイクまでの伝達関数の測定}\label{observation-tf}
 
 目的音源からマイクまでの伝達関数を測定した。これにより、任意の音声信号を畳み込むことで、様々な条件での雑音低減のシミュレーションを行うことができる。
 
 伝達関数の測定は設備の都合上室内で行った。実際にドローンを使用するのは屋外を想定しているため、残響を無効化するために1000サンプル以上の伝達関数を切り捨て、半自由音場を模擬した。
-
-なお、伝達関数の測定は下川原らが制作した伝達関数測定ソフトウェア（TFMeasure）@を使用した。
 
 \begin{figure}[H]
 \centering
@@ -33,64 +38,64 @@
 \end{figure}
 
 \
-\subsection{ドローンの駆動音に対する2つのマイクの擬似的な伝達関数の計算}\label{pseudo-tf}
+\subsubsection{ドローンの駆動音に対する2つのマイクの擬似的な伝達関数の計算}\label{pseudo-tf}
 
-2つのマイク間の疑似伝達関数を計算するためにはそれぞれのマイクで駆動音を収音する必要がある。収音は@の構成を2chに拡張して行った。
+2つのマイク間の疑似伝達関数を計算するためにはそれぞれのマイクで駆動音を収音する必要がある。収音は\ref{record-drone}節の構成を2chに拡張して行った。
 
-疑似伝達関数は2つの駆動音をフーリエ変換し、除算したものを逆フーリエ変換することで得られる。この処理は@calc\_pseudo\_ir\_between\_wav\_files.pyを実行して行った。
-
-\
-\subsection{駆動音と音声信号それぞれで参照信号と目的信号用の伝達関数を畳み込み}\label{convolve-each}
-
-@ @
-で各伝達関数を求めたので、駆動音・音声信号それぞれ@calc\_convolve\_fastのプログラムを実行して伝達関数を畳込み、参照信号と目的信号を生成した。
+疑似伝達関数は2つの駆動音をフーリエ変換し、除算したものを逆フーリエ変換することで得られる。この処理は\ref{calc\_pseudo\_ir\_between\_wav\_files.py}を実行して行った。
 
 \
-\subsection{指定したSN比で駆動音と音声信号を合成}\label{mix-snr}
+\subsubsection{駆動音と音声信号それぞれで参照信号と目的信号用の伝達関数を畳み込み}\label{convolve-each}
 
-@calc\_noise\_mix
-を実行し、-40dBから0dBまで5dB刻みで駆動音と音声信号を合成した。これにより、
+\ref{observation-tf}、\ref{pseudo-tf}で各伝達関数を求めたので、駆動音・音声信号それぞれ\ref{calc\_convolve\_fast}のプログラムを実行して伝達関数を畳込み、参照信号と目的信号を生成した。
 
 \
-\subsection{合成した参照信号と目的信号でADFを実行}\label{exec-adf}
+\subsubsection{指定したSN比で駆動音と音声信号を合成}\label{mix-snr}
 
-@と同様に合成した参照信号と目的信号に対して、ADFの各アルゴリズムにおける最適なステップサイズを求め、十分な時間フィルタリングを実行。
+\ref{calc\_noise\_mix}を実行し、-40dBから0dBまで5dB刻みで駆動音と音声信号を合成した。これにより、
+
+\
+\subsubsection{合成した参照信号と目的信号でADFを実行}\label{exec-adf}
+
+\ref{adf-color-effect}節と同様に合成した参照信号と目的信号に対して、ADFの各アルゴリズムにおける最適なステップサイズを求め、十分な時間フィルタリングを実行。
 
 \
 \section{実験結果}\label{result-practice}
 
-SN比を-40dB、-20dB、0dB、フィルタ長を4、64、256とした場合の各アルゴリズムの収束特性を図@に示す。ただし、それぞれの図において、縦軸はMSE{[}dB{]}、横軸はIterationを示している。
+SN比を-40dB、-20dB、0dB、フィルタ長を4、64、256とした場合の各アルゴリズムの収束特性を\figref{fig:onepage}に示す。ただし、それぞれの図において、縦軸はMSE{[}dB{]}、横軸はIterationを示している。
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=13cm]{figures/onepage_legend.png}
-\caption{onepage}
+\label{fig:onepage}
+\caption{SN比−フィルタ長の値による各アルゴリズムの収束特性測定結果}
 \end{figure}
 
 \
 \section{考察}\label{consideration-practice}
 
-@onepageより、音声が波形として見られるのはAPアルゴリズムのSN比0dB、フィルタ長4タップのものとSN比0dBのRLSアルゴリズムのみであった。実際の運用ではSN比が0dBよりも悪化することが予想されるため、適切に駆動音を低減し、音声を抽出することは難しいと思われる。
+\figref{fig:onepage}より、音声が波形として見られるのはAPアルゴリズムのSN比0dB、フィルタ長4タップのものとSN比0dBのRLSアルゴリズムのみであった。実際の運用ではSN比が0dBよりも悪化することが予想されるため、適切に駆動音を低減し、音声を抽出することは難しいと思われる。
 
-@の波形に音声帯域以外の高周波が存在すると仮定し、収束特性に対してカットオフ8kHz、フィルタ長512タップのFIRローパスフィルタを適用した。これにより得られた収束特性を図@に示す。
+\figref{fig:onepage}の波形に音声帯域以外の高周波が存在すると仮定し、収束特性に対してカットオフ8kHz、フィルタ長512タップのFIRローパスフィルタを適用した。これにより得られた収束特性を\figref{fig:onepage_8kHz}に示す。
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=13cm]{figures/onepage_8kHz.png}
-\caption{onepage}
+\label{fig:onepage_8kHz}
+\caption{SN比−フィルタ長の値による各アルゴリズムの収束特性測定結果（8kHz以下）}
 \end{figure}
 
-図@から分かる通り、周波数帯域を8kHz以下に限定しても波形がほとんど変化しないことがわかる。したがって、波形に現れたのは8kHz以下の雑音であると推測される。
+\figref{fig:onepage_8kHz}から分かる通り、周波数帯域を8kHz以下に限定しても波形がほとんど変化しないことがわかる。したがって、波形に現れたのは8kHz以下の雑音であると推測される。
 
-NLMSフィルタが有効な結果を得られなかった理由について考察する。本実験で使用したマイクは無指向のものである。また、マイクの配置は参照信号と目的信号の収音を模擬した簡易的なものであった。ここで、@合成
-で合成した参照信号と目的信号を比較する。参照信号と目的信号を図@に示す。
+NLMSフィルタが有効な結果を得られなかった理由について考察する。本実験で使用したマイクは無指向のものである。また、マイクの配置は参照信号と目的信号の収音を模擬した簡易的なものであった。ここで、\ref{mix-snr}で合成した参照信号と目的信号を比較する。参照信号と目的信号を\figref{fig:compare_x_d}に示す。
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=13cm]{figures/snr0.png}
-\caption{snr0}
+\caption{作成した参照信号と目的信号の比較}
+\label{fig:compare_x_d}
 \end{figure}
 
-図@より、参照信号と目的信号に大きな差が無いことがわかる。一般にADFが十分なフィルタリング性能を発揮するためには、参照信号に目的信号が入り込まないことが条件となる。前述の通り、本実験では簡易的なシステムを使用したためこのような結果が得られたと推察される。したがって、マイクに十分な指向性を持たせ、適切な配置で収音することが今後の課題となる。
+\figref{fig:compare_x_d}より、参照信号と目的信号に大きな差が無いことがわかる。一般にADFが十分なフィルタリング性能を発揮するためには、参照信号に目的信号が入り込まないことが条件となる。前述の通り、本実験では簡易的なシステムを使用したためこのような結果が得られたと推察される。したがって、マイクに十分な指向性を持たせ、適切な配置で収音することが今後の課題となる。
 
-@onepageより雑音低減の効果が最も優れた結果となったのはRLSアルゴリズムで有ることがわかる。しかしながら、@の予備実験で確認したように、リアルタイム処理の観点から見るとRLSは実装に適していないため、本研究で検討した構成での雑音低減の実現可能性は低いと思われる。
+\figref{fig:onepage}より雑音低減の効果が最も優れた結果となったのはRLSアルゴリズムで有ることがわかる。しかしながら、\ref{benchmark}節の予備実験で確認したように、リアルタイム処理の観点から見るとRLSは実装に適していないため、本研究で検討した構成での雑音低減の実現可能性は低いと思われる。

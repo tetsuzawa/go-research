@@ -24,7 +24,7 @@ Googleで開発された、汎用のプログラミング言語である。Goは
 \
 \subsection{プログラミング言語の使い分けについて}\label{about-proper-use}
 
-Pythonは@で述べた特徴から、様々な試行をしながら行う開発に適している。一方で、速度が遅く、リアルタイム処理には向かない。したがって、本研究ではこの特性を活かし、予備実験・データ処理・グラフ作成にPythonを使用した。
+Pythonは\ref{about-python}節で述べた特徴から、様々な試行をしながら行う開発に適している。一方で、速度が遅く、リアルタイム処理には向かない。したがって、本研究ではこの特性を活かし、予備実験・データ処理・グラフ作成にPythonを使用した。
 
 また、Goは言語仕様が現代的で、実行速度が速く、クロスコンパイルが可能といった特徴から、ADFライブラリの作成および実装に使用した。
 
@@ -119,79 +119,33 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
   プログラム
 
   \begin{itemize}
-  \tightlist
-  \item
-    指定した音圧差で音声を合成するプログラム
 
-    \begin{itemize}
-    \tightlist
-    \item
-      \ref{calc\_noise\_mix}
-    \end{itemize}
   \item
-    2つのwavファイルを畳み込むプログラム
+    指定した音圧差で音声を合成するプログラム \ref{calc\_noise\_mix}
 
-    \begin{itemize}
-    \tightlist
-    \item
-      \ref{convolve\_wav}
-    \end{itemize}
   \item
-    2つのwavファイルを畳み込むプログラム（フーリエ変換を用いた高速版）
+    2つのwavファイルを畳み込むプログラム \ref{convolve\_wav}
 
-    \begin{itemize}
-    \tightlist
-    \item
-      \ref{convolve\_wav\_fast}
-    \end{itemize}
   \item
-    2つのwavファイルもしくはcsvファイルを畳み込むプログラム（フーリエ変換を用いた高速版）
+    2つのwavファイルを畳み込むプログラム（フーリエ変換を用いた高速版） \ref{convolve\_wav\_fast}
 
-    \begin{itemize}
-    \tightlist
-    \item
-      \ref{convolve\_wav\_coef}
-    \end{itemize}
   \item
-    csvファイルのデータからwavファイルを生成するプログラム
+    2つのwavファイルもしくはcsvファイルを畳み込むプログラム（フーリエ変換を用いた高速版） \ref{convolve\_wav\_coef}
 
-    \begin{itemize}
-    \tightlist
-    \item
-      \ref{csv\_to\_wav}
-    \end{itemize}
   \item
-    \ref{の実験で用いるADFの設定を記述したJSONファイルを生成するプログラム
+    csvファイルのデータからwavファイルを生成するプログラム \ref{csv\_to\_wav}
 
-    \begin{itemize}
-    \tightlist
-    \item
-      \ref{drone\_json\_generator}
-    \end{itemize}
   \item
-    csvファイルのデータから指定したサンプルの平均二乗誤差（MSE）を計算し、csvファイルに新たな列として追記するプログラム
+    \ref{adf-practice}の実験で用いるADFの設定を記述したJSONファイルを生成するプログラム \ref{drone\_json\_generator}
 
-    \begin{itemize}
-    \tightlist
-    \item
-      \ref{calc\_mse\_csv}
-    \end{itemize}
   \item
-    PortAudioを使用した多チャンネル収音用プログラム
+    csvファイルのデータから指定したサンプルの平均二乗誤差（MSE）を計算し、csvファイルに新たな列として追記するプログラム \ref{calc\_mse\_csv}
 
-    \begin{itemize}
-    \tightlist
-    \item
-      \ref{multirecord/main}
-    \end{itemize}
   \item
-    DSBファイルからwavファイルに変換するプログラム
+    PortAudioを使用した多チャンネル収音用プログラム \ref{multirecord/main}
 
-    \begin{itemize}
-    \tightlist
-    \item
-      \ref{wav\_to\_DSB/main}
-    \end{itemize}
+  \item
+    DSBファイルからwavファイルに変換するプログラム \ref{wav\_to\_DSB/main}
   \end{itemize}
 \end{itemize}
 
@@ -212,7 +166,7 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
 \
 \subsection{ライブラリの設計}\label{design-adf}
 
-Pythonで記述された適応信号処理のライブラリとして\cite{https://matousc89.github.io/padasip/index.html\#padasip}{Padasip}が公開されている。Padasipは信号のフィルタリング、予測、復元、分類といった適応信号処理を簡易化するために設計されたライブラリであり、LMS・NLMS、AP、RLSをはじめとする主要なアルゴリズムが一通り実装されている。
+Pythonで記述された適応信号処理のライブラリとしてPadasip\cite{padasip}が公開されている。Padasipは信号のフィルタリング、予測、復元、分類といった適応信号処理を簡易化するために設計されたライブラリであり、LMS・NLMS、AP、RLSをはじめとする主要なアルゴリズムが一通り実装されている。
 
 本研究で制作したADFライブラリはPadasipを参考に設計し、Go言語で実装した。
 
