@@ -4,15 +4,15 @@
 
 \subsection{ウィナーフィルタ}\label{wiener}
 
-\paragraph{ウィナーフィルタの構造}\label{wiener-structure}
+\subsubsection{ウィナーフィルタの構造}\label{wiener-structure}
 
 ウィナーフィルタは線形MMSE法（最小平均二乗誤差法）を定常な時系列に適用した特殊型であり、後述の適応アルゴリズムの基礎となる。
 
-ウィナーフィルタのブロック図を図@に示す。
+ウィナーフィルタのブロック図を\figref{block_jp}に示す。
 
-\begin{figure}
+\begin{figure}[H]
 \centering
-\includegraphics{figures/block_jp.png}
+\includegraphics[width=13cm]{figures/block_jp.png}
 \caption{ウィナーフィルタのブロック図}
 \label{block_jp}
 \end{figure}
@@ -22,6 +22,7 @@
 
 \begin{equation}
 y_k = \bm{w}^H \bm{x}_k
+\label{simple_y}
 \end{equation}
 
 ここで、\( \bm{w}^H\) は次式で与えられるフィルタ係数ベクトルである。
@@ -37,27 +38,27 @@ y_k = \bm{w}^H \bm{x}_k
 \bm{x}_k = [x_k, x_{k-1}, \cdots, x_{k-K+1}]^T
 \end{equation}
 
-これは、式@により、次式のような時間領域の畳み込み演算を表すためである。
+これは、\equref{simple_y}により、次式のような時間領域の畳み込み演算を表すためである。
 
 \begin{equation}
 y_k = \sum_{i=1}^K w_i^* x_{k-i+1}
 \end{equation}
 
-これにより、式@はフィルタ係数\({w_i^*}\)を持つ時間領域のFIRフィルタを表すことになる。入力時系列\({x_k}\)については、平均値
+これにより、式はフィルタ係数\({w_i^*}\)を持つ時間領域のFIRフィルタを表すことになる。入力時系列\({x_k}\)については、平均値
 \(E[x_k]=0\) の実数あるいは複素数を仮定している。
 
-ウィナーフィルタで推定すべき値は、実数あるいは複素数のスカラー量\(d_k\)となる。\(d_k\)は望みの応答と呼ばれ、フィルタ出力\(y_k\)により、望みの応答を推定する。すなわち、\(\hat{d_k} = y_k\)となる。フィルタの推定過程では、次式で定義される推定誤差を、次式で述べる規範のもとに最小化する。
+ウィナーフィルタで推定すべき値は、実数あるいは複素数のスカラー量\(d_k\)となる。\(d_k\)は望みの応答と呼ばれ、フィルタ出力\(y_k\)により、望みの応答を推定する。すなわち、\(\hat{d}_k = y_k\)となる。フィルタの推定過程では、次式で定義される推定誤差を、次式で述べる規範のもとに最小化する。
 
 \begin{equation}
 \epsilon_k := d_k - y_k
 \end{equation}
 
 上述のように、適応フィルタの目的は、入力信号\(\bm{x}_k\)から\(d_k\)を推定することである。
-これを達成するための過程として、フィルタ\(\bm{w}\)の係数を決定する学習過程と、式@により\(\hat{d}_k\)を推定するフィルタリング過程とに分けられる。
+これを達成するための過程として、フィルタ\(\bm{w}\)の係数を決定する学習過程と、\equref{simple_y}により\(\hat{d}_k\)を推定するフィルタリング過程とに分けられる。
 フィルタの学習過程では、信号\(d_k\)を教師として与え、\(d_k\)と\(\bm{x}_k\)の関係を表す係数\(\bm{w}\)を学習する。
-一方、フィルタリング過程では、信号\(d_k\)が未知の場合について、観測値\(\bm{x}_k\)と学習済みのフィルタ係数\(\bm{w}\)から、信号の推定値\(\hat{d_k} (= y_k)\)を得る。学習過程で望みの応答\(d_k\)をどうやって与えるかは、応用に依存する@。
+一方、フィルタリング過程では、信号\(d_k\)が未知の場合について、観測値\(\bm{x}_k\)と学習済みのフィルタ係数\(\bm{w}\)から、信号の推定値\(\hat{d_k} (= y_k)\)を得る。学習過程で望みの応答\(d_k\)をどうやって与えるかは、応用に依存する\cite{signal_proccesing_for_array}。
 
-\paragraph{ウィナーフィルタの導出}\label{wiener-introduction}
+\subsubsection{ウィナーフィルタの導出}\label{wiener-introduction}
 
 ウィナーフィルタでは、観測値\(\bm{x}_k\)から信号\(d_k\)を推定する。フィルタの学習過程では、次式の二乗平均誤差をコスト関数として最小化する。
 
@@ -67,6 +68,7 @@ J &= E[|\epsilon_k|^2] \\
   &= E[ (d_k - \bm{w}^H \bm{x}_k) (d_k - \bm{w}^H \bm{x}_k)^H ] \\
   &= E[ d_k d_k^H] - \bm{w}^H E[\bm{x}_k d_k^H] - E[d_k \bm{x}_k^H ] \bm{w} 
 \end{split}
+\label{equ:J_epsilon}
 \end{equation}
 
 ここで次式を定義する。
@@ -75,38 +77,38 @@ J &= E[|\epsilon_k|^2] \\
 \sigma_d^2 := E[d_k d_k^H], \bm{r}_{xd} := \bm{x}_k d_k^H, \bm{r}_{dx} := d_k \bm{x}_k^H, \bm{R}_x := E[\bm{x}_k \bm{x}_k^H]
 \end{equation}
 
-\(\bm{r}_{xd}\)および\(\bm{r}_{dx}\)は、入力ベクトル\(\bm{x}_k\)と望みの応答\(d_k\)との相互相関ベクトル、\(\bm{R}_u\)は、\(\bm{x}_k\)の自己相関行列である。これらを用いて式@は次式のように書き直せる。
+\(\bm{r}_{xd}\)および\(\bm{r}_{dx}\)は、入力ベクトル\(\bm{x}_k\)と望みの応答\(d_k\)との相互相関ベクトル、\(\bm{R}_u\)は、\(\bm{x}_k\)の自己相関行列である。これらを用いて\equref{equ:J_epsilon}は次式のように書き直せる。
 
 \begin{equation}
 J =\sigma_d^2 + - \bm{w}^H \bm{r}_{xd} -\bm{r}_{dx} \bm{w} + \bm{w}^H \bm{R}_x \bm{w}
+\label{equ:J_sigma}
 \end{equation}
 
-コスト関数を\()\bm{w}^*\)について偏微分すると次式のようになる。
+コスト関数を\(\bm{w}^*\)について偏微分すると次式のようになる。
 
 \begin{equation}
 \frac{\partial J}{\partial \bm{w}^*} = - \bm{r}_{xd} + \bm{R}_x \bm{w}
 \bm{w}
+\label{equ:J_partial}
 \end{equation}
 
-式@一個前 を\(\bm{0}_{K \times 1}\)とおくと、次式を得る。
+\equref{equ:J_partial}を\(\bm{0}_{K \times 1}\)とおくと、次式を得る。
 
 \begin{equation}
 \bm{R}_x \bm{w} = \bm{r}_xd
+\label{equ:Rwr}
 \end{equation}
 
-式@一個前
-は、正規方程式あるいはウィナー・ホッフ方程式と呼ばれる。式@一個前
-を解くことにより最適フィルタは、次式のように求まる@。
+\equref{equ:Rwr}は、正規方程式あるいはウィナー・ホッフ方程式と呼ばれる。\equref{equ:Rwr}を解くことにより最適フィルタは、次式のように求まる\cite{signal_processing_for_array}。
 
 \begin{equation}
-\hat{\bm{w}_{WF}} = \bm{R}_u^{-1} \bm{r}_{xd}
+\hat{\bm{w}}_{WF} = \bm{R}_u^{-1} \bm{r}_{xd}
 \end{equation}
 
 \
 \subsection{適応フィルタにおける最小二乗法（LS法）}\label{ls}
 
-適応フィルタにおけるLS法は、ウィナーフィルタの近似解を有限のサンプルから求めるものであり、@RLS
-節で述べるRLS法の基礎となっている。
+適応フィルタにおけるLS法は、ウィナーフィルタの近似解を有限のサンプルから求めるものであり、\ref{rls}節で述べるRLS法の基礎となっている。
 
 適応フィルタにおけるLS法では、次式に示す誤差の二乗和が最小化される。
 
@@ -117,23 +119,20 @@ J = \sum_{k=1}^{L_s} |\epsilon_k|^2 = \sum_{k=1}^{L_s} |d_k - \bm{w}^H \bm{x}_k|
 ここで、\(L_s\)はサンプル数である。ウィナーフィルタの導出過程における期待値をサンプル平均に置き換え、同様に正規方程式を求めると次式が導かれる。
 
 \begin{equation}
-\hat{\bm{R}_x} \bm{w} = \hat{\bm{r}_xd}
+\hat{\bm{R}}_x \bm{w} = \hat{\bm{r}}_xd
 \end{equation}
 
 これより、LS法における最適解は、次式のようになる。
 
 \begin{equation}
-\hat{\bm{w}_{LS}} = \hat{\bm{R}_x}^{-1} \hat{\bm{r}_xd}
+\hat{\bm{w}}_{LS} = \hat{\bm{R}}_x^{-1} \hat{\bm{r}}_xd
 \end{equation}
 
 \subsection{最急降下法}\label{sd}
 
-@ウィナーフィルタ
-節で述べたウィナーフィルタでは、二乗平均誤差を最小とするフィルタ\(\bm{w}\)を、正規方程式の解として求めた。ここでは、この解を反復法を用いて逐次的に求める。
+\ref{wiener}節で述べたウィナーフィルタでは、二乗平均誤差を最小とするフィルタ\(\bm{w}\)を、正規方程式の解として求めた。ここでは、この解を反復法を用いて逐次的に求める。
 
-反復法では、フィルタ係数の初期値を適当に定め、コスト関数\(J(\bm{w})\)の最小点を目指して、フィルタ係数を少しずつ変化させていく。式@ウィナー偏微分の前
-で示したコスト関数の場合、\(J(\bm{w})\)は\(w\)についての2次関数となり、下に凸の誤差特性曲面となる。最急降下法では、\(k-1\)回目の反復におけるフィルタ係数を\(\bm{w}_{k-1}\)とした場合、\(\bm{w} = \bm{w}_{k-1}\)での誤差特性曲面の勾配を推定し、この勾配と逆の方向にフィルタ係数を変化させる。\(\bm{w} = \bm{w}_{k-1}\)における勾配ベクトルは式@ウィナー偏微分
-から、次式のように求まる。
+反復法では、フィルタ係数の初期値を適当に定め、コスト関数\(J(\bm{w})\)の最小点を目指して、フィルタ係数を少しずつ変化させていく。\equref{equ:J_sigma}で示したコスト関数の場合、\(J(\bm{w})\)は\(w\)についての2次関数となり、下に凸の誤差特性曲面となる。最急降下法では、\(k-1\)回目の反復におけるフィルタ係数を\(\bm{w}_{k-1}\)とした場合、\(\bm{w} = \bm{w}_{k-1}\)での誤差特性曲面の勾配を推定し、この勾配と逆の方向にフィルタ係数を変化させる。\(\bm{w} = \bm{w}_{k-1}\)における勾配ベクトルは\equref{equ:J_partial}から、次式のように求まる。
 
 \begin{equation}
   \nabla=\nabla
@@ -156,27 +155,31 @@ J = \sum_{k=1}^{L_s} |\epsilon_k|^2 = \sum_{k=1}^{L_s} |d_k - \bm{w}^H \bm{x}_k|
 \bm{w}_k &= \bm{w}_{k-1} + \Delta \bm{w} \\
          &= \bm{w}_{k-1} + \mu (\bm{r}_{xd} - \bm{R}_x \bm{w}_{k-1})
 \end{split}
+\label{equ:w_delta}
 \end{equation}
 
-また、式@は次式のように書き直すことができる。
+また、\equref{equ:w_delta}は次式のように書き直すことができる。
 
 \begin{equation}
 \begin{split}
-\bm{w}_k &= \bm{w}_{k-1} + \mu (E[\bm{x}_k d_k^*] - E[\bm{x}_k \bm{x}_^H] \bm{w}_{k-1}) \\
+\bm{w}_k &= \bm{w}_{k-1} + \mu (E[\bm{x}_k d_k^*] - E[\bm{x}_k \bm{x}_k^H] \bm{w}_{k-1}) \\
          &= \bm{w}_{k-1} + \mu E[\bm{x}_k (d_k^* - \bm{x}_k^H \bm{w}_{k-1})]
 \end{split}
+\label{equ:w_complex}
 \end{equation}
 
 ここで、次式の事前推定誤差を定義する。
 
 \begin{equation}
 e_k := d_k - \bm{w}_{k-1}^H \bm{x}_k
+\label{equ:prior_estimation_error}
 \end{equation}
 
-式@二個前 に式@一個前 を代入して、次式を得る。
+\equref{equ:w_complex}に\equref{equ:prior_estimation_error}を代入して、次式を得る。
 
 \begin{equation}
 \bm{w}_k = \bm{w}_{k-1} + \mu E[\bm{x}_k e_k^*]
+\label{equ:w_update_sd}
 \end{equation}
 
 
@@ -184,16 +187,18 @@ e_k := d_k - \bm{w}_{k-1}^H \bm{x}_k
 
 \subsection{最小二乗法平均法（LMS法）}\label{lms}
 
-リアルタイムシステムを構築する場合などは、メモリや演算量に制約があることがある。最急降下法の更新式はシンプルだが、期待値演算をサンプル平均で実装することになり、メモリや演算量を必要とする。この点を改良したのが最小二乗平均法（LMS法）である。LMS法では、式@最急降下法最後における期待値演算を用いた勾配の推定を、次式のように、瞬時値の推定値に置き換える。
+リアルタイムシステムを構築する場合などは、メモリや演算量に制約があることがある。最急降下法の更新式はシンプルだが、期待値演算をサンプル平均で実装することになり、メモリや演算量を必要とする。この点を改良したのが最小二乗平均法（LMS法）である。LMS法では、\equref{equ:w_update_sd}における期待値演算を用いた勾配の推定を、次式のように、瞬時値の推定値に置き換える。
 
 \begin{equation}
 \bm{w}_k = \bm{w}_{k-1} + \mu \bm{x}_k e_k^*
+\label{equ:w_update_lms_simple}
 \end{equation}
 
-また、式@一個前を入力のパワーで正規化したものは、学習同定法（NLMS法）と呼ばれる。NLMS法は、次式の拘束月最適化問題空導くことができる。
+また、\equref{equ:w_update_lms_simple}を入力のパワーで正規化したものは、学習同定法（NLMS法）と呼ばれる。NLMS法は、次式の拘束月最適化問題空導くことができる。
 
 \begin{equation}
-min ||\bm{w}_k - \bm{w}_{k-1}||^2 subject to \bm{w}_k^H \bm{x}_k = d_k
+min ||\bm{w}_k - \bm{w}_{k-1}||^2 \\
+subject \ to \ \bm{w}_k^H \bm{x}_k = d_k
 \end{equation}
 
 この最適化問題は、ラグランジュの未定乗数法を用いて解くことができる。ラグランジュの未定乗数法では、次式のコスト関数を最小化する。
@@ -215,23 +220,23 @@ J &= ||\bm{w}_k - \bm{w}_{k-1}||^2  + Re(\lambda (d_k - \bm{w}_k^H \bm{x}_k)) \\
 
 \begin{equation}
 \bm{w}_k - \bm{w}_{k-1} = \lambda \bm{x}_k
+\label{equ:w-w_k}
 \end{equation}
 
-式@一個前 の左から\(\bm{x}_k^H\)を乗じ、\(\lambda\)について解くと
+\equref{equ:w-w_k}の左から\(\bm{x}_k^H\)を乗じ、\(\lambda\)について解くと
 
 \begin{equation}
 \lambda = \frac{1}{\bm{x}_k^H \bm{x}_k} \bm{x}_k^H (\bm{w}_k - \bm{w}_{k-1})
 \end{equation}
 
-これに拘束条件（式@NLMSのやつ
-）および事前推定誤差（式@最急降下法の最後から一個前 ）
+これに拘束条件（\equref{equ:w_complex}）および事前推定誤差（\equref{equ:prior_estimation_error}）
 
 \begin{equation}
 \lambda = \frac{1}{ ||\bm{x}_k||^2 } (d_k^* - \bm{x}_k^H \bm{w}_{k-1}) = \frac{1}{||\bm{x}_k||^2} e_k^*
+\label{equ:lambda}
 \end{equation}
 
-式@一個前
-を再び式@３個前に代入することにより、フィルタの変化量\(\Delta \bm{w}\)は次式のように求まる。
+\equref{equ:lambda}を再び\equref{equ:w-w_k}に代入することにより、フィルタの変化量\(\Delta \bm{w}\)は次式のように求まる。
 
 \begin{equation}
 \Delta \bm{w} = \frac{1}{||\bm{x}_k||^2} \bm{x}_k e_k^*
@@ -256,7 +261,8 @@ J &= ||\bm{w}_k - \bm{w}_{k-1}||^2  + Re(\lambda (d_k - \bm{w}_k^H \bm{x}_k)) \\
 アフィン射影法は、NLMS法には、NLMS法における拘束付き最適化問題の拘束条件を次式のように複数に拡張することにより導くことができる。
 
 \begin{equation}
-min ||\bm{w}_k - \bm{w}_{k-1}||^2 subject to \bm{w}_k^H \bm{X}_k = d_k
+min ||\bm{w}_k - \bm{w}_{k-1}||^2 \\ 
+subject \ to \ \bm{w}_k^H \bm{X}_k = d_k
 \end{equation}
 
 
@@ -279,18 +285,24 @@ min ||\bm{w}_k - \bm{w}_{k-1}||^2 subject to \bm{w}_k^H \bm{X}_k = d_k
 
 NLMS法と同様にラグランジュの未定乗数法を用いた、最適解を導出により、次式のフィルタ更新式が得られる。
 
+\begin{equation}
+\bm{w}_k = \bm{w}_{k-1} + \mu \bm{X}_k ( \alpha \bm{I} + \bm{X}_k^H \bm{X} )^{-1} e_k^H
+\end{equation}
+
+
+
 \subsection{再帰最小二乗法（RLS法）}\label{rls}
 
 再帰最小二乗法（RLS法）は。LS法の解を再帰的に求める手法である。
 
-サンプル平均による自己相関行列および相互相関ベクトルの推定値\(\hat{\bm{R}_x}\)および\(\hat{\bm{r}_{xd}}\)を次式に示す。
+サンプル平均による自己相関行列および相互相関ベクトルの推定値\(\hat{\bm{R}}_x\)および\(\hat{\bm{r}}_{xd}\)を次式に示す。
 
 \begin{equation}
-\hat{\bm{R}_k} := \sum_{i=1}^k \bm{x}_i \bm{x}_i^H = \bm{X}_{1:k} \bm{X}_{1:k}^H
+\hat{\bm{R}}_k := \sum_{i=1}^k \bm{x}_i \bm{x}_i^H = \bm{X}_{1:k} \bm{X}_{1:k}^H
 \end{equation}
 
 \begin{equation}
-\hat{\bm{r}_k} := \sum_{i=1}^k \bm{x}_i d_i^* = \bm{X}_{1:k} \bm{d}_{1:k}^H
+\hat{\bm{r}}_k := \sum_{i=1}^k \bm{x}_i d_i^* = \bm{X}_{1:k} \bm{d}_{1:k}^H
 \end{equation}
 
 ここで、\(\bm{d}_{1:k}\)および\(\bm{X}_{1:k}\)
@@ -307,30 +319,33 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 \bm{x}_{k} := [x_k, \cdots, u_{k-K+1}]^T
 \end{equation}
 
-時刻kにおける\(\hat{\bm{R}_x}\)および\(\hat{\bm{r}_x}\)は、一時刻前\((k-1)\)の値を用いて、次式のように再帰的に表すことができる。
+時刻kにおける\(\hat{\bm{R}}_x\)および\(\hat{\bm{r}}_x\)は、一時刻前\((k-1)\)の値を用いて、次式のように再帰的に表すことができる。
 
 
 \begin{equation}
-\hat{\bm{R}_k} = \hat{\bm{R}_{k-1}} + \bm{x}_k \bm{x}_k^H
+\hat{\bm{R}}_k = \hat{\bm{R}}_{k-1} + \bm{x}_k \bm{x}_k^H
 \end{equation}
 
 
 \begin{equation}
-\hat{\bm{r}_k} = \hat{\bm{r}_{k-1}} + \bm{x}_k d_k^*
+\hat{\bm{r}}_k = \hat{\bm{r}}_{k-1} + \bm{x}_k d_k^*
+\label{equ:hat_r}
 \end{equation}
 
-逆行列の補助定理を用いると、自己相関行列の逆行列\(P_k := \hat{\bm{R}_k^{-1}}\)も、次式のように再帰的に求めることができる。
+逆行列の補助定理を用いると、自己相関行列の逆行列\(P_k := \hat{\bm{R}}_k^{-1}\)も、次式のように再帰的に求めることができる。
 
 
 \begin{equation}
 \bm{P}_k = \bm{P}_{k-1} - \frac{\bm{P}_{k-1} \bm{x}_k \bm{x}_k^H \bm{P}_{k-1}}{1 + \bm{x}_k^H \bm{P}_{k-1} \bm{x}_k} 
+\label{equ:P_k_inv_R}
 \end{equation}
 
-式@二個前、式@一個前
+\equref{equ:hat_r}、\equref{equ:P_k_inv_}
 を用いて、求めるべきフィルタ系ルウは、次式のようになる。
 
 \begin{equation}
-\bm{w}_k = \bm{P}_k \hat{\bm{r}_k}
+\bm{w}_k = \bm{P}_k \hat{\bm{r}}_k
+\label{equ:w_simple_rls}
 \end{equation}
 
 
@@ -338,91 +353,103 @@ NLMS法と同様にラグランジュの未定乗数法を用いた、最適解�
 
 \begin{equation}
 \bm{g}_k := \frac{\bm{P}_{k-1} \bm{x}_k}{1 + \bm{x}_k^H \bm{P}_{k-1} \bm{x}_k}
+\label{equ:g_k_complex}
 \end{equation}
 
-これを用いて式@三個前を書き直すと
+これを用いて\equref{equ:P_k_inv_R}を書き直すと
 
 
 \begin{equation}
 \bm{P}_k = \bm{P}_{k-1} - \bm{g}_k \bm{x}_k^H \bm{P}_{k-1} = (\bm{I} - \bm{g}_k \bm{x}_k^H) \bm{P}_{k-1}
+\label{equ:P_k_flat}
 \end{equation}
 
-一方、式@三個前から、次式を得る。
+一方、\equref{equ:g_k_complex}から、次式を得る。
 
 \begin{equation}
 \bm{g}_k = (\bm{I} - \bm{g}_k \bm{x}_k^H) \bm{P}_{k-1} \bm{x}_k
+\label{equ:g_k_flat}
 \end{equation}
 
 
-式@二個前、式@一個前を用いて、ゲインベクトルは次式のように書き直せる。
+\equref{equ:P_k_flat}、\equref{equ:g_k_flat}を用いて、ゲインベクトルは次式のように書き直せる。
 
 
 \begin{equation}
 \bm{g}_k = \bm{P}_k \bm{x}_k
+\label{equ:g_k_simple}
 \end{equation}
 
 
-式@三個前 および式@一個前 を式@wのやつ
-に代入することにより、フィルタ係数ベクトル\(\bm{w}_k\)の更新式は、次式のように求まる。
+\equref{equ:P_k_flat}および\equref{equ:g_k_simple}を\equref{equ:w_k_simple}に代入することにより、フィルタ係数ベクトル\(\bm{w}_k\)の更新式は、次式のように求まる。
 
 \begin{equation}
 \begin{split}
-\bm{w}_k &= \bm{P}_k (\hat{\bm{r}_{k-1}} + \bm{x}_k d_k^*) \\
+\bm{w}_k &= \bm{P}_k (\hat{\bm{r}}_{k-1} + \bm{x}_k d_k^*) \\
          &= \bm{w}_{k-1} + \bm{g}_k (d_k^* - \bm{x}_k^H \bm{w}_{k-1})
 \end{split}
+\label{equ:w_k_complex}
 \end{equation}
 
 
-最後に、式@一個前 に式@三個前 を代入して、次式の更新式を得る。
+最後に、\equref{equ:w_k_complex}に\equref{equ:g_k_flat}を代入して、次式の更新式を得る。
 
 \begin{equation}
 \bm{w}_k = \bm{w}_{k-1} + \bm{g}_k e_k^*
 \end{equation}
 
 
-\paragraph{適応アルゴリズムの比較}\label{algo-compare}
+\subsubsection{適応アルゴリズムの比較}\label{algo-compare}
 
-表@は代表的な適応アルゴリズムの関係をニュートン法を使用して整理したものである。
+\tabref{tab:formula}は代表的な適応アルゴリズムの関係をニュートン法を使用して整理したものである。
 
-\begin{figure}
-\centering
-\includegraphics{figures/algo_table_clac.png}
-\caption{代表的な適応アルゴリズムの関係}
-\label{algo_table_calc}
-\end{figure}
+\begin{table}[H]
+  \centering
+  \caption{代表的な適応アルゴリズムの係数更新式}
+  \label{tab:formula}
+  \begin{tabular}{|c|c|}
+  \hline
+       & \(\Delta \bm{w}\)                                                                                             \\ \hline
+  LMS  & \( \mu \bm{x}_k \bm{\epsilon}_k \)                                                                         \\ \hline
+  NLMS & \( \mu \left( \alpha \bm{I} + \bm{x}_k \bm{x}_k^H \right)^{-1} \bm{x}_k \bm{\epsilon}_k \)        \\ \hline
+  AP   & \(\mu \bm{X}_k \left( \alpha \bm{I} + \bm{X}_k^H \bm{X}_k \right)^{-1} \bm{\epsilon}_k\)          \\ \hline
+  RLS  & \( \mu \bm{X}_k \left( \alpha \bm{I} + \bm{X}_{1:k}^H \bm{X}_{1:k} \right)^{-1} \bm{\epsilon}_k\) \\ \hline
+  \end{tabular}
+\end{table}
 
-表@のアルゴリズムはしたに行くほど予測に用いるサンプル数が増加する。これに伴い、一般に収束速度も速くなる。一方、この代償として計算量が増大する。したがって、実装するハードウェアの規模や、求められる収束速度などを考慮して、アルゴリズムを選択する必要がある。
+\tabref{tab:formula}のアルゴリズムは下に行くほど予測に用いるサンプル数が増加する。これに伴い、一般に収束速度も速くなる。一方、この代償として計算量が増大する。したがって、実装するハードウェアの規模や、求められる収束速度などを考慮して、アルゴリズムを選択する必要がある。
 
 \
 \subsection{適応フィルタを使用した雑音低減の手法}\label{adf-noise-reduction}
 
 \
-\paragraph{アクティブノイズコントロール（ANC）}\label{anc}
+\subsubsection{アクティブノイズコントロール（ANC）}\label{anc}
 
 アクティブノイズコントロール（ANC）とは、マイクやスピーカ等の機器を利用し、対象とする騒音と逆位相の音を重ね合わせることで音を低減する手法である。
 
-ANCのブロック図を@に示す。
+ANCのブロック図を\figref{fig:anc_block}に示す。
 
-\begin{figure}
+\begin{figure}[H]
 \centering
-\includegraphics{figures/anc.png}
+\includegraphics[width=13cm]{figures/anc.png}
 \caption{ドローンの駆動音に対するANCの想定ブロック図}
-\label{anc_block}
+\label{fig:anc_block}
 \end{figure}
 
-ドローンに駆動音に対するANCは図@における参照信号\(\bm{x}_k\)と誤差信号\(\epsilon_k\)からADF（\(\bm{w}\)）で未知システムを推定することで次サンプルの信号を予測し、スピーカーなどの音響機器からフィルタ出力\(y_k\)を逆位相で発生させて打ち消す動作を繰り返す。
+ドローンに駆動音に対するANCは\figref{fig:anc_block}における参照信号\(\bm{x}_k\)と誤差信号\(\epsilon_k\)からADF（\(\bm{w}\)）で未知システムを推定することで次サンプルの信号を予測し、スピーカーなどの音響機器からフィルタ出力\(y_k\)を逆位相で発生させて打ち消す動作を繰り返す。
 
 したがって、適応アルゴリズムの予測性能が駆動音抑圧の効果を決定づける要因となる。
 
-\paragraph{自動等化器}\label{automatic-equalizer}
+\subsubsection{自動等化器}\label{automatic-equalizer}
 
 自動等化器はアクティブノイズコントロールとは異なり、計算機内部で信号の処理を行う手法である。
 一般に、適応フィルタに対する入力信号は長期間で平均をとると、ドローンの駆動音に対して音声のエネルギーが小さい。自動等化器では、フィルタの更新係数を小さくすることで係数がドローンの駆動音のみに適応することを利用し、フィルタ出力\(y_k\)との誤差\(e_k\)を目的信号の予測値として取り出す手法である。
 
-自動等化器のブロック図を@に示す。
+自動等化器のブロック図を\equref{equ:automatic_equlizer_block}に示す。
 
-\begin{figure}
+\begin{figure}[H]
 \centering
-\includegraphics{figures/automatic_equalizer_block.png}
+\includegraphics[width=13cm]{figures/automatic_equalizer_block.png}
 \caption{ドローンの駆動音に対する自動等化器の想定ブロック図}
+\label{equ:automatic_equlizer_block}
 \end{figure}

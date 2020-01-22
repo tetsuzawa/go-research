@@ -30,9 +30,37 @@
 \usepackage{siunitx}
 \usepackage{bm}
 
-\newcommand{\Tabref}[1]{表\ref{#1}}
-\newcommand{\Equref}[1]{(\ref{#1})式}
-\newcommand{\Figref}[1]{図\ref{#1}}
+\usepackage{listings,jlisting} %日本語のコメントアウトをする場合jlistingが必要
+%ここからソースコードの表示に関する設定
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
+
+\makeatletter
+    \AtBeginDocument{
+    \renewcommand*{\thelstlisting}{\arabic{chapter}.\arabic{section}.\arabic{subsection}-\arabic{lstlisting}}
+    \@addtoreset{lstlisting}{section}}
+\makeatother
+%ここまでソースコードの表示に関する設定
+
+\newcommand{\tabref}[1]{表\ref{#1}}
+\newcommand{\equref}[1]{(\ref{#1})式}
+\newcommand{\figref}[1]{図\ref{#1}}
 
 \makeatletter
 \renewcommand{\theequation}{% 式番号の付け方
@@ -46,8 +74,9 @@
 \renewcommand{\thetable}{% 表番号の付け方
 \thesection.\arabic{table}}
 \@addtoreset{table}{section}
-\makeatother%
+\makeatother
 
+\def\tightlist{\itemsep1pt\parskip0pt\parsep0pt}
 % **************** made by takizawa ******************
 
 

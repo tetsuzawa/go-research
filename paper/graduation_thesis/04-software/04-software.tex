@@ -198,7 +198,7 @@ waveを使用した自作音声入出力モジュールを@に示す。
 \
 \subsection{既存のADFライブラリについて}\label{ready‐made-adflib}
 
-pythonで記述された適応信号処理のライブラリとして\href{https://matousc89.github.io/padasip/index.html\#padasip}{Padasip}というものが存在する。Padasipは信号のフィルタリング、予測、復元、分類といった適応信号処理を簡易化するために設計されたライブラリである。PadasipではLMS・NLMS、AP、RLSをはじめとする主要なアルゴリズムが一通り実装されている。
+pythonで記述された適応信号処理のライブラリとして\cite{https://matousc89.github.io/padasip/index.html\#padasip}{Padasip}というものが存在する。Padasipは信号のフィルタリング、予測、復元、分類といった適応信号処理を簡易化するために設計されたライブラリである。PadasipではLMS・NLMS、AP、RLSをはじめとする主要なアルゴリズムが一通り実装されている。
 
 \
 \section{ADFライブラリの制作（Go言語）}\label{create-adflib}
@@ -206,7 +206,7 @@ pythonで記述された適応信号処理のライブラリとして\href{https
 \
 \subsection{ライブラリの設計}\label{design-adf}
 
-pythonで記述された適応信号処理のライブラリとして\href{https://matousc89.github.io/padasip/index.html\#padasip}{Padasip}というものが存在する。Padasipは信号のフィルタリング、予測、復元、分類といった適応信号処理を簡易化するために設計されたライブラリである。PadasipではLMS・NLMS、AP、RLSをはじめとする主要なアルゴリズムが一通り実装されている。
+pythonで記述された適応信号処理のライブラリとして\cite{https://matousc89.github.io/padasip/index.html\#padasip}{Padasip}というものが存在する。Padasipは信号のフィルタリング、予測、復元、分類といった適応信号処理を簡易化するために設計されたライブラリである。PadasipではLMS・NLMS、AP、RLSをはじめとする主要なアルゴリズムが一通り実装されている。
 
 本研究で制作したADFライブラリはPadasipを参考に設計し、Go言語で実装した。
 
@@ -215,13 +215,13 @@ pythonで記述された適応信号処理のライブラリとして\href{https
 ライブラリの各関数にはユニットテストが書かれており、GitHub
 Actionsを利用して自動テストが行われるため、一定の質が担保されている。
 
-また、ライセンスはMITを採用しているため、使用、再配布、商用利用などが許可されている。詳しくは\href{https://raw.githubusercontent.com/tetsuzawa/go-adflib/master/LICENSE}{MIT
+また、ライセンスはMITを採用しているため、使用、再配布、商用利用などが許可されている。詳しくは\cite{https://raw.githubusercontent.com/tetsuzawa/go-adflib/master/LICENSE}{MIT
 LICENCE}を参照されたい。
 
 \
 \subsection{インストール方法}\label{how-to-install}
 
-製作したライブラリは\href{https://github.com/tetsuzawa/go-adflib}{GitHub}で公開したため、次のコマンドを実行することでインストールすることができる。
+製作したライブラリは\cite{https://github.com/tetsuzawa/go-adflib}{GitHub}で公開したため、次のコマンドを実行することでインストールすることができる。
 
 \texttt{go\ get\ github.com/tetsuzawa/go-adflib/adf}
 
@@ -250,6 +250,6 @@ LICENCE}を参照されたい。
   各種パラメータを取得する場合 \texttt{GetParams}
 \end{itemize}
 
-詳しい使い方は\href{https://godoc.org/github.com/tetsuzawa/go-adflib}{GoDoc}（Goのパッケージリファレンス）を参照されたい。
+詳しい使い方は\cite{https://godoc.org/github.com/tetsuzawa/go-adflib}{GoDoc}（Goのパッケージリファレンス）を参照されたい。
 
 サンプルプログラムを@に示す。
