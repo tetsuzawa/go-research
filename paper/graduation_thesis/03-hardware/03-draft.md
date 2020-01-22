@@ -17,8 +17,8 @@
 使用機器を以下に示す。
 
 1. ドローンの機体 HQuad500 Hardware kit Lynxmotion株式会社 [HQuad500](http://www.lynxmotion.com/p-1058-hquad500-hardware-only-kit.aspx)
-   ![HQuad500](figures/hquad500_hardware.jpg)
-   ![HQuad500](figures/hquad500_parts.jpg)
+   ![Lynxmotion HQuad500](figures/hquad500_hardware.jpg)
+   ![Lynxmotion HQuad500](figures/hquad500_parts.jpg)
 
 2. ESC (Electronic Speed Controller) 12A ESC (SimonK) Lynxmotion株式会社 [ESC](http://www.lynxmotion.com/p-915-12a-esc-simonk.aspx)
    ![ESC](figures/esc.jpg)
@@ -50,14 +50,14 @@
 1. 内容物の確認
    - 表でリスト
    - 写真
-      ![drone_parts](drone_parts.png)
+      ![ドローンの部品](drone_parts.png)
 
 2. 機体の組み立て・源および信号線の配線
-   ![drone_block](drone_block.pdf)
-   ![drone_bloc](drone_block.png)
+   ![ドローンのブロック図](figures/drone_block.pdf)
+   ![drone_bloc](figures/drone_block.png)
 
 4. 動作確認
-   [instructin](http://www.lynxmotion.com/images/document/PDF/LynxmotionUAV-QuadrinoNano-UserGuideV1.1.pdf)
+   [ドローンの取扱説明書](http://www.lynxmotion.com/images/document/PDF/LynxmotionUAV-QuadrinoNano-UserGuideV1.1.pdf)
    に従い、動作確認を行った。
 
 
@@ -68,7 +68,7 @@
 
 収音には、音像定位実験のために製作したバイノーラルマイクを流用した。
 
-使用した素子は秋月電子のエレクトレットコンデンサーマイクロホン（ECM）[XCM6035](http://akizukidenshi.com/catalog/g/gP-08181/)である。製作は@のようにLRそれぞれエレクトットコンデンサマイクをはんだ付けし、ロボットケーブルを経由してステレオミニプラグと接続した。
+使用した素子は秋月電子のエレクトレットコンデンサーマイクロホン（ECM）[エレクトットコンデンサマイク](http://akizukidenshi.com/catalog/g/gP-08181/)である。製作は@のようにLRそれぞれエレクトットコンデンサマイクをはんだ付けし、ロボットケーブルを経由してステレオミニプラグと接続した。
 
 - 使用機器
    1. エレクトットコンデンサマイク XCM6035 株式会社秋月電子通商 [url](http://akizukidenshi.com/catalog/g/gP-08181/) x2
