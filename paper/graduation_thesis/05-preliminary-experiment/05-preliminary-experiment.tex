@@ -70,12 +70,23 @@
 \
 \subsection{実験結果}\label{result-drone}
 
-収録したドローンの駆動音の波形を\ref{}のプログラムを使用し、描画した図を@に示す。また、@のプログラムを使用し、周波数特性を解析した。駆動音のスペクトログラムを@に示す。
+収録したドローンの駆動音の波形を\ref{plot_multiwave.py}のプログラムを使用し、描画した図を\figref{fig:drone_raw}に示す。また、\ref{plot_spectrogram_librosa}のプログラムを使用し、周波数特性を解析した。駆動音のスペクトログラムを\figref{fig:drone_raw_spectrogram}に示す。
 
+\begin{figure}[H]
+\centering
 \includegraphics[width=13cm]{figures/drone_raw.png}
-\includegraphics[width=13cm]{figures/drone_raw_spectrogram.png}
+\caption{ドローンの駆動音の波形観測結果}
+\label{fig:drone_raw}
+\end{figure}
 
-@、@における最初および最後の区間はドローンを停止させた無音区間となっている。しかしながら、無音区間に定常な雑音が存在することが明らかなため純粋なドローンの駆動音を解析するためには、この定常雑音を取り除く必要がある。
+\begin{figure}[H]
+\centering
+\includegraphics[width=13cm]{figures/drone_raw_spectrogram.png}
+\caption{ドローンの駆動音のスペクトログラム観測結果}
+\label{fig:drone_raw_spectrogram}
+\end{figure}
+
+\figref{fig:drone_raw}、\figref{fig:drone_raw_spectrogram}における最初および最後の区間はドローンを停止させた無音区間となっている。しかしながら、無音区間に定常な雑音が存在することが明らかなため純粋なドローンの駆動音を解析するためには、この定常雑音を取り除く必要がある。
 
 そこで、@のプログラムを使用し、スペクトラルサブトラクション法@により、無音区間の周波数成分の平均を全体から取り除いた。
 スペクトラルサブトラクション法適用後の波形を@に、スペクトログラムを@に示す。
