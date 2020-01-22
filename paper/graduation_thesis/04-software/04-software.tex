@@ -39,7 +39,6 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
 音声ファイルの処理には行列演算が必要である。この処理には数値計算を効率的に行うための拡張モジュールであるNumPyを使用した。また、波形のプロットにはNumPyを基盤にしたグラフ描画ライブラリmatplotlibを使用した。
 音声ファイルの入出力には標準ライブラリであるwaveや外部ライブラリのPySoundFileを使用した。
 
-@TODO wavファイル
 
 \subsection{Pythonで制作したプログラム}\label{python}
 
@@ -51,51 +50,45 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
   \begin{itemize}
   \item
     波形プロットモジュール 波形プロット簡易化のモジュール
-    @plot\_tools.py
+    \ref{plot\_tools.py}
   \item
     音声ファイル入出力モジュール
-    音声ファイル入出力のモジュール @wave\_handler.py
+    音声ファイル入出力のモジュール \ref{wave\_handler.py}
+  \item
+    関数の実行時間計測・情報表示用デコレータ \ref{decorators.py}
   \end{itemize}
-\item
-  デコレータ
 
-  \begin{itemize}
-  \item
-    関数の実行時間計測用デコレータ @decorators.py
-  \item
-    関数の情報表示用デコレータ @decorators.py
-  \end{itemize}
 \item
   ツール
 
   \begin{itemize}
   \item
-    音声ファイル畳み込み用プログラム @calc\_covolution\_wav.py
+    音声ファイル畳み込み用プログラム \ref{calc\_covolution\_wav.py}
   \item
     ステレオ音声ファイルをLRモノラル音声に分割するプログラム
-    @calc\_stereo2monoLR.py
+    \ref{calc\_stereo2monoLR.py}
   \item
     2つのwavファイル間の伝達関数を求めるプログラム
-    @calc\_pseudo\_ir\_between\_wav\_files.py
+    \ref{calc\_pseudo\_ir\_between\_wav\_files.py}
   \item
     csvファイルの各列のデータをそれぞれwavファイルに変換するプログラム
-    @csv\_to\_wav\_each\_column.py
+    \ref{csv\_to\_wav\_each\_column.py}
   \item
     目的の音声ファイルからノイズの音声ファイルに含まれる成分を取り除くプログラム（スペクトラムサブトラクション法）
-    @calc\_subtracted\_wav.py
+    \ref{calc\_subtracted\_wav.py}
   \item
     指定秒数分の白色雑音をサンプリング周波数48kHzで生成するプログラム
-    @generate\_white\_noise\_as\_wav.py
+    \ref{generate\_white\_noise\_as\_wav.py}
   \item
     csvファイルからmp4またはgif画像を生成するプログラム
-    @plot\_animation\_from\_csv.py
+    \ref{plot\_animation\_from\_csv.py}
   \item
-    csvファイルから波形をプロットするプログラム @plot\_from\_csv.py
+    csvファイルから波形をプロットするプログラム \ref{plot\_from\_csv.py}
   \item
     複数のwavファイルから一枚の図に波形をプロットするプログラム
-    @plot\_multiwave.py
+    \ref{plot\_multiwave.py}
   \item
-    スペクトログラムを表示するプログラム @plot\_spectrogram\_librosa.py
+    スペクトログラムを表示するプログラム \ref{plot\_spectrogram\_librosa.py}
   \end{itemize}
 \end{itemize}
 
@@ -116,7 +109,7 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
     \begin{itemize}
     \tightlist
     \item
-      @calc\_noise\_mix
+      \ref{calc\_noise\_mix}
     \end{itemize}
   \item
     2つのwavファイルを畳み込むプログラム
@@ -124,7 +117,7 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
     \begin{itemize}
     \tightlist
     \item
-      @convolve\_wav
+      \ref{convolve\_wav}
     \end{itemize}
   \item
     2つのwavファイルを畳み込むプログラム（フーリエ変換を用いた高速版）
@@ -132,7 +125,7 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
     \begin{itemize}
     \tightlist
     \item
-      @convolve\_wav\_fast
+      \ref{convolve\_wav\_fast}
     \end{itemize}
   \item
     2つのwavファイルもしくはcsvファイルを畳み込むプログラム（フーリエ変換を用いた高速版）
@@ -140,7 +133,7 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
     \begin{itemize}
     \tightlist
     \item
-      @convolve\_wav\_fast
+      \ref{convolve\_wav\_coef}
     \end{itemize}
   \item
     csvファイルのデータからwavファイルを生成するプログラム
@@ -148,15 +141,15 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
     \begin{itemize}
     \tightlist
     \item
-      @csv\_to\_wav
+      \ref{csv\_to\_wav
     \end{itemize}
   \item
-    @の実験で用いるADFの設定を記述したJSONファイルを生成するプログラム
+    \ref{の実験で用いるADFの設定を記述したJSONファイルを生成するプログラム
 
     \begin{itemize}
     \tightlist
     \item
-      @drone\_json\_generator
+      \ref{drone\_json\_generator
     \end{itemize}
   \item
     csvファイルのデータから指定したサンプルの平均二乗誤差（MSE）を計算し、csvファイルに新たな列として追記するプログラム
@@ -164,7 +157,7 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
     \begin{itemize}
     \tightlist
     \item
-      @calc\_mse\_csv
+      \ref{calc\_mse\_csv
     \end{itemize}
   \item
     PortAudioを使用した多チャンネル収音用プログラム
@@ -172,7 +165,7 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
     \begin{itemize}
     \tightlist
     \item
-      @multirecord
+      \ref{multirecord
     \end{itemize}
   \item
     DSBファイルからwavファイルに変換するプログラム
@@ -180,18 +173,18 @@ Pythonは@で述べた特徴から、様々な試行をしながら行う開発�
     \begin{itemize}
     \tightlist
     \item
-      @wav\_to\_DSB
+      \ref{wav\_to\_DSB
     \end{itemize}
   \end{itemize}
 \end{itemize}
 
-% @TODO ディレクトリ構造
+% \ref{TODO ディレクトリ構造
 
 
 % \
 % \subsection{定常なFIRフィルタの動作確認}\label{fir}
 
-% @TODO
+% \ref{TODO
 
 \
 % \subsection{既存のADFライブラリについて}\label{ready‐made-adflib}
@@ -208,7 +201,7 @@ Pythonで記述された適応信号処理のライブラリとして\cite{https
 
 本研究で制作したADFライブラリはPadasipを参考に設計し、Go言語で実装した。
 
-ライブラリのコードを@に示す。
+ライブラリのコードを\ref{に示す。
 
 ライブラリの各関数にはユニットテストが書かれており、GitHub
 Actionsを利用して自動テストが行われるため、一定の質が担保されている。

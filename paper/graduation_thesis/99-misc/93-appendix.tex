@@ -3,3 +3,3936 @@
 \chapter{付録}
 
 \section{Pythonで制作したプログラム}
+
+\subsection{モジュール}
+
+\begin{lstlisting}[caption=plot\_tools.py,label=plot\_tools.py]
+    # coding: utf-8
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from matplotlib.colors import Normalize
+    
+    # diagram display settings
+    plt.rcParams['font.family'] = 'IPAPGothic'
+    plt.rcParams['font.size'] = 16
+    plt.rcParams['xtick.direction'] = 'in'
+    plt.rcParams['ytick.direction'] = 'in'
+    plt.rcParams['xtick.top'] = True
+    plt.rcParams['ytick.right'] = True
+    plt.rcParams['xtick.major.width'] = 1.0
+    plt.rcParams['ytick.major.width'] = 1.0
+    plt.rcParams['axes.linewidth'] = 1.0
+    plt.rcParams['figure.figsize'] = (8, 7)
+    plt.rcParams['figure.dpi'] = 100
+    plt.rcParams['figure.subplot.hspace'] = 0.3
+    plt.rcParams['figure.subplot.wspace'] = 0.3
+    
+    
+    class PlotTools(object):
+        """ PlotTools - plotting utility class for research
+        """
+    
+        def __init__(self, y, fs=44100, fft_N=1024, stft_N=256, **kwargs):
+    
+            if "start_pos" in kwargs:
+                self.start_sec = kwargs["start_sec"]
+            else:
+                self.start_sec = 0
+    
+            #
+            self.y = np.array(y)  # data
+            self.fs = fs  # Sampling frequency
+            self.dt = 1 / fs  # Sampling interval
+            # Start position to analyse
+            self.start_pos = int(self.start_sec / self.dt)
+    
+            self.fft_N = fft_N  # FFT length
+            self.stft_N = stft_N  # STFT length
+            self.freq_list = np.fft.fftfreq(fft_N, d=self.dt)  # FFT frequency list
+    
+            if "window" in kwargs:
+                window_name = kwargs["window"]
+            else:
+                window_name = "hamming"
+    
+            self.fft_window = define_window_function(name=window_name, N=self.fft_N)
+            self.stft_window = define_window_function(name=window_name, N=self.stft_N)
+    
+            self.Y = np.fft.fft(self.fft_window * self.y)
+            self.samples = np.arange(self.start_pos, fft_N + self.start_pos)
+            self.t = np.arange(self.start_sec, (fft_N + self.start_pos) * self.dt, self.dt)
+    
+            y_abs = np.abs(y)
+            # Complement 0 or less to mean to prevent from divergence
+            self.y_abs = completion_0(y_abs)  # Absolute value of y
+            self.y_gain = 20.0 * np.log10(y_abs)  # Gain of y
+    
+            # Spectrum
+            self.amp_spectrum = np.abs(self.Y) / fft_N * 2
+            self.amp_spectrum[0] = self.amp_spectrum[0] / 2
+            self.gain_spectrum = 20 * np.log10(self.amp_spectrum / np.max(self.amp_spectrum))
+            self.phase_spectrum = np.rad2deg(np.angle(self.Y))
+            self.power_spectrum = self.amp_spectrum ** 2
+            self.power_gain_spectrum = 10 * np.log10(self.power_spectrum / np.max(self.power_spectrum))
+    
+            self.acf = np.real(np.fft.ifft(self.power_spectrum / np.amax(self.power_spectrum)))
+            self.acf = self.acf / np.amax(self.acf)
+    
+        def plot_y_time(self):
+            """plot_y_time - y vs time [sec]
+            """
+            fig = plt.figure()
+            ax1 = fig.add_subplot(111)
+            ax1.plot(self.t, self.y, "-", markersize=1)
+            ax1.axis([self.start_sec, (self.fft_N + self.start_pos) *
+                      self.dt, np.amin(self.y) * (-1.1), np.amax(self.y) * 1.1])
+            ax1.set_xlabel("Time [sec]")
+            ax1.set_ylabel("Amplitude")
+            ax1.set_title("Amplitude - Time")
+            plt.show()
+    
+        def plot_y_sample(self):
+            """plot_y_sample - y vs sample number
+            """
+            fig = plt.figure()
+            ax1 = fig.add_subplot(111)
+            ax1.plot(self.samples, self.y, "-", markersize=1)
+            ax1.axis([self.start_pos, self.fft_N + self.start_pos,
+                      np.amin(self.y) * 1.1, np.amax(self.y) * 1.1])
+            ax1.set_xlabel("Sample")
+            ax1.set_ylabel("Amplitude")
+            ax1.set_title("Amplitude - Sample")
+            plt.show()
+    
+        def plot_freq_analysis_log(self):
+            """ plot_freq_analysis_log - 1. gain vs frequency. 2. phase vs frequency
+            """
+            fig = plt.figure()
+            ax1 = fig.add_subplot(211)
+            ax1.set_xscale('log')
+            ax1.axis([10, self.fs / 2, np.amin(self.gain_spectrum),
+                      np.amax(self.gain_spectrum) + 10])
+            ax1.plot(self.freq_list, self.gain_spectrum, '-', markersize=1)
+            ax1.set_xlabel("Frequency [Hz]")
+            ax1.set_ylabel("Amplitude [dB]")
+            ax1.set_title("Amplitude spectrum")
+    
+            ax2 = fig.add_subplot(212)
+            ax2.set_xscale('log')
+            ax2.axis([10, self.fs / 2, -180, 180])
+            ax2.set_yticks(np.linspace(-180, 180, 9))
+            ax2.plot(self.freq_list, self.phase_spectrum, '-', markersize=1)
+            ax2.set_xlabel("Frequency [Hz]")
+            ax2.set_ylabel("Phase [deg]")
+            ax2.set_title("Phase spectrum")
+            plt.show()
+    
+        def plot_freq_analysis(self):
+            """ plot_freq_analysis - 1. amplitude vs time [sec]. 2. amplitude vs frequency
+            """
+            fig = plt.figure()
+            ax1 = fig.add_subplot(211)
+            ax1.plot(self.t, self.y, "-", markersize=1)
+            ax1.axis([self.start_sec, (self.fft_N + self.start_pos) *
+                      self.dt, np.amin(self.y) * 1.2, np.amax(self.y) * 1.2])
+            ax1.set_xlabel("Time [sec]")
+            ax1.set_ylabel("Amplitude")
+            ax1.set_title("Amplitude - Time")
+    
+            ax2 = fig.add_subplot(212)
+            ax2.axis([10, self.fs / 2, np.amin(self.amp_spectrum)
+                      * 0.9, np.amax(self.amp_spectrum) * 1.1])
+            ax2.plot(self.freq_list, self.amp_spectrum, '-', markersize=1)
+            ax2.set_xlabel("Frequency [Hz]")
+            ax2.set_ylabel("Amplitude")
+            ax2.set_title("Amplitude - Frequency")
+            plt.show()
+    
+        def plot_power_gain_spectrum(self):
+            """ plot_power_gain_spectrum - power vs frequency
+            """
+            fig = plt.figure()
+            ax1 = fig.add_subplot(111)
+            ax1.set_xscale('log')
+            ax1.axis([10, self.fs / 2, np.amin(self.power_gain_spectrum),
+                      np.amax(self.power_gain_spectrum) + 10])
+            ax1.plot(self.freq_list, self.gain_spectrum, '-', markersize=1)
+            ax1.set_xlabel("Frequency [Hz]")
+            ax1.set_ylabel("power")
+            ax1.set_title("Power spectrum")
+            plt.show()
+    
+        def plot_acf(self):
+            """ plot_power_gain_spectrum - auto correlation function
+            """
+            fig = plt.figure()
+            ax1 = fig.add_subplot(111)
+            ax1.axis([-self.fft_N / 10, self.fft_N / 2, np.amin(self.acf) * 1.1,
+                      np.amax(self.acf) * 1.1])
+            ax1.plot(list(range(self.fft_N)), self.acf, '-', markersize=1)
+            ax1.set_xlabel("sample number")
+            ax1.set_ylabel("Correlation")
+            ax1.set_title("Auto correlation Function")
+            plt.show()
+    
+        def plot_spectrogram_acf(self):
+            """ plot_power_gain_spectrum - 1. spectrogram. 2. short time auto correlation function
+            """
+            # The degree of frame overlap when the window is shifted
+            overlap = int(self.stft_N / 2)
+            # Length of wav
+            frame_length = len(self.y)
+            # Time per wav_file
+            time_of_file = frame_length * self.dt
+    
+            # Define execute time
+            start = overlap * self.dt
+            stop = time_of_file
+            step = (self.stft_N - overlap) * self.dt
+            time_ruler = np.arange(start, stop, step)
+    
+            # Definition initialization in transposition state
+            spec = np.zeros([len(time_ruler), 1 + int(self.stft_N / 2)])
+            st_acf = np.zeros([len(time_ruler), 1 + int(self.stft_N / 2)])
+            pos = 0
+    
+            for fft_index in range(len(time_ruler)):
+                # Frame cut out
+                frame = self.y[pos:pos + self.stft_N]
+                # Frame cut out determination
+                if len(frame) == self.stft_N:
+                    # Multiply window function
+                    windowed_data = self.stft_window * frame
+                    # FFT for only real demention
+                    fft_result = np.fft.rfft(windowed_data)
+                    fft_result = np.abs(fft_result)
+                    fft_result = fft_result / np.amax(fft_result)
+                    power_spectrum = np.abs(fft_result) ** 2
+                    acf = np.real(np.fft.ifft(
+                        power_spectrum / np.amax(power_spectrum)))
+                    acf = acf / np.amax(acf)
+                    # Find power spectrum
+                    fft_data = 10 * np.log10(np.abs(fft_result) ** 2)
+                    # Assign to spec
+                    for i in range(len(spec[fft_index])):
+                        spec[fft_index][-i - 1] = fft_data[i]
+                        st_acf[fft_index][-i - 1] = acf[i]
+    
+                    # Shift the window and execute the next frame.
+                    pos += (self.stft_N - overlap)
+    
+            # ============  plot  =============
+            fig = plt.figure()
+            ax1 = fig.add_subplot(111)
+            im = ax1.imshow(spec.T, extent=[0, time_of_file,
+                                            0, self.fs / 2],
+                            aspect="auto",
+                            cmap="inferno",
+                            interpolation="nearest",
+                            norm=Normalize(vmin=-80, vmax=0))
+            ax1.set_xlabel("Time[sec]")
+            ax1.set_ylabel("Frequency[Hz]")
+            ax1.set_title("Spectrogram")
+            pp1 = fig.colorbar(im, ax=ax1, orientation="vertical")
+            plt.tight_layout()
+            # pp1.set_clim(-80, 0)
+            pp1.set_label("power")
+            plt.show()
+    
+            # ============  plot  =============
+            fig = plt.figure()
+            ax2 = fig.add_subplot(111)
+            im2 = ax2.imshow(st_acf.T, extent=[0, time_of_file,
+                                               0, self.fs / 2],
+                             aspect="auto",
+                             cmap="inferno",
+                             interpolation="nearest",
+                             norm=Normalize(vmin=0, vmax=1.00))
+    
+            ax2.set_xlabel("time[sec]")
+            ax2.set_ylabel("frequency[Hz]")
+            ax2.set_title("Short Time Auto correlation Function")
+    
+            pp2 = fig.colorbar(im2, ax=ax2, orientation="vertical")
+            plt.tight_layout()
+            pp2.set_label("power")
+    
+            plt.show()
+    
+        def plot_all(self):
+            """ plot_all - execute all of plotting functions
+            """
+            self.plot_y_time()
+            self.plot_y_sample()
+            self.plot_freq_analysis()
+            self.plot_freq_analysis_log()
+            self.plot_power_gain_spectrum()
+            self.plot_acf()
+            self.plot_spectrogram_acf()
+    
+    
+    def completion_0(data_array):
+        """completion_0 - intermediate value completion
+        """
+        under_0list = np.where(data_array <= 0)
+        for under_0 in under_0list:
+            try:
+                data_array[under_0] = 1e-8
+                # 抜け値など、平均を取りたい場合コメントアウトを外す
+                # data_array[under_0] = (
+                #     data_array[under_0-1] + data_array[under_0+1]) / 2
+            except IndexError as identifier:
+                print(identifier)
+                data_array[under_0] = 1e-8
+            return data_array
+    
+    
+    def define_window_function(N, name):
+        """define_window_function - defines window function
+        """
+        if name == "kaiser":
+            # TODO kaiser_param kakikaeru
+            # kaiser_param = input("Parameter of Kaiser Window : ")
+            kaiser_param = 5
+        else:
+            kaiser_param = 5
+    
+        windows_dic = {
+            "rectangular": np.ones(shape=N),
+            "hamming": np.hamming(M=N),
+            "hanning": np.hanning(M=N),
+            "bartlett": np.bartlett(M=N),
+            "blackman": np.blackman(M=N),
+            "kaiser": np.kaiser(M=N, beta=kaiser_param),
+        }
+    
+        if name in windows_dic:
+            return windows_dic[name]
+        else:
+            raise WindowNameNotFoundError
+    
+    
+    class WindowNameNotFoundError(Exception):
+        """Window name not found
+        """
+        print("Window Not Found")
+    
+\end{lstlisting}
+
+\begin{lstlisting}[caption=wave\_handler.py,label=wave\_handler.py]
+
+# coding:utf-8
+import wave
+
+import numpy as np
+
+
+class WaveHandler(object):
+
+    def __init__(self, filename=None, **kwargs):
+        if filename:
+            self.wave_read(filename)
+        else:
+            self.ch = 1
+            self.width = 2
+            self.fs = 48000
+            self.chunk_size = 1024
+
+    def wave_read(self, filename):
+        # open wave file
+        wf = wave.open(filename, 'r')
+
+        # waveファイルが持つ性質を取得
+        self.filename = filename
+        self.ch = wf.getnchannels()
+        self.width = wf.getsampwidth()
+        self.fs = wf.getframerate()
+        self.params = wf.getparams()
+        chunk_size = wf.getnframes()
+        # load wave data
+        amp = (2 ** 8) ** self.width / 2
+        data = wf.readframes(chunk_size)  # バイナリ読み込み
+        # data = np.frombuffer(data, 'int16')  # intに変換
+        data = np.frombuffer(data, dtype="int16")  # intに変換
+        data = data / amp  # 振幅正規化
+        self.chunk_size = chunk_size
+        self.data = data
+        # self.data = data[::self.ch]  # dateを1chに限定
+        wf.close()  # 結果表示
+
+        print("分析対象ファイル：", self.filename)
+        print("チャンクサイズ：", self.chunk_size)
+        print("サンプルサイズのバイト数：", self.width)
+        print("チャンネル数：", self.ch)
+        print("wavファイルのサンプリング周波数：", self.fs)
+        print("パラメータ : ", self.params)
+        print("wavファイルのデータ個数：", len(self.data))
+
+    def wave_write(self, filename, data_array):
+        ww = wave.open(filename, 'w')
+        ww.setnchannels(self.ch)
+        ww.setsampwidth(self.width)
+        ww.setframerate(self.fs)
+        amp = (2 ** 8) ** self.width / 2
+        data_array = data_array / np.max(data_array)
+        write_array = np.array(data_array * amp, dtype=np.int16)
+        ww.writeframes(write_array)
+        ww.close()
+\end{lstlisting}
+
+\begin{lstlisting}[caption=decorators.py,label=decorators.py]
+import time
+from functools import wraps
+
+
+def stop_watch(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        print("###############  START  ###############")
+        start = time.time()
+        result = func(*args, **kwargs)
+        elapsed_time = time.time() - start
+        print("###############  END  ###############")
+        elapsed_time = round(elapsed_time, 5)
+        print(
+            f"{elapsed_time}[sec] elapsed to execute the function:{func.__name__}"
+        )
+        return result
+
+    return wrapper
+
+
+def print_info(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        print("func:", func.__name__)
+        print("args:", args)
+        print("kwargs:", kwargs)
+        result = func(*args, **kwargs)
+        print("result:", result)
+        return result
+
+    return wrapper
+\end{lstlisting}
+
+\subsection{ツール}
+
+\begin{lstlisting}[caption=calc\_convolution\_wav.py,label=calc\_convolution\_wav.py]
+#! /usr/bin/env python
+# coding: utf-8
+
+import argparse
+import pathlib
+
+import numpy as np
+import soundfile as sf
+
+
+def main():
+    description = "This script calculates the convolution of two wav files."
+    usage = f"Usage: python {__file__} [-m full|valid|same] name1.wav name2.wav /path/to/output_name.wav"
+
+    # initial setting for command line arguments
+    parser = argparse.ArgumentParser(usage=usage, description=description)
+
+    parser.add_argument('input_paths',
+                        nargs="*",
+                        type=str,
+                        help='paths where the wav file is located.')
+
+    parser.add_argument('-o', '--output_path',
+                        nargs='?',
+                        default="conv.wav",
+                        type=str,
+                        help='Output file path where you want to locate wav file. (default: current directory)',
+                        )
+
+    parser.add_argument('-m', '--mode',
+                        action='store',
+                        nargs='?',
+                        default="full",
+                        type=str,
+                        choices=['full', 'valid', 'same'],
+                        help='Convolution type',
+                        )
+
+    # parse command line arguments
+    args = parser.parse_args()
+
+    input_paths = args.input_paths
+    output_path = pathlib.Path(args.output_path)
+    mode = args.mode
+
+    # validation of command line arguments
+    if len(input_paths) != 2:
+        print(f"Error: number of arguments is invalid. got:{len(input_paths)}")
+        print(parser.usage)
+        exit(1)
+
+    if mode != "full" and mode != "valid" and mode != "same":
+        print(f"Error: mode of convolution is invalid. got:{mode}")
+        print(parser.usage)
+
+        exit(1)
+
+    input_path_1 = input_paths[0]
+    input_path_2 = input_paths[1]
+    output_path = output_path
+
+    output_path = pathlib.Path(output_path)
+
+    # read audio file
+    data_1, fs_1 = sf.read(input_path_1)
+    data_2, fs_2 = sf.read(input_path_2)
+
+    # convolve
+    print("working...")
+    wav_out = np.convolve(data_1, data_2, mode=mode)
+
+    # write audio file
+    sf.write(file=str(output_path.stem + ".wav"), data=wav_out, samplerate=48000, endian="LITTLE",
+             format="WAV", subtype="PCM_16")
+
+    print(f"output files are saved at: {output_path}")
+
+
+if __name__ == '__main__':
+    main()
+\end{lstlisting}
+
+\begin{lstlisting}[caption=calc\_stereo2mono_LR.py,label=calc\_stereo2mono_LR.py]
+# coding:utf-8
+import sys
+
+import soundfile as sf
+
+
+def main():
+    print("start")
+
+    filename = sys.argv[1]
+    filename_L = sys.argv[2]
+    filename_R = sys.argv[3]
+    print("input: ", filename)
+    print("output L: ", filename_L)
+    print("output R: ", filename_R)
+
+    data, fs = sf.read(filename)
+    mono_L = data[:, 0]
+    mono_R = data[:, 1]
+
+    sf.write(file=filename_L, data=mono_L, samplerate=48000, endian="LITTLE", format="WAV", subtype="PCM_16")
+    sf.write(file=filename_R, data=mono_R, samplerate=48000, endian="LITTLE", format="WAV", subtype="PCM_16")
+
+    print("done")
+
+
+if __name__ == '__main__':
+    main()
+\end{lstlisting}
+
+\begin{lstlisting}[caption=calc\_pseudo\_ir\_between\_wav\_files.py,label=calc\_pseudo\_ir\_between\_wav\_files.py]
+#! /usr/bin/env python
+# coding: utf-8
+
+import sys
+
+import numpy as np
+import soundfile as sf
+
+
+def main():
+    l_path = sys.argv[1]
+    r_path = sys.argv[2]
+    out_path = sys.argv[3]
+
+    data_l, fs_l = sf.read(l_path)
+    data_r, fs_r = sf.read(r_path)
+
+    F_l = np.fft.fft(data_l)
+    F_r = np.fft.fft(data_r)
+
+    F_pseudo_ir = F_l / F_r
+    f_pseude_ir = np.fft.ifft(F_pseudo_ir)
+    f_pseude_ir_real = np.real(f_pseude_ir)
+
+    sig = f_pseude_ir_real
+    sf.write(file=out_path, data=sig, samplerate=48000, endian="LITTLE", format="WAV", subtype="PCM_16")
+
+
+if __name__ == '__main__':
+    main()
+\end{lstlisting}
+
+\begin{lstlisting}[caption=csv\_to\_wav\_each\_column.py,label=csv\_to\_wav\_each\_column.py]
+#! /usr/bin/env python
+# coding: utf-8
+
+import pathlib
+import sys
+
+import numpy as np
+import pandas as pd
+import soundfile as sf
+
+
+def main():
+    input_path = sys.argv[1]
+    output_path = sys.argv[2]
+
+    df = pd.read_csv(input_path)
+    output_path = pathlib.Path(output_path)
+
+    arr = np.array(df)
+
+    for i, data in enumerate(arr.T):
+        sf.write(file=str(output_path.stem + f"_col{i}.wav"), data=data, samplerate=48000, endian="LITTLE",
+                    format="WAV", subtype="PCM_16")
+
+    print(f"output files are saved at: {output_path}")
+
+
+if __name__ == '__main__':
+    main()
+\end{lstlisting}
+
+\begin{lstlisting}[caption=calc\_subtracted\_wav.py,label=calc\_subtracted\_wav.py]
+# coding: utf-8
+
+
+import sys
+
+import librosa
+import numpy as np
+import soundfile as sf
+
+
+def main():
+    input_file_path = sys.argv[1]
+    noise_file_path = sys.argv[2]
+    output_file_path = sys.argv[3]
+
+    print('input file:', input_file_path)
+    data, data_fs = librosa.load(input_file_path, sr=None, mono=True)
+    data_st = librosa.stft(data)
+    data_st_abs = np.abs(data_st)
+    angle = np.angle(data_st)
+    b = np.exp(1.0j * angle)
+
+    print('noise file:', noise_file_path)
+    noise_data, noise_fs = librosa.load(noise_file_path, sr=None, mono=True)
+    noise_data_st = librosa.stft(noise_data)
+    noise_data_st_abs = np.abs(noise_data_st)
+    mean_noise_abs = np.mean(noise_data_st_abs, axis=1)
+
+    subtracted_data = data_st_abs - mean_noise_abs.reshape(
+        (mean_noise_abs.shape[0], 1))  # reshape for broadcast to subtract
+    subtracted_data_phase = subtracted_data * b  # apply phase information
+    y = librosa.istft(subtracted_data_phase)  # back to time domain signal
+
+    # save as a wav file
+    sf.write(file=str(output_file_path), data=y, samplerate=data_fs, endian="LITTLE", format="WAV", subtype="PCM_16")
+    print('output file:', output_file_path)
+
+
+if __name__ == '__main__':
+    main()
+
+\end{lstlisting}
+
+\begin{lstlisting}[caption=generate\_white\_noise\_as\_wav.py,label=generate\_white\_noise\_as\_wav.py]
+#!/usr/bin/env python3
+# coding: utf-8
+
+import argparse
+import pathlib
+
+import numpy as np
+import soundfile as sf
+
+
+def main():
+    parser = argparse.ArgumentParser(description="This script makes white noise to designated path.")
+
+    parser.add_argument('duration',
+                        action='store',
+                        type=float,
+                        help='The length of noise.')
+
+    parser.add_argument('-d', '--dst_path',
+                        action='store',
+                        nargs='?',
+                        const="/tmp",
+                        default=".",
+                        type=str,
+                        help='Directory path where you want to locate output files. (default: current directory)')
+
+    args = parser.parse_args()
+    duration = args.duration
+    output_dir = pathlib.Path(args.dst_path)
+    output_name = pathlib.Path.joinpath(output_dir, f"white_noise_{duration}s.wav")
+
+    sig = np.random.rand(int(duration * 48000))
+
+    sf.write(file=str(output_name), data=sig, samplerate=48000, endian="LITTLE", format="WAV", subtype="PCM_16")
+
+
+if __name__ == '__main__':
+    main()
+\end{lstlisting}
+
+\begin{lstlisting}[caption=plot\_animation\_from\_csv.py,label=plot\_animation\_from\_csv.py]
+# encoding: utf-8
+
+import argparse
+import pathlib
+
+import matplotlib.pyplot as plt
+import pandas as pd
+from matplotlib import animation
+
+plt.rcParams['font.family'] = 'IPAPGothic'
+plt.rcParams['font.size'] = 11
+plt.rcParams['xtick.direction'] = 'in'
+plt.rcParams['ytick.direction'] = 'in'
+plt.rcParams['xtick.top'] = True
+plt.rcParams['ytick.right'] = True
+plt.rcParams['xtick.major.width'] = 1.0
+plt.rcParams['ytick.major.width'] = 1.0
+plt.rcParams['axes.linewidth'] = 1.0
+plt.rcParams['figure.figsize'] = (8, 7)
+plt.rcParams['figure.dpi'] = 100
+plt.rcParams['figure.subplot.hspace'] = 0.3
+plt.rcParams['figure.subplot.wspace'] = 0.3
+
+
+def main():
+    description = "This script plots graph from a csv file with 3 columns."
+    parser = argparse.ArgumentParser(description=description)
+
+    parser.add_argument('csv_path',
+                        action='store',
+                        const=None,
+                        default=None,
+                        type=str,
+                        help='Directory path where the csv file is located.',
+                        metavar=None)
+
+    parser.add_argument('-d', '--dst_path',
+                        action='store',
+                        nargs='?',
+                        const="/tmp",
+                        default=".",
+                        type=str,
+                        help='Directory path where you want to locate png files. (default: current directory)',
+                        metavar=None)
+
+    parser.add_argument('-s', '--samples',
+                        action='store',
+                        nargs='?',
+                        # const="/tmp",
+                        default=50,
+                        type=int,
+                        help='Samples to draw.',
+                        metavar=None)
+
+    parser.add_argument('-i', '--interval',
+                        action='store',
+                        nargs='?',
+                        # const="/tmp",
+                        default=100,
+                        type=int,
+                        help='Interval to draw.',
+                        metavar=None)
+
+    args = parser.parse_args()
+
+    input_path = args.csv_path
+    input_path = pathlib.Path(input_path)
+
+    df = pd.read_csv(input_path, header=None)
+    print("analize file name: ", input_path)
+
+    d, y, e = df[0], df[1], df[2]
+
+    output_dir = pathlib.Path(args.dst_path)
+    output_name = pathlib.Path(input_path.name).with_suffix(".gif")
+    # output_name = pathlib.Path(input_path.name).with_suffix(".mp4")
+    output_path = pathlib.Path.joinpath(output_dir, output_name)
+
+    samples = args.samples
+    interval = args.interval
+
+    fig, (ax1, ax2) = plt.subplots(2, 1)
+    ax1.set_xlabel("iteration n")
+    ax1.set_ylim((-1.6, 1.6))
+    ax2.set_xlabel("iteration n")
+    ax2.set_ylim((-0.5, 0.5))
+
+    ani = animation.FuncAnimation(fig, update, fargs=(d[:samples], y[:samples], e[:samples], ax1, ax2),
+                                    interval=interval, frames=int(samples / 2))
+    ani.save(output_path, writer='imagemagick')
+    # ani.save(output_path, writer='ffmpeg')
+
+    print("\nfilterd data plot is saved at: ", output_path, "\n")
+
+
+def update(i, d, y, e, ax1, ax2):
+    if i == 0:
+        ax1.legend(loc='upper right')
+        ax1.set_title("Desired value, Filter output and Filter error")
+    else:
+        plt.cla()
+    i = i * 2
+    ax1.plot(d[0:i], color="b", alpha=0.7, label="desired value d(n)")
+    ax1.plot(y[0:i], color="r", alpha=0.7, label="filter output y(n)")
+
+    ax2.plot(e[0:i], color="y", alpha=1.0, label="filter error e(n)")
+
+
+if __name__ == '__main__':
+    main()
+\end{lstlisting}
+
+\begin{lstlisting}[caption=plot\_from\_csv.py,label=plot\_from\_csv.py]
+# encoding: utf-8
+
+import argparse
+import pathlib
+
+import matplotlib
+import numpy as np
+import pandas as pd
+
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+"""
+Note that the modules (numpy, maplotlib, wave, scipy) are properly installed on your environment.
+
+Plot wave, spectrum, save them as pdf and png at same directory.
+
+Example:
+    python calc_wave_analysis.py IR_test.wav
+"""
+
+plt.rcParams['font.family'] = 'IPAPGothic'
+plt.rcParams['xtick.direction'] = 'in'
+plt.rcParams['ytick.direction'] = 'in'
+plt.rcParams['xtick.top'] = True
+plt.rcParams['ytick.right'] = True
+plt.rcParams['xtick.major.width'] = 1.0
+plt.rcParams['ytick.major.width'] = 1.0
+plt.rcParams['font.size'] = 11
+plt.rcParams['axes.linewidth'] = 1.0
+plt.rcParams['figure.figsize'] = (8, 7)
+plt.rcParams['figure.dpi'] = 300
+plt.rcParams['figure.subplot.hspace'] = 0.3
+plt.rcParams['figure.subplot.wspace'] = 0.3
+
+
+def main():
+    parser = argparse.ArgumentParser(description="This script plots graph from a csv file with 3 columns.")
+
+    parser.add_argument('csv_path',
+                        action='store',
+                        type=str,
+                        help='Directory path where the csv file is located.',
+                        metavar=None)
+
+    parser.add_argument('-d', '--dst_path',
+                        action='store',
+                        nargs='?',
+                        default=".",
+                        type=str,
+                        help='Directory path where you want to locate png files. (default: current directory)',
+                        metavar=None)
+
+    parser.add_argument('-l', '--log',
+                        action='store_true',
+                        help='Use y-axis logarithmic display.')
+
+    args = parser.parse_args()
+
+    input_name = args.csv_path
+    input_name = pathlib.Path(input_name)
+
+    is_logarithm = args.log
+
+    df = pd.read_csv(input_name, header=None)
+    print("analize file name: ", input_name)
+
+    d, y, e = df[0], df[1], df[2]
+
+    fig, (ax1, ax2) = plt.subplots(2, 1)
+    if is_logarithm:
+        ax1.set_yscale("log")
+        ax2.set_yscale("log")
+        d /= np.max(d)
+        y /= np.max(d)
+        e /= np.max(e)
+
+    ax1.plot(d, "b--", alpha=0.5, label="desired signal d(n)")
+    ax1.plot(y, "r-", alpha=0.5, label="output y(n)")
+    ax1.legend()
+    ax2.plot(e, "y-", alpha=1.0, label="error e(n)")
+    plt.grid()
+    ax2.legend()
+    plt.title('ADF Output')
+
+    output_dir = pathlib.Path(args.dst_path)
+    output_name = pathlib.Path(input_name.name).with_suffix(".png")
+    output_path = pathlib.Path.joinpath(output_dir, output_name)
+    plt.savefig(output_path)
+    print("\nfilterd data plot is saved at: ", output_path, "\n")
+
+
+if __name__ == '__main__':
+    main()
+\end{lstlisting}
+
+\begin{lstlisting}[caption=plot\_multiwave.py,label=plot\_multiwave.py]
+#!/usr/bin/env python
+# coding: utf-8
+
+# Usage:
+#   python3 plot_multiwave.py foo.wav
+# then you can see the wave's abstruct
+
+import signal
+import sys
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import soundfile as sf
+
+signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+plt.rcParams['font.family'] = 'IPAPGothic'
+plt.rcParams['font.size'] = 11
+plt.rcParams['xtick.direction'] = 'in'
+plt.rcParams['ytick.direction'] = 'in'
+plt.rcParams['xtick.top'] = True
+plt.rcParams['ytick.right'] = True
+plt.rcParams['xtick.major.width'] = 1.0
+plt.rcParams['ytick.major.width'] = 1.0
+plt.rcParams['axes.linewidth'] = 1.0
+plt.rcParams['figure.figsize'] = (8, 7)
+plt.rcParams['figure.dpi'] = 300
+plt.rcParams['figure.subplot.hspace'] = 0.3
+plt.rcParams['figure.subplot.wspace'] = 0.3
+
+
+def main():
+    args = sys.argv
+
+    if len(args) < 2:
+        print("error : please pass the wave file argument")
+        print("Usage: python3 plot_muiltiwave.py foo.wav")
+        sys.exit()
+
+    for i in range(len(args) - 1):
+        data, sr = sf.read(args[i + 1])
+
+        plt.plot(data, alpha=0.5, label=args[i + 1])
+        plt.legend()
+        plt.xlabel("Iteration")
+        plt.grid(True)
+
+    plt.show()
+
+
+if __name__ == '__main__':
+    main()
+\end{lstlisting}
+
+\begin{lstlisting}[caption=plot\_spectrogram\_librosa.py,label=plot\_spectrogram\_librosa.py]
+#!/usr/bin/env python
+# encoding: utf-8
+
+import argparse
+import pathlib
+
+import librosa
+import librosa.display
+import matplotlib
+import numpy as np
+import pandas as pd
+
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+plt.rcParams['font.family'] = 'IPAPGothic'
+plt.rcParams['font.size'] = 16
+plt.rcParams['xtick.direction'] = 'in'
+plt.rcParams['ytick.direction'] = 'in'
+plt.rcParams['xtick.top'] = True
+plt.rcParams['ytick.right'] = True
+plt.rcParams['xtick.major.width'] = 1.0
+plt.rcParams['ytick.major.width'] = 1.0
+plt.rcParams['axes.linewidth'] = 1.0
+plt.rcParams['figure.figsize'] = (8, 7)
+plt.rcParams['figure.dpi'] = 300
+plt.rcParams['figure.subplot.hspace'] = 0.3
+plt.rcParams['figure.subplot.wspace'] = 0.3
+
+
+def main():
+    description = "This script plots spectrogram from csv or wav file."
+    parser = argparse.ArgumentParser(description=description)
+
+    parser.add_argument('input_path',
+                        action='store',
+                        type=str,
+                        help='Directory path where the input file is located.',
+                        metavar=None)
+
+    parser.add_argument('-d', '--dst_path',
+                        action='store',
+                        nargs='?',
+                        const="/tmp",
+                        default=".",
+                        type=str,
+                        help='Directory path where you want to locate img files. (default: current directory)',
+                        metavar=None)
+
+    parser.add_argument('-l', '--log',
+                        action='store_true',
+                        help='Use y-axis logarithmic display.')
+
+    args = parser.parse_args()
+
+    input_path = pathlib.Path(args.input_path)
+    output_dir = pathlib.Path(args.dst_path)
+    is_logarithm = args.log
+
+    sr = 48000
+    data = []
+    if input_path.suffix == ".wav":
+        data, sr = librosa.load(str(input_path), sr=None)
+    elif input_path.suffix == ".csv":
+        df = pd.read_csv(str(input_path), header=None)
+        data = np.array(df[0], dtype=np.float)
+    else:
+        parser.usage()
+        exit(1)
+
+    d = np.abs(librosa.stft(data))
+    log_D = librosa.amplitude_to_db(d, ref=np.max)
+
+    plt.figure(figsize=(8, 7))
+    if is_logarithm:
+        librosa.display.specshow(log_D, sr=sr, x_axis='time', y_axis='log')
+        librosa.display.specshow(log_D, sr=sr, x_axis='time', y_axis='log')
+    else:
+        librosa.display.specshow(log_D, sr=sr, x_axis='s', y_axis='linear')
+
+    plt.set_cmap("inferno")
+    plt.xlabel("Time [sec]")
+    plt.ylabel("Frequency [Hz]")
+    plt.title('Spectrogram')
+    plt.colorbar(format='%2.0f dB')
+    plt.tight_layout()
+    plt.show()
+
+    output_name = pathlib.Path(input_path.name).with_suffix(".png")
+    output_path = pathlib.Path.joinpath(output_dir, output_name)
+
+    plt.savefig(str(output_path))
+
+    print(f"\nimage is saved at: {output_path}\n")
+
+
+if __name__ == '__main__':
+    main()
+\end{lstlisting}
+
+
+\section{Go言語で制作したプログラム}
+
+
+
+\subsection{ツール}
+
+\begin{lstlisting}[caption=ディレクトリ構成,label=ディレクトリ構成]
+    .
+    ├── converter.go
+    ├── filehandler.go
+    ├── calculator.go
+    └── cmd
+       ├── calc_noise_mix
+       │   └── main.go
+       ├── convolve_wav
+       │   └── main.go
+       ├── convolve_wav_coef
+       │   └── main.go
+       ├── convolve_wav_fast
+       │   └── main.go
+       ├── csv_to_wav
+       │   └── main.go
+       ├── drone_json_generator
+       │   └── main.go
+       ├── multirecord
+       │   ├── main.go
+       │   ├── multirecord.go
+       │   ├── util.go
+       │   └── wav_to_DSB.go
+       └── wav_to_DSB
+           ├── main.go
+           ├── util.go
+           └── wtod.go
+\end{lstlisting}
+
+\begin{lstlisting}[caption=converter.go,label=converter.go]
+package goresearch
+
+import (
+    "math"
+
+    "gonum.org/v1/gonum/floats"
+)
+
+func abs(x int) int {
+    if x < 0 {
+        return -1 * x
+    }
+    return x
+}
+
+func AbsFloat64s(fs []float64) []float64 {
+    fsAbs := make([]float64, len(fs))
+    for i, v := range fs {
+        fsAbs[i] = math.Abs(v)
+    }
+    return fsAbs
+}
+
+func AbsInts(is []int) []int {
+    isAbs := make([]int, len(is))
+    for i, v := range is {
+        isAbs[i] = abs(v)
+    }
+    return isAbs
+}
+
+func NormToMaxInt16(data []float64) []float64 {
+
+    maxAmp := floats.Max(AbsFloat64s(data))
+    if maxAmp > math.MaxInt16+1 {
+        reductionRate := math.MaxInt16 / maxAmp
+        for i, _ := range data {
+            data[i] *= reductionRate
+        }
+    }
+    return data
+}
+
+func Int16sToInts(i16s []int16) []int {
+    var is = make([]int, len(i16s))
+    for i, v := range i16s {
+        is[i] = int(v)
+    }
+    return is
+}
+
+func Float64sToInts(fs []float64) []int {
+    is := make([]int, len(fs))
+    for i, s := range fs {
+        is[i] = int(s)
+    }
+    return is
+}
+
+func IntsToFloat64s(is []int) []float64 {
+    fs := make([]float64, len(is))
+    for i, s := range is {
+        fs[i] = float64(s)
+    }
+    return fs
+}
+func Float64sToComplex128s(fs []float64) []complex128 {
+    cs := make([]complex128, len(fs))
+    for i, f := range fs {
+        cs[i] = complex(f, 0)
+    }
+    return cs
+}
+
+func Complex128sToFloat64s(cs []complex128) []float64 {
+    fs := make([]float64, len(cs))
+    for i, c := range cs {
+        fs[i] = real(c)
+    }
+    return fs
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=calculator.go,label=calculator.go]
+package goresearch
+
+import (
+	"errors"
+	"fmt"
+	"math"
+
+	"github.com/mjibson/go-dsp/fft"
+)
+
+func CalcAdjustedRMS(cleanRMS float64, snr float64) (noiseRMS float64) {
+	a := snr / 20
+	noiseRMS = cleanRMS / (math.Pow(10, a))
+	return noiseRMS
+}
+
+func CalcRMS(amp []float64) float64 {
+	var sum float64
+	for _, v := range amp {
+		sum += v * v
+	}
+	return math.Sqrt(sum / float64(len(amp)))
+}
+
+func CalcMSE(a []float64, b []float64) (float64, error) {
+	if b == nil {
+		b = make([]float64, len(a))
+	} else if len(a) != len(b) {
+		return 0, errors.New("length of a and b must agree")
+	}
+
+	var sum float64
+	for i := 0; i < len(a); i++ {
+		sum += (a[i] - b[i]) * (a[i] - b[i])
+	}
+
+	return sum / float64(len(a)), nil
+}
+
+func Convolve(xs, ys []float64) []float64 {
+	var convLen, sumLen = len(xs), len(ys)
+	if convLen > sumLen {
+		ys = append(ys, make([]float64, convLen-sumLen)...)
+	} else {
+		convLen, sumLen = sumLen, convLen
+		xs = append(xs, make([]float64, convLen-sumLen)...)
+	}
+	var rs = make([]float64, convLen)
+	var nodeSum float64
+	var i, j int
+	for i = 0; i < convLen; i++ {
+		for j = 0; j < sumLen; j++ {
+			if i-j < 0 {
+				continue
+			}
+			nodeSum += xs[i-j] * ys[j]
+		}
+		rs[i] = nodeSum
+		nodeSum = 0
+	}
+	return rs
+}
+
+// FastConvolve - Linear fast convolution
+func FastConvolve(xs, ys []float64) []float64 {
+	L := len(xs)
+	N := len(ys)
+	M := N + L - 1
+
+	// zero padding
+	xsz := append(xs, make([]float64, M-L)...)
+	ysz := append(ys, make([]float64, M-N)...)
+
+	var rs = make([]float64, M)
+	var Rs = make([]complex128, M)
+
+	fmt.Printf("calcurating fft...\n")
+
+	Xs := fft.FFT(Float64sToComplex128s(xsz))
+	Ys := fft.FFT(Float64sToComplex128s(ysz))
+
+	for i := 0; i < M; i++ {
+		// progress
+		fmt.Printf("calucurating convolution... %d%%\r", (i+1)*100/M)
+		Rs[i] = Xs[i] * Ys[i]
+	}
+	fmt.Printf("\ncalcurating ifft...\n")
+
+	rs = Complex128sToFloat64s(fft.IFFT(Rs))
+
+	return rs
+}
+
+func LinSpace(start, end float64, n int) []float64 {
+	res := make([]float64, n)
+	if n == 1 {
+		res[0] = end
+		return res
+	}
+	delta := (end - start) / (float64(n) - 1)
+	for i := 0; i < n; i++ {
+		res[i] = start + (delta * float64(i))
+	}
+	return res
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=filehandler.go,label=filehandler.go]
+package goresearch
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
+
+	"github.com/go-audio/audio"
+	"github.com/go-audio/wav"
+)
+
+func ReadDataFromCSV(inputPath string) (ds []float64, ys []float64, es []float64) {
+	fr, err := os.Open(inputPath)
+	check(err)
+	sc := bufio.NewScanner(fr)
+	var ss []string
+	var d float64
+	var y float64
+	var e float64
+	for sc.Scan() {
+		ss = strings.Split(sc.Text(), ",")
+		d, err = strconv.ParseFloat(ss[0], 64)
+		check(err)
+		ds = append(ds, d)
+		y, err = strconv.ParseFloat(ss[1], 64)
+		check(err)
+		ys = append(ys, y)
+		e, err = strconv.ParseFloat(ss[2], 64)
+		check(err)
+		es = append(es, e)
+	}
+	return ds, ys, es
+}
+
+func ReadDataFromCSVOne(inputPath string, column int) (fs []float64) {
+	fr, err := os.Open(inputPath)
+	check(err)
+	sc := bufio.NewScanner(fr)
+	var ss []string
+	var f float64
+	for sc.Scan() {
+		ss = strings.Split(sc.Text(), ",")
+		f, err = strconv.ParseFloat(ss[column], 64)
+		check(err)
+		fs = append(fs, f)
+	}
+	return fs
+}
+
+func ReadCoefFromCSV(inputPath string) (ws []float64) {
+	fr, err := os.Open(inputPath)
+	check(err)
+	sc := bufio.NewScanner(fr)
+	var ss []string
+	var w float64
+	for sc.Scan() {
+		ss = strings.Split(sc.Text(), ",")
+		w, err = strconv.ParseFloat(ss[0], 64)
+		check(err)
+		ws = append(ws, w)
+	}
+	return ws
+}
+
+func ReadDataFromWav(name string) []int {
+	f, err := os.Open(name)
+	check(err)
+	defer f.Close()
+	wavFile := wav.NewDecoder(f)
+	check(err)
+
+	wavFile.ReadInfo()
+	ch := int(wavFile.NumChans)
+	//byteRate := int(w.BitDepth/8) * ch
+	//bps := byteRate / ch
+	fs := int(wavFile.SampleRate)
+	fmt.Println("ch", ch, "fs", fs)
+
+	buf, err := wavFile.FullPCMBuffer()
+	check(err)
+	fmt.Printf("SourceBitDepth: %v\n", buf.SourceBitDepth)
+
+	return buf.Data
+}
+
+func SaveDataAsWav(data []float64, dataDir string, name string) {
+	outputPath := filepath.Join(dataDir, name+".wav")
+	fw, err := os.Create(outputPath)
+	check(err)
+
+	const (
+		SampleRate    = 48000
+		BitsPerSample = 16
+		NumChannels   = 1
+		PCM           = 1
+	)
+
+	w1 := wav.NewEncoder(fw, SampleRate, BitsPerSample, NumChannels, PCM)
+	aBuf := new(audio.IntBuffer)
+	aBuf.Format = &audio.Format{
+		NumChannels: NumChannels,
+		SampleRate:  SampleRate,
+	}
+	aBuf.SourceBitDepth = BitsPerSample
+
+	aBuf.Data = Float64sToInts(data)
+	err = w1.Write(aBuf)
+	check(err)
+
+	err = w1.Close()
+	check(err)
+
+	err = fw.Close()
+	check(err)
+
+	fmt.Printf("\nwav file saved at: %v\n", outputPath)
+}
+
+func SaveDataAsCSV(d, y, e, mse []float64, dataDir string, testName string) {
+	n := len(d)
+	fw, err := os.Create(filepath.Join(dataDir, testName+".csv"))
+	check(err)
+	writer := bufio.NewWriter(fw)
+	for i := 0; i < n; i++ {
+		if i >= len(mse) {
+			_, err = fmt.Fprintf(writer, "%g,%g,%g\n", d[i], y[i], e[i])
+			check(err)
+			continue
+		}
+		_, err = fmt.Fprintf(writer, "%g,%g,%g,%g\n", d[i], y[i], e[i], mse[i])
+		check(err)
+	}
+	err = writer.Flush()
+	check(err)
+	err = fw.Close()
+	check(err)
+}
+
+func SaveDataAsCSVOne(fs []float64, dataDir string, testName string) {
+	n := len(fs)
+	fw, err := os.Create(filepath.Join(dataDir, testName+".csv"))
+	check(err)
+	writer := bufio.NewWriter(fw)
+	for i := 0; i < n; i++ {
+		_, err = fmt.Fprintf(writer, "%g\n", fs[i])
+		check(err)
+	}
+	err = writer.Flush()
+	check(err)
+	err = fw.Close()
+	check(err)
+
+	fmt.Printf("output file is saved at: %v\n", testName+".csv")
+}
+
+func SplitPathAndExt(path string) (string, string) {
+	return filepath.Join(filepath.Dir(filepath.Clean(path)), filepath.Base(path[:len(path)-len(filepath.Ext(path))])), filepath.Ext(path)
+}
+
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=cmd/calc_noise_mix/main.go,label=calc_noise_mix]
+package main
+
+import (
+    "flag"
+    "fmt"
+    "log"
+    "math"
+    "math/rand"
+    "os"
+    "path/filepath"
+    "strconv"
+
+    "github.com/go-audio/audio"
+    "github.com/go-audio/wav"
+    "gonum.org/v1/gonum/floats"
+
+    "github.com/tetsuzawa/research-tools/goresearch"
+)
+
+func main() {
+
+    log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+    var (
+        cleanFilepath string
+        noiseFilepath string
+        outputDir     string
+        snrStart      float64
+        snrEnd        float64
+        snrDiv        int
+    )
+
+    flag.StringVar(&cleanFilepath, "clean", "/path/to/clean_file.wav", "designate clean file path")
+    flag.StringVar(&noiseFilepath, "noise", "/path/to/noise_file.wav", "designate noise file path")
+    flag.StringVar(&outputDir, "output", "/path/to/dir/", "designate ouput directory")
+    flag.Float64Var(&snrStart, "start", -40, "designate start value of S/N Rate")
+    flag.Float64Var(&snrEnd, "end", 40, "designate end value of S/N Rate")
+    flag.IntVar(&snrDiv, "div", 19, "designate number of divisions")
+
+    flag.Parse()
+
+    if cleanFilepath == "/path/to/clean_file.wav" ||
+        noiseFilepath == "/path/to/noise_file.wav" ||
+        outputDir == "/path/to/dir/" {
+        flag.Usage()
+        os.Exit(1)
+    }
+    fmt.Println("clean file path:", cleanFilepath)
+    fmt.Println("noise file path:", noiseFilepath)
+    fmt.Println("ouput directory:", outputDir)
+    fmt.Println("start value of S/N Rate:", snrStart)
+    fmt.Println("end value of S/N Rate:", snrEnd)
+    fmt.Println("number of divisions:", snrDiv)
+
+    f1, err := os.Open(cleanFilepath)
+    check(err)
+    w1 := wav.NewDecoder(f1)
+
+    f2, err := os.Open(noiseFilepath)
+    check(err)
+    w2 := wav.NewDecoder(f2)
+
+    w1.ReadInfo()
+    w2.ReadInfo()
+    ch1 := int(w1.NumChans)
+    ch2 := int(w2.NumChans)
+    bitDepth1 := int(w1.BitDepth)
+    bitDepth2 := int(w2.BitDepth)
+    bps1 := bitDepth1 / 8
+    bps2 := bitDepth2 / 8
+    fs1 := int(w1.SampleRate)
+    fs2 := int(w2.SampleRate)
+
+    buf1, err := w1.FullPCMBuffer()
+    check(err)
+    buf2, err := w2.FullPCMBuffer()
+    check(err)
+
+    err = f1.Close()
+    check(err)
+    err = f2.Close()
+    check(err)
+
+    if ch1 != ch2 ||
+        bitDepth1 != bitDepth2 ||
+        bps1 != bps2 ||
+        fs1 != fs2 {
+        err = fmt.Errorf("format of wav files are not agree")
+        panic(err)
+    }
+
+    cleanAMP := goresearch.IntsToFloat64s(buf1.Data)
+    noiseAMP := goresearch.IntsToFloat64s(buf2.Data)
+
+    cleanRMS := goresearch.CalcRMS(cleanAMP)
+
+    var start int
+    var cutNoiseAmp []float64
+    if len(cleanAMP) == len(noiseAMP) {
+        start = 0
+        cutNoiseAmp = noiseAMP[start : start+len(cleanAMP)]
+    } else if len(cleanAMP) > len(noiseAMP) {
+        start = rand.Intn(len(cleanAMP) - len(noiseAMP))
+        cleanAMP = cleanAMP[start : start+len(cleanAMP)]
+        cutNoiseAmp = noiseAMP
+    } else {
+        start = rand.Intn(len(noiseAMP) - len(cleanAMP))
+        cutNoiseAmp = noiseAMP[start : start+len(cleanAMP)]
+    }
+    noiseRMS := goresearch.CalcRMS(cutNoiseAmp)
+    snrList := goresearch.LinSpace(snrStart, snrEnd, snrDiv)
+
+    var (
+        adjustedNoiseAmp = make([]float64, len(cutNoiseAmp))
+        mixedAmp         = make([]float64, len(cutNoiseAmp))
+        fw               *os.File
+        ww               *wav.Encoder
+        wBuf             = new(audio.IntBuffer)
+        outputName       string
+        outputPath       string
+    )
+    wBuf.Format = &audio.Format{
+        NumChannels: ch1,
+        SampleRate:  fs1,
+    }
+    wBuf.SourceBitDepth = bitDepth1
+    for _, snr := range snrList {
+
+        adjustedNoiseRMS := goresearch.CalcAdjustedRMS(cleanRMS, snr)
+
+        for i, v := range cutNoiseAmp {
+            adjustedNoiseAmp[i] = v * (adjustedNoiseRMS / noiseRMS)
+            mixedAmp[i] = cleanAMP[i] + adjustedNoiseAmp[i]
+        }
+        maxAmp := floats.Max(goresearch.AbsFloat64s(mixedAmp))
+        if maxAmp > math.MaxInt16+1 {
+            reductionRate := math.MaxInt16 / maxAmp
+            for i, _ := range cutNoiseAmp {
+                mixedAmp[i] *= reductionRate
+            }
+        }
+
+        wBuf.Data = goresearch.Float64sToInts(mixedAmp)
+
+        outputName, _ = goresearch.SplitPathAndExt(cleanFilepath)
+        outputPath = filepath.Join(outputDir, filepath.Base(outputName)+"_snr"+strconv.Itoa(int(snr))+".wav")
+        fw, err = os.Create(outputPath)
+        check(err)
+        ww = wav.NewEncoder(fw, fs1, bitDepth1, ch1, 1)
+        err = ww.Write(wBuf)
+        check(err)
+        err = ww.Close()
+        check(err)
+
+    }
+    fmt.Printf("\nSuccessfully created following SN Rate files!! SNR: %v\n", snrList)
+}
+
+func check(err error) {
+    if err != nil {
+        panic(err)
+    }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=cmd/convolve_wav/main.go,label=convolve_wav]
+package main
+
+import (
+	"flag"
+	"fmt"
+	"log"
+	"math"
+	"os"
+
+	"github.com/go-audio/audio"
+	"github.com/go-audio/wav"
+	"gonum.org/v1/gonum/floats"
+
+	"github.com/tetsuzawa/research-tools/goresearch"
+)
+
+func main() {
+
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+	var (
+		inputFilePath1 string
+		inputFilePath2 string
+		outputFilePath string
+	)
+
+	flag.StringVar(&inputFilePath1, "x", "/path/to/name.wav", "designate input wav file path")
+	flag.StringVar(&inputFilePath2, "y", "/path/to/name.wav", "designate input wav file path")
+	flag.StringVar(&outputFilePath, "o", "/path/to/name.wav", "designate output wav file path")
+
+	flag.Parse()
+
+	if inputFilePath1 == "/path/to/name.wav" ||
+		inputFilePath2 == "/path/to/name.wav" ||
+		outputFilePath == "/path/to/name.wav" {
+		flag.Usage()
+		os.Exit(1)
+	}
+
+	fmt.Println("wav_1 file path:", inputFilePath1)
+	fmt.Println("wav_2 file path:", inputFilePath2)
+	fmt.Println("output file path:", outputFilePath)
+
+	f1, err := os.Open(inputFilePath1)
+	check(err)
+	w1 := wav.NewDecoder(f1)
+
+	f2, err := os.Open(inputFilePath2)
+	check(err)
+	w2 := wav.NewDecoder(f2)
+
+	w1.ReadInfo()
+	w2.ReadInfo()
+	ch1 := int(w1.NumChans)
+	ch2 := int(w2.NumChans)
+	bitDepth1 := int(w1.BitDepth)
+	bitDepth2 := int(w2.BitDepth)
+	bps1 := bitDepth1 / 8
+	bps2 := bitDepth2 / 8
+	fs1 := int(w1.SampleRate)
+	fs2 := int(w2.SampleRate)
+
+	buf1, err := w1.FullPCMBuffer()
+	check(err)
+	buf2, err := w2.FullPCMBuffer()
+	check(err)
+
+	err = f1.Close()
+	check(err)
+	err = f2.Close()
+	check(err)
+
+	if ch1 != ch2 ||
+		bitDepth1 != bitDepth2 ||
+		bps1 != bps2 ||
+		fs1 != fs2 {
+		err = fmt.Errorf("format of wav files are not agree")
+		panic(err)
+	}
+
+	amp1 := goresearch.IntsToFloat64s(buf1.Data)
+	amp2 := goresearch.IntsToFloat64s(buf2.Data)
+
+	ampOut := goresearch.Convolve(amp1, amp2)
+
+	var (
+		fw             *os.File
+		ww             *wav.Encoder
+		wBuf           = new(audio.IntBuffer)
+		outputFileName string
+		outputPath_1   string
+	)
+
+	wBuf.Format = &audio.Format{
+		NumChannels: ch1,
+		SampleRate:  fs1,
+	}
+	wBuf.SourceBitDepth = bitDepth1
+
+	maxAmp := floats.Max(goresearch.AbsFloat64s(ampOut))
+	if maxAmp > math.MaxInt16+1 {
+		reductionRate := math.MaxInt16 / maxAmp
+		for i, _ := range ampOut {
+			ampOut[i] *= reductionRate
+		}
+	}
+
+	wBuf.Data = goresearch.Float64sToInts(ampOut)
+
+	outputFileName, _ = goresearch.SplitPathAndExt(outputFilePath)
+
+	outputPath_1 = outputFileName + ".wav"
+	fw, err = os.Create(outputPath_1)
+	check(err)
+	ww = wav.NewEncoder(fw, fs1, bitDepth1, ch1, 1)
+	err = ww.Write(wBuf)
+	check(err)
+	err = ww.Close()
+	check(err)
+
+	fmt.Printf("\nSuccessfully calcurated convolution! \n")
+}
+
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=cmd/convolve_wav_fast/main.go,label=convolve_wav_fast]
+package main
+
+import (
+	"flag"
+	"fmt"
+	"os"
+	"path/filepath"
+
+	"github.com/tetsuzawa/research-tools/goresearch"
+)
+
+func main() {
+	var (
+		wavPath  string
+		coefPath string
+		dataDir  string
+	)
+
+	flag.StringVar(&wavPath, "wav", "", "wav path")
+	flag.StringVar(&coefPath, "coef", "", "coefficients path (.wav or .csv)")
+	flag.StringVar(&dataDir, "dir", "./", "save dir")
+
+	flag.Parse()
+
+	if wavPath == "" {
+		fmt.Printf("please specify wav path\n\n")
+		flag.Usage()
+		os.Exit(1)
+	}
+
+	if coefPath == "" {
+		fmt.Printf("please specify coef path\n\n")
+		flag.Usage()
+		os.Exit(1)
+	}
+
+	name, ext := goresearch.SplitPathAndExt(wavPath)
+	if ext != ".wav" {
+		fmt.Printf("please specify wav path\n\n")
+		flag.Usage()
+		os.Exit(1)
+	}
+
+	fmt.Println("wavPath:", wavPath)
+	fmt.Println("coefPath:", coefPath)
+	fmt.Println("dataDir:", dataDir)
+
+	wData := goresearch.ReadDataFromWav(wavPath)
+
+	_, cExt := goresearch.SplitPathAndExt(coefPath)
+	var cData []float64
+	switch cExt {
+	case ".wav":
+		cData = goresearch.IntsToFloat64s(goresearch.ReadDataFromWav(coefPath))
+	case ".csv":
+		cData = goresearch.ReadCoefFromCSV(coefPath)
+	default:
+		fmt.Printf("file type is not valid. coefficients file name:%v", coefPath)
+		os.Exit(1)
+	}
+
+	wDataF := goresearch.IntsToFloat64s(wData)
+	convData := goresearch.FastConvolve(wDataF, cData)
+
+	outputName := filepath.Base(name) + "_convoluted"
+
+	data := goresearch.NormToMaxInt16(convData)
+
+	goresearch.SaveDataAsWav(data, dataDir, outputName)
+
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=cmd/csv_to_wav/main.go,label=csv_to_wav]
+    package main
+
+    import (
+        "flag"
+        "fmt"
+        "os"
+        "path/filepath"
+    
+        "github.com/tetsuzawa/research-tools/goresearch"
+    )
+    
+    func main() {
+    
+        var (
+            csvPath string
+            dataDir string
+        )
+    
+        flag.StringVar(&csvPath, "path", "", "csv path")
+        flag.StringVar(&dataDir, "dir", "./", "save dir")
+    
+        flag.Parse()
+    
+        if csvPath == "" {
+            fmt.Printf("please specify csv path\n\n")
+            flag.Usage()
+            os.Exit(1)
+        }
+    
+        name, ext := goresearch.SplitPathAndExt(csvPath)
+        if ext != ".csv" {
+            fmt.Printf("please specify csv path\n\n")
+            flag.Usage()
+            os.Exit(1)
+        }
+    
+        fmt.Println("csvPath:", csvPath)
+        fmt.Println("dataDir:", dataDir)
+    
+        _, _, e := goresearch.ReadDataFromCSV(csvPath)
+    
+        outputName := filepath.Base(name)
+    
+        data := goresearch.NormToMaxInt16(e)
+    
+        goresearch.SaveDataAsWav(data, dataDir, outputName)
+    }
+\end{lstlisting}
+
+\begin{lstlisting}[caption=cmd/drone_json_generator/main.go,label=drone_json_generator]
+package main
+
+import (
+    "encoding/json"
+    "flag"
+    "fmt"
+    "os"
+    "path/filepath"
+)
+
+type ADFConfig struct {
+    WavName string  `json:"wav_name"`
+    AdfName string  `json:"adf_name"`
+    Mu      float64 `json:"mu"`
+    L       int     `json:"l"`
+    Order   int     `json:"order"`
+}
+
+func main() {
+    var (
+        wavName string
+        adfName string
+        L       int
+        Mu      float64
+        order   int
+        dataDir string
+    )
+
+    flag.StringVar(&wavName, "wav", "../wavfiles/dr_static_20.wav", "wav name")
+    flag.StringVar(&adfName, "adf", "NLMS", "algorithm")
+    flag.Float64Var(&Mu, "mu", 1.0, "mu")
+    flag.IntVar(&L, "L", 256, "L")
+    flag.IntVar(&order, "order", 8, "order")
+    flag.StringVar(&dataDir, "dir", "./", "save dir")
+
+    flag.Parse()
+
+    fmt.Println("wavName:", wavName)
+    fmt.Println("adfName:", adfName)
+    fmt.Println("mu:", Mu)
+    fmt.Println("L:", L)
+    fmt.Println("order:", order)
+    fmt.Println("dataDir:", dataDir)
+
+    var testName string
+    applicationName := "static"
+
+    switch adfName {
+    case "LMS":
+        testName = fmt.Sprintf("%v_%v_L-%v", adfName, applicationName, L)
+    case "NLMS":
+        testName = fmt.Sprintf("%v_%v_L-%v", adfName, applicationName, L)
+    case "AP":
+        testName = fmt.Sprintf("%v_%v_L-%v_order-%v", adfName, applicationName, L, order)
+    case "RLS":
+        testName = fmt.Sprintf("%v_%v_L-%v", adfName, applicationName, L)
+    default:
+        err := fmt.Errorf("\nadfName is not valid:%v\n", adfName)
+        fmt.Println(err)
+        fmt.Printf("Failed!\n")
+        os.Exit(1)
+    }
+    fmt.Printf("testName: %v\n", testName)
+
+    var adf = &ADFConfig{
+        WavName: wavName,
+        AdfName: adfName,
+        Mu:      Mu,
+        L:       L,
+        Order:   order,
+    }
+
+    outadfJSON, err := json.Marshal(adf)
+    check(err)
+    fw, err := os.Create(filepath.Join(dataDir, testName+".json"))
+    check(err)
+    defer fw.Close()
+    _, err = fw.Write(outadfJSON)
+    check(err)
+
+    fmt.Printf("json file saved at :%v\n", filepath.Join(dataDir, testName+".json"))
+
+}
+
+func check(err error) {
+    if err != nil {
+        panic(err)
+    }
+}
+
+\end{lstlisting}
+
+\begin{lstlisting}[caption=cmd/calc_mse_csv/main.go,label=calc_mse_csv]
+package main
+
+import (
+	"flag"
+	"fmt"
+	"gonum.org/v1/gonum/floats"
+	"math"
+	"path/filepath"
+
+	"github.com/tetsuzawa/research-tools/goresearch"
+)
+
+func main() {
+	var tap int
+	flag.IntVar(&tap, "tap", 256, "mse taps")
+
+	flag.Parse()
+
+	fmt.Println("mse taps:", tap)
+
+	inputPath := flag.Arg(0)
+	fmt.Println("inputPath:", inputPath)
+
+	dataDir := flag.Arg(1)
+	fmt.Println("dataDir:", dataDir)
+
+	ds, ys, es := goresearch.ReadDataFromCSV(inputPath)
+
+	var mse = make([]float64, len(es)-tap)
+	var v float64
+	var err error
+	for i := 0; i < len(es)-tap; i++ {
+
+		fmt.Printf("working... %d%%\r", (i+1)*100/(len(es)-tap))
+
+		v, err = goresearch.CalcMSE(es[i:i+tap], nil)
+		check(err)
+		mse[i] = 20 * math.Log10(v)
+	}
+	floats.AddConst(-1*floats.Max(mse), mse)
+
+	name, _ := goresearch.SplitPathAndExt(inputPath)
+	outputName := filepath.Base(name) + "_mse"
+
+	goresearch.SaveDataAsCSV(ds, ys, es, mse, dataDir, outputName)
+
+}
+
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=cmd/multirecord/main.go,label=multirecord/main]
+    /*
+    Contents: multi channel record.
+        This program works as typical recording app with multi channels.
+        Output file format is .wav.
+        Please run `multirecord --help` for details.
+    Usage: multirecord (-c ch -r rate -b bits -o /path/to/out.wav) sec
+    Author: Tetsu Takizawa
+    E-mail: tt15219@tomakomai.kosen-ac.jp
+    LastUpdate: 2019/11/18
+    DateCreated  : 2019/11/18
+    */
+    package main
+    
+    import (
+        "os"
+    
+        "github.com/urfave/cli"
+    )
+    
+    func main() {
+        app := cli.NewApp()
+        defer app.Run(os.Args)
+        app.CustomAppHelpTemplate = HelpTemplate
+    
+        app.Name = "multirecord"
+        app.Usage = `This app records sounds with multi channels and save as .wav file or .DSB files if --DSB is specified.`
+        app.Version = "0.1.2"
+    
+        app.Action = multiRecord
+    
+        app.Flags = []cli.Flag{
+            cli.IntFlag{
+                Name:  "channel, c",
+                Value: 1,
+                Usage: "input number of channels",
+            },
+            cli.IntFlag{
+                Name:  "bits, b",
+                Value: 16,
+                Usage: "number of bits per sample",
+            },
+            cli.IntFlag{
+                Name:  "rate, r",
+                Value: 48000,
+                Usage: "number of sample rate",
+            },
+            cli.StringFlag{
+                Name:  "outpath, o",
+                Value: "out_multirecord.wav",
+                Usage: "specify output path",
+            },
+            cli.BoolFlag{
+                Name:  "params, p",
+                Usage: "trace import statements",
+            },
+            cli.BoolFlag{
+                Name:  "DSB, D",
+                Usage: "make .DSB files",
+            },
+        }
+    }
+\end{lstlisting}
+
+\begin{lstlisting}[caption=cmd/multirecord/multirecord.go,label=multirecord/multirecord]
+/*
+Contents: multi channel record.
+	This program works as typical recording app with multi channels.
+	Output file format is .wav.
+	Please run `multirecord --help` for details.
+Usage: multirecord (-c ch -r rate -b bits -o /path/to/out.wav) sec
+Author: Tetsu Takizawa
+E-mail: tt15219@tomakomai.kosen-ac.jp
+LastUpdate: 2019/11/18
+DateCreated  : 2019/11/18
+*/
+package main
+
+import (
+	"fmt"
+	"os"
+	"strconv"
+	"time"
+
+	"github.com/go-audio/audio"
+	"github.com/go-audio/wav"
+	"github.com/gordonklaus/portaudio"
+	"github.com/pkg/errors"
+	"github.com/urfave/cli"
+
+	"github.com/tetsuzawa/research-tools/goresearch"
+)
+
+const (
+	FramesPerBuffer = 1024
+	PCM             = 1
+)
+
+var (
+	w1                *wav.Encoder
+	RecordSeconds     float64
+	NumChannels       int
+	SampleRate        int
+	BitsPerSample     int
+	NumSamplesToWrite int
+	NumWritten        int
+	aBuf              = new(audio.IntBuffer)
+	err               error
+)
+
+func multiRecord(ctx *cli.Context) error {
+	// ************* check argument *************
+	if ctx.Args().Get(0) == "" {
+		return cli.NewExitError(`too few arguments. need recording duration
+Usage: multirecord (-c ch -r rate -b bits -o /path/to/out.wav) duration
+`, 2)
+	}
+
+	// ************* validate ext *************
+	name, ext := goresearch.SplitPathAndExt(ctx.String("o"))
+	if ext != ".wav" && ext != "" {
+		return cli.NewExitError(`incorrect file format. multirecord saves audio as .wav file.
+Usage: multirecord -o /path/to/file.wav 5.0`, 2)
+	}
+
+	// ************* validate parameter *************
+	RecordSeconds, err = strconv.ParseFloat(ctx.Args().Get(0), 64)
+	if err != nil {
+		err = errors.Wrap(err, "error occurred while converting arg of recording time from string to float64")
+		return cli.NewExitError(err, 5)
+	}
+	NumChannels = ctx.Int("c")
+	SampleRate = ctx.Int("r")
+	BitsPerSample := ctx.Int("b")
+	if BitsPerSample != 16 {
+		return cli.NewExitError(`sorry, this app is only for 16 bits per sample for now`, 99)
+	}
+	NumSamplesToWrite = int(RecordSeconds * float64(SampleRate))
+
+	// ************* create output file *************
+	f1, err := os.Create(name + ".wav")
+	if err != nil {
+		err = errors.Wrap(err, "internal error: error occurred while creating output file")
+		return cli.NewExitError(err, 5)
+	}
+	defer f1.Close()
+
+	w1 = wav.NewEncoder(f1, SampleRate, BitsPerSample, NumChannels, PCM)
+	aBuf.Format = &audio.Format{
+		NumChannels: NumChannels,
+		SampleRate:  SampleRate,
+	}
+	aBuf.SourceBitDepth = BitsPerSample
+
+	// ************* initialize portaudio*************
+	err = portaudio.Initialize()
+	defer portaudio.Terminate()
+	if err != nil {
+		err = errors.Wrap(err, "internal error: error occurred while initializing portaudio")
+		return cli.NewExitError(err, 5)
+	}
+
+	h, err := portaudio.DefaultHostApi()
+	if err != nil {
+		err = errors.Wrap(err, "internal error: error occurred while searching host API")
+		return cli.NewExitError(err, 5)
+	}
+	paParam := portaudio.LowLatencyParameters(h.DefaultInputDevice, h.DefaultOutputDevice)
+	paParam.SampleRate = float64(SampleRate)
+	paParam.Input.Channels = NumChannels
+	paParam.Output.Channels = 1
+	paParam.FramesPerBuffer = FramesPerBuffer
+
+	stream, err := portaudio.OpenStream(paParam, callback)
+	if err != nil {
+		err = errors.Wrap(err, "internal error: error occurred while opening stream on portaudio")
+		return cli.NewExitError(err, 5)
+	}
+	defer stream.Close()
+
+	// ************* print parameter *************
+	fmt.Printf("\nOutput File: \t`%s`\n", name+".wav")
+	fmt.Printf("Channels: \t%d \n", NumChannels)
+	fmt.Printf("Sample Rate: \t%d\n", SampleRate)
+	fmt.Printf("Precision: \t%d-bits\n", BitsPerSample)
+	fmt.Printf("Duration: \t%f [sec] = %d samples\n", RecordSeconds, NumSamplesToWrite)
+	fmt.Printf("Encoding: \t%d-bits Signed Integer PCM\n\n", BitsPerSample)
+
+	if ctx.Bool("p") {
+		fmt.Printf("\nFrames Per Buffer\n", paParam.FramesPerBuffer)
+
+		fmt.Printf("\nInput Device Parameters\n")
+		fmt.Printf("Input Device Name\t\t\t%v\n", paParam.Input.Device.Name)
+		fmt.Printf("Input Device MaxInputChannels\t\t%v\n", paParam.Input.Device.MaxInputChannels)
+		fmt.Printf("Input Device DefaultSampleRate\t\t%v\n", paParam.Input.Device.DefaultSampleRate)
+		fmt.Printf("Input Device HostApi\t\t\t%v\n", paParam.Input.Device.HostApi)
+		fmt.Printf("Input Device DefaultLowInputLatency\t%v\n", paParam.Input.Device.DefaultLowInputLatency)
+		fmt.Printf("Input Device DefaultHighInputLatency\t%v\n", paParam.Input.Device.DefaultHighInputLatency)
+
+		fmt.Printf("\n\nOutput params\n")
+		fmt.Printf("Output Device Name\t\t\t%v\n", paParam.Output.Device.Name)
+		fmt.Printf("Output Device MaxOutputChannels\t\t%v\n", paParam.Output.Device.MaxOutputChannels)
+		fmt.Printf("Output Device DefaultSampleRate\t\t%v\n", paParam.Output.Device.DefaultSampleRate)
+		fmt.Printf("Output Device HostApi\t\t\t%v\n", paParam.Output.Device.HostApi)
+		fmt.Printf("Output Device DefaultLowOutputLatency\t%v\n", paParam.Output.Device.DefaultLowOutputLatency)
+		fmt.Printf("Output Device DefaultHighOutputLatency\t%v\n", paParam.Output.Device.DefaultHighOutputLatency)
+	}
+
+	// ************* record audio *************
+	err = stream.Start()
+	if err != nil {
+		err = errors.Wrap(err, "internal error: error occurred while starting stream")
+		return cli.NewExitError(err, 5)
+	}
+
+	fmt.Printf("\nrecording...\n")
+
+	st := time.Now()
+	for time.Since(st).Seconds() < RecordSeconds {
+		fmt.Printf("%.1f[sec] : %.1f[sec]\r", time.Since(st).Seconds(), RecordSeconds)
+	}
+	err = stream.Stop()
+	if err != nil {
+		err = errors.Wrap(err, "internal error: error occurred while stopping stream")
+		return cli.NewExitError(err, 5)
+	}
+	err = w1.Close()
+	check(err)
+
+	fmt.Printf("\n\nSuccessfully recorded!!\n")
+
+	if ctx.Bool("D") {
+		err = wavToDSB(ctx, name)
+		if err != nil {
+			err = errors.Wrap(err, "error occurred while converting .wav file to .DSB files")
+		}
+	}
+
+	return nil
+}
+
+// ************* callback function *************
+func callback(inBuf, outBuf []int16) {
+	if NumWritten+FramesPerBuffer > NumSamplesToWrite {
+		numWrite := NumSamplesToWrite - NumWritten
+		NumWritten += numWrite
+		aBuf.Data = goresearch.Int16sToInts(inBuf[:numWrite])
+		err = w1.Write(aBuf)
+		check(err)
+		return
+	}
+	NumWritten += len(inBuf) / NumChannels
+	aBuf.Data = goresearch.Int16sToInts(inBuf)
+	err = w1.Write(aBuf)
+	check(err)
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=cmd/multirecord/util.go,label=multirecord/util]
+package main
+
+
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+var HelpTemplate = `NAME:
+   {{.Name}}{{if .Usage}} - {{.Usage}}{{end}}
+
+USAGE:
+   {{if .UsageText}}{{.UsageText}}{{else}}{{.HelpName}} {{if .VisibleFlags}}[options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}{{end}}{{if .Version}}{{if not .HideVersion}}
+
+VERSION:
+   {{.Version}}{{end}}{{end}}{{if .Description}}
+
+DESCRIPTION:
+   {{.Description}}{{end}}{{if len .Authors}}
+
+AUTHOR{{with $length := len .Authors}}{{if ne 1 $length}}S{{end}}{{end}}:
+   {{range $index, $author := .Authors}}{{if $index}}
+   {{end}}{{$author}}{{end}}{{end}}{{if .VisibleCommands}}
+
+OPTIONS:
+   {{range $index, $option := .VisibleFlags}}{{if $index}}
+   {{end}}{{$option}}{{end}}{{end}}`
+\end{lstlisting}
+
+\begin{lstlisting}[caption=cmd/multirecord/wav_to_DSB.go,label=multirecord/wav_to_DSB]
+/*
+Contents: multi channel record.
+	This program works as typical recording app with multi channels.
+	Output file format is .wav.
+	Please run `multirecord --help` for details.
+Usage: multirecord (-c ch -r rate -b bits -o /path/to/out.wav) sec
+Author: Tetsu Takizawa
+E-mail: tt15219@tomakomai.kosen-ac.jp
+LastUpdate: 2019/11/18
+DateCreated  : 2019/11/18
+*/
+package main
+
+import (
+	"bytes"
+	"encoding/binary"
+	"fmt"
+	"os"
+
+	"github.com/go-audio/wav"
+	"github.com/pkg/errors"
+	"github.com/urfave/cli"
+)
+
+func wavToDSB(ctx *cli.Context, name string) error {
+
+	// ************* create output file *************
+	f, err := os.Open(name + ".wav")
+	if err != nil {
+		err = errors.Wrap(err, "internal error: error occurred while creating output file")
+		return cli.NewExitError(err, 5)
+	}
+	defer f.Close()
+	w := wav.NewDecoder(f)
+	if err != nil {
+		err = errors.Wrap(err, "error occurred while processing .wav file")
+		return cli.NewExitError(err, 3)
+	}
+
+	// ************* validate parameter *************
+	w.ReadInfo()
+	ch := int(w.NumChans)
+	byteRate := int(w.BitDepth/8) * ch
+	bps := byteRate / ch
+	fs := int(w.SampleRate)
+
+	if fs != 48000 || bps != 2 || w.WavAudioFormat != 1 {
+		errMsg := fmt.Sprintf(`audio format error: wav format must be as follows.
+sample rate: want 48000 Hz, got %v Hz
+sampling bit rate: want 16 bits per sample, got %v bits per sample
+audio format: want 1 (PCM), got %v`, fs, w.BitDepth, w.WavAudioFormat)
+		return cli.NewExitError(errMsg, 3)
+	}
+
+	aBuf, err := w.FullPCMBuffer()
+	if err != nil {
+		err = errors.Wrap(err, "error occurred while processing .wav file")
+		return cli.NewExitError(err, 3)
+	}
+
+	if aBuf.SourceBitDepth != 16 {
+		err = errors.New("sampling bit rate is incorrect. need 16 bits per sample")
+		err = errors.Wrap(err, "error occurred while processing .wav file")
+		return cli.NewExitError(err, 3)
+	}
+
+	iter := aBuf.NumFrames()
+	wBuf := make([]byte, iter*bps)
+
+	// ************* split channel and write to .DSB files *************
+	var fw *os.File
+	for j := 0; j < ch; j++ {
+		if ch == 1 {
+			fw, err = os.Create(fmt.Sprintf("%s.DSB", name))
+		} else {
+			fw, err = os.Create(fmt.Sprintf("%s_ch%d.DSB", name, j+1))
+		}
+		if err != nil {
+			return cli.NewExitError(err, 3)
+		}
+		defer fw.Close()
+
+		for i := 0; i < iter; i++ {
+			fmt.Printf("converting... %d%%\r", (i+1)*100/iter)
+			b := new(bytes.Buffer)
+			//err = binary.Write(b, binary.LittleEndian, value[ch*i+j])
+			err = binary.Write(b, binary.LittleEndian, int16(aBuf.Data[ch*i+j]))
+			if err != nil {
+				err = errors.Wrap(err, "internal error: error occurred while writing data to buffer")
+				return cli.NewExitError(err, 5)
+			}
+			copy(wBuf[bps*i:bps*(i+1)], b.Bytes())
+		}
+		_, err = fw.Write(wBuf)
+		if err != nil {
+			err = errors.Wrap(err, "error occurred while writing data to .DSB file")
+			return cli.NewExitError(err, 3)
+		}
+
+	}
+	if ch == 1 {
+		fmt.Printf("\n\n%d file created as `%s.DSB`\n", ch, name)
+	} else {
+		fmt.Printf("\n\n%d files created as `%s_chX.DSB`\n", ch, name)
+	}
+
+	fmt.Printf("\n")
+	fmt.Println("end!!")
+
+	return nil
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=cmd/wav_to_DSB/main.go,label=wav_to_DSB/main]
+/*
+Contents: wav to DSB converter.
+	This program converts .wav file to .DSB files.
+	Please run `wav_to_DSB --help` for details.
+Usage: wav_to_DSB (-o /path/to/out.DSB) /path/to/file.wav
+Author: Tetsu Takizawa
+E-mail: tt15219@tomakomai.kosen-ac.jp
+LastUpdate: 2019/11/16
+DateCreated  : 2019/11/16
+*/
+package main
+
+import (
+	"os"
+
+	"github.com/pkg/errors"
+	"github.com/urfave/cli"
+
+	"github.com/tetsuzawa/research-tools/goresearch"
+)
+
+func main() {
+	app := cli.NewApp()
+	defer app.Run(os.Args)
+	app.CustomAppHelpTemplate = HelpTemplate
+
+	app.Name = "wav_to_DSB"
+	app.Usage = `This app converts .wav file to .DSB file.`
+	app.Version = "0.1.0"
+
+	app.Action = action
+
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "outpath, o",
+			Usage: "specify output path like as /path/to/file",
+		},
+	}
+}
+
+func action(ctx *cli.Context) error {
+	if ctx.Args().Get(0) == "" {
+		return cli.NewExitError("too few arguments. need input file path. \nUsage: wav-to-DSB-multi /path/to/file.wav", 2)
+	}
+
+	fileName := ctx.Args().Get(0)
+	name, ext := goresearch.SplitPathAndExt(fileName)
+
+	if ext != ".wav" {
+		return cli.NewExitError("incorrect file format. need .wav file. \nUsage: wav-to-DSB-multi /path/to/file.wav", 2)
+	}
+
+	if ctx.String("o") != "" {
+		argName := ctx.String("o")
+		name, _ = goresearch.SplitPathAndExt(argName)
+	}
+
+	f, err := os.Open(fileName)
+	if err != nil {
+		err = errors.Wrap(err, "error occurred while opening input file")
+		return cli.NewExitError("no such a file", 2)
+	}
+	defer f.Close()
+
+	return wavToDSB(ctx, f, name)
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=cmd/wav_to_DSB/util.go,label=wav_to_DSB/util]
+package main
+
+var HelpTemplate = `NAME:
+    {{.Name}}{{if .Usage}} - {{.Usage}}{{end}}
+
+USAGE:
+    {{if .UsageText}}{{.UsageText}}{{else}}{{.HelpName}} {{if .VisibleFlags}}[options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}{{end}}{{if .Version}}{{if not .HideVersion}}
+
+VERSION:
+    {{.Version}}{{end}}{{end}}{{if .Description}}
+
+DESCRIPTION:
+    {{.Description}}{{end}}{{if len .Authors}}
+
+AUTHOR{{with $length := len .Authors}}{{if ne 1 $length}}S{{end}}{{end}}:
+    {{range $index, $author := .Authors}}{{if $index}}
+    {{end}}{{$author}}{{end}}{{end}}{{if .VisibleCommands}}
+
+OPTIONS:
+    {{range $index, $option := .VisibleFlags}}{{if $index}}
+    {{end}}{{$option}}{{end}}{{end}}`
+\end{lstlisting}
+
+\begin{lstlisting}[caption=cmd/wav_to_DSB/wtod.go,label=wav_to_DSB/wtod]
+package main
+
+import (
+	"bytes"
+	"encoding/binary"
+	"fmt"
+	"github.com/go-audio/wav"
+	"os"
+
+	"github.com/pkg/errors"
+	"github.com/urfave/cli"
+)
+
+var err error
+
+func wavToDSB(ctx *cli.Context, f *os.File, name string) error {
+	//w, err := wav.NewReader(f)
+	w := wav.NewDecoder(f)
+	if err != nil {
+		err = errors.Wrap(err, "error occurred while processing .wav file")
+		return cli.NewExitError(err, 3)
+	}
+
+	w.ReadInfo()
+	ch := int(w.NumChans)
+	byteRate := int(w.BitDepth/8) * ch
+	bps := byteRate / ch
+	fs := int(w.SampleRate)
+
+	if fs != 48000 || bps != 2 || w.WavAudioFormat != 1 {
+		errMsg := fmt.Sprintf(`audio format error: wav format must be as follows.
+sample rate: want 48000 Hz, got %v Hz
+sampling bit rate: want 16 bits per sample, got %v bits per sample
+audio format: want 1 (PCM), got %v`, fs, w.BitDepth, w.WavAudioFormat)
+		return cli.NewExitError(errMsg, 3)
+	}
+
+	//data, err := w.ReadSamples(int(w.GetSubChunkSize()) / byteRate * ch)
+	aBuf, err := w.FullPCMBuffer()
+	if err != nil {
+		err = errors.Wrap(err, "error occurred while processing .wav file")
+		return cli.NewExitError(err, 3)
+	}
+
+	//value, ok := data.([]int16)
+	if aBuf.SourceBitDepth != 16 {
+		err = errors.New("sampling bit rate is incorrect. need 16 bits per sample")
+		err = errors.Wrap(err, "error occurred while processing .wav file")
+		return cli.NewExitError(err, 3)
+	}
+
+	//iter := len(value) / ch
+	iter := aBuf.NumFrames() / ch
+	wBuf := make([]byte, iter*bps)
+
+	var fw *os.File
+	for j := 0; j < ch; j++ {
+		if ch == 1 {
+			fw, err = os.Create(fmt.Sprintf("%s.DSB", name))
+		} else {
+			fw, err = os.Create(fmt.Sprintf("%s_ch%d.DSB", name, j+1))
+		}
+		if err != nil {
+			return cli.NewExitError(err, 3)
+		}
+		defer fw.Close()
+
+		for i := 0; i < iter; i++ {
+			fmt.Printf("working... %d%%\r", (i+1)*100/iter)
+			b := new(bytes.Buffer)
+			//err = binary.Write(b, binary.LittleEndian, value[ch*i+j])
+			err = binary.Write(b, binary.LittleEndian, int16(aBuf.Data[ch*i+j]))
+			if err != nil {
+				err = errors.Wrap(err, "internal error: error occurred while writing data to buffer")
+				return cli.NewExitError(err, 5)
+			}
+			copy(wBuf[bps*i:bps*(i+1)], b.Bytes())
+		}
+		_, err = fw.Write(wBuf)
+		if err != nil {
+			err = errors.Wrap(err, "error occurred while writing data to .DSB file")
+			return cli.NewExitError(err, 3)
+		}
+
+	}
+	if ch == 1 {
+		fmt.Printf("\n\n%d file created as %s.DSB\n", ch, name)
+	} else {
+		fmt.Printf("\n\n%d files created as %s_chX.DSB\n", ch, name)
+	}
+
+	fmt.Printf("\n")
+	fmt.Println("end!!")
+
+	return nil
+}
+\end{lstlisting}
+
+
+\subsection{ADFライブラリ}
+
+\begin{lstlisting}[caption=ディレクトリ構成,label=ディレクトリ構成]
+.
+├── adf
+│   ├── ap.go
+│   ├── base.go
+│   ├── lms.go
+│   ├── nlms.go
+│   └── rls.go
+├── fdadf
+│   ├── base.go
+│   └── fblms.go
+└── misc
+    └── misc.go
+
+# testコードやLISENCEファイルなどは省略
+\end{lstlisting}
+
+\begin{lstlisting}[caption=ap.go,label=ap.go]
+package adf
+
+import (
+    "errors"
+    "gonum.org/v1/gonum/mat"
+)
+
+//FiltAP is base struct for AP filter.
+//Use NewFiltAP to make instance.
+type FiltAP struct {
+    filtBase
+    order  int
+    eps    float64
+    wHist  [][]float64
+    xMem   *mat.Dense
+    dMem   *mat.Dense
+    yMem   *mat.Dense
+    eMem   *mat.Dense
+    epsIDE *mat.Dense
+    ide    *mat.Dense
+}
+
+//NewFiltAP is constructor of AP filter.
+//This func initialize filter length `n`, update step size `mu`, projection order `order` and filter weight `w`.
+func NewFiltAP(n int, mu float64, order int, eps float64, w []float64)(AdaptiveFilter, error) {
+    var err error
+    p := new(FiltAP)
+    p.kind = "AP filter"
+    p.n = n
+    p.muMin = 0
+    p.muMax = 1000
+    p.mu, err = p.checkFloatParam(mu, p.muMin, p.muMax, "mu")
+    if err != nil {
+        return nil, err
+    }
+    p.order = order
+    p.eps, err = p.checkFloatParam(eps, 0, 1000, "eps")
+    if err != nil {
+        return nil, err
+    }
+    err = p.initWeights(w, n)
+    if err != nil {
+        return nil, err
+    }
+    p.xMem = mat.NewDense(n, order, nil)
+    p.dMem = mat.NewDense(1, order, nil)
+
+    elmNum := order * order
+
+    //make diagonal matrix
+    diaMat := make([]float64, elmNum)
+    for i := 0; i < order; i++ {
+        diaMat[i*(order+1)] = eps
+    }
+    p.epsIDE = mat.NewDense(order, order, diaMat)
+
+    for i := 0; i < order; i++ {
+        diaMat[i*(order+1)] = 1
+    }
+    p.ide = mat.NewDense(order, order, diaMat)
+
+    p.yMem = mat.NewDense(order, 1, nil)
+    p.eMem = mat.NewDense(1, order, nil)
+
+    return p, nil
+}
+
+//Adapt calculates the error `e` between desired value `d` and estimated value `y`,
+//and update filter weights according to error `e`.
+func (af *FiltAP) Adapt(d float64, x []float64) {
+    xr, _ := af.xMem.Dims()
+    xCol := make([]float64, xr)
+    dr, _ := af.dMem.Dims()
+    dCol := make([]float64, dr)
+    // create input matrix and target vector
+    // shift column
+    for i := af.order - 1; i > 0; i-- {
+        mat.Col(xCol, i-1, af.xMem)
+        af.xMem.SetCol(i, xCol)
+        mat.Col(dCol, i-1, af.dMem)
+        af.dMem.SetCol(i, dCol)
+    }
+    af.xMem.SetCol(0, x)
+    af.dMem.Set(0, 0, d)
+
+    // estimate output and error
+    af.yMem.Mul(af.xMem.T(), af.w.T())
+    af.eMem.Sub(af.dMem, af.yMem.T())
+
+    // update
+    dw1 := mat.NewDense(af.order, af.order, nil)
+    dw1.Mul(af.xMem.T(), af.xMem)
+    dw1.Add(dw1, af.epsIDE)
+    dw2 := mat.NewDense(af.order, af.order, nil)
+    err := dw2.Solve(dw1, af.ide)
+    if err != nil {
+        panic(err)
+    }
+    dw3 := mat.NewDense(1, af.order, nil)
+    dw3.Mul(af.eMem, dw2)
+    dw := mat.NewDense(1, af.n, nil)
+    dw.Mul(dw3, af.xMem.T())
+    dw.Scale(af.mu, dw)
+    af.w.Add(af.w, dw)
+}
+
+//Run calculates the errors `e` between desired values `d` and estimated values `y` in a row,
+//while updating filter weights according to error `e`.
+func (af *FiltAP) Run(d []float64, x [][]float64) (y []float64, e []float64, wHist [][]float64, err error) {
+    //measure the data and check if the dimension agree
+    N := len(x)
+    if len(d) != N {
+        return nil, nil, nil, errors.New("the length of slice d and x must agree")
+    }
+    af.n = len(x[0])
+    af.wHist = make([][]float64, N)
+    for i := 0; i < N; i++ {
+        af.wHist[i] = make([]float64, af.n)
+    }
+
+    y = make([]float64, N)
+    e = make([]float64, N)
+    w := af.w.RawRowView(0)
+
+    xr, _ := af.xMem.Dims()
+    xCol := make([]float64, xr)
+    dr, _ := af.dMem.Dims()
+    dCol := make([]float64, dr)
+
+    //adaptation loop
+    for i := 0; i < N; i++ {
+        copy(af.wHist[i], w)
+
+        // create input matrix and target vector
+        // shift column
+        for i := af.order - 1; i > 0; i-- {
+            mat.Col(xCol, i-1, af.xMem)
+            af.xMem.SetCol(i, xCol)
+            mat.Col(dCol, i-1, af.dMem)
+            af.dMem.SetCol(i, dCol)
+        }
+        af.xMem.SetCol(0, x[i])
+        af.dMem.Set(0, 0, d[i])
+
+        // estimate output and error
+        // same as af.yMem.Mul(af.xMem, af.w.T()).T()
+        af.yMem.Mul(af.xMem.T(), af.w.T())
+        af.eMem.Sub(af.dMem, af.yMem.T())
+        y[i] = af.yMem.At(0, 0)
+        e[i] = af.eMem.At(0, 0)
+
+        // update
+        dw1 := mat.NewDense(af.order, af.order, nil)
+        dw1.Mul(af.xMem.T(), af.xMem)
+        dw1.Add(dw1, af.epsIDE)
+        dw2 := mat.NewDense(af.order, af.order, nil)
+        err := dw2.Solve(dw1, af.ide)
+        if err != nil {
+            return nil, nil, nil, err
+        }
+        dw3 := mat.NewDense(1, af.order, nil)
+        dw3.Mul(af.eMem, dw2)
+        dw := mat.NewDense(af.n, 1, nil)
+        dw.Mul(af.xMem, dw3.T())
+        dw.Scale(af.mu, dw)
+        af.w.Add(af.w, dw.T())
+    }
+    wHist = af.wHist
+    return y, e, wHist, nil
+}
+
+func (af *FiltAP) clone() AdaptiveFilter {
+    altaf := *af
+    return &altaf
+}
+
+\end{lstlisting}
+
+\begin{lstlisting}[caption=base.go,label=base.go]
+package adf
+
+import (
+	"fmt"
+
+	"github.com/pkg/errors"
+	"gonum.org/v1/gonum/floats"
+	"gonum.org/v1/gonum/mat"
+
+	"github.com/tetsuzawa/go-adflib/misc"
+)
+
+// AdaptiveFilter is the basic Adaptive Filter interface type.
+type AdaptiveFilter interface {
+	initWeights(w []float64, n int) error
+	//Predict calculates the new estimated value `y` from input slice `x`.
+	Predict(x []float64) (y float64)
+
+	//Adapt calculates the error `e` between desired value `d` and estimated value `y`,
+	//and update filter weights according to error `e`.
+	Adapt(d float64, x []float64)
+
+	//Run calculates the errors `e` between desired values `d` and estimated values `y` in a row,
+	//while updating filter weights according to error `e`.
+	Run(d []float64, x [][]float64) (y []float64, e []float64, wHist [][]float64, err error)
+	checkFloatParam(p, low, high float64, name string) (float64, error)
+	checkIntParam(p, low, high int, name string) (int, error)
+
+	//SetStepSize sets the step size of adaptive filter.
+	SetStepSize(mu float64) error
+
+	//GetParams returns the parameters at the time this func is called.
+	//parameters contains `n`: filter length, `mu`: filter update step size and `w`: filter weights.
+	GetParams() (n int, mu float64, w []float64)
+
+	//GetParams returns the name of ADF.
+	GetKindName() (kind string)
+
+	clone() AdaptiveFilter
+}
+
+//Must checks whether err is nil or not. If err in not nil, this func causes panic.
+func Must(af AdaptiveFilter, err error) AdaptiveFilter {
+	if err != nil {
+		panic(err)
+	}
+	return af
+}
+
+//PreTrainedRun use part of the data for few epochs of learning.
+//The arg `d` is desired values.
+//`x` is input matrix. columns are bunch of samples and rows are set of samples.
+//`nTrain` is train to test ratio, typical value is 0.5. (that means 50% of data is used for training).
+//`epochs` is number of training epochs, typical value is 1. This number describes how many times the training will be repeated.
+func PreTrainedRun(af AdaptiveFilter, d []float64, x [][]float64, nTrain float64, epochs int) (y, e []float64, w [][]float64, err error) {
+	var nTrainI = int(float64(len(d)) * nTrain)
+	//train
+	for i := 0; i < epochs; i++ {
+		_, _, _, err = af.Run(d[:nTrainI], x[:nTrainI])
+		if err != nil {
+			return nil, nil, nil, err
+		}
+	}
+	//run
+	y, e, w, err = af.Run(d[:nTrainI], x[:nTrainI])
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	return y, e, w, nil
+}
+
+//ExploreLearning searches the `mu` with the smallest error value from the input matrix `x` and desired values `d`.
+//
+//The arg `d` is desired value.
+//
+//`x` is input matrix.
+//
+//`muStart` is starting learning rate.
+//
+//`muEnd` is final learning rate.
+//
+//`steps` : how many learning rates should be tested between `muStart` and `muEnd`.
+//
+//`nTrain` is train to test ratio, typical value is 0.5. (that means 50% of data is used for training)
+//
+//`epochs` is number of training epochs, typical value is 1. This number describes how many times the training will be repeated.
+//
+//`criteria` is how should be measured the mean error. Available values are "MSE", "MAE" and "RMSE".
+//
+//`target_w` is target weights. If the slice is nil, the mean error is estimated from prediction error.
+//
+// If an slice is provided, the error between weights and `target_w` is used.
+func ExploreLearning(af AdaptiveFilter, d []float64, x [][]float64, muStart, muEnd float64, steps int,
+	nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, []float64, error) {
+	mus := misc.LinSpace(muStart, muEnd, steps)
+	es := make([]float64, len(mus))
+	zeros := make([]float64, int(float64(len(x))*nTrain))
+	for i, mu := range mus {
+		//init
+		err := af.initWeights(nil, len(x[0]))
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "failed to init weights at InitWights()")
+		}
+		err = af.SetStepSize(mu)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "failed to set step size at StetStepSize()")
+		}
+		//run
+		_, e, _, err := PreTrainedRun(af, d, x, nTrain, epochs)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "failed to pre train at PreTrainedRun()")
+		}
+		es[i], err = misc.GetMeanError(e, zeros, criteria)
+		//fmt.Println(es[i])
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "failed to get mean error at GetMeanError()")
+		}
+	}
+	return es, mus, nil
+}
+
+//FiltBase is base struct for adaptive filter structs.
+//It puts together some functions used by all adaptive filters.
+type filtBase struct {
+	kind  string
+	n     int
+	muMin float64
+	muMax float64
+	mu    float64
+	w     *mat.Dense
+}
+
+//NewFiltBase is constructor of base adaptive filter only for development.
+func newFiltBase(n int, mu float64, w []float64) (AdaptiveFilter, error) {
+	var err error
+	p := new(filtBase)
+	p.kind = "Base filter"
+	p.n = n
+	p.muMin = 0
+	p.muMax = 1000
+	p.mu, err = p.checkFloatParam(mu, p.muMin, p.muMax, "mu")
+	if err != nil {
+		return nil, err
+	}
+	err = p.initWeights(w, n)
+	if err != nil {
+		return nil, err
+	}
+	return p, nil
+}
+
+//initWeights initialises the adaptive weights of the filter.
+//The arg `w` is initial weights of filter.
+//Typical value is zeros with length `n`.
+//If `w` is nil, this func initializes `w` as zeros.
+//`n` is size of filter. Note that it is often mistaken for the sample length.
+func (af *filtBase) initWeights(w []float64, n int) error {
+	if n <= 0 {
+		n = af.n
+	}
+	if w == nil {
+		w = make([]float64, n)
+	}
+	if len(w) != n {
+		return fmt.Errorf("the length of slice `w` and `n` must agree. len(w): %d, n: %d", len(w), n)
+	}
+	af.w = mat.NewDense(1, n, w)
+
+	return nil
+}
+
+//Predict calculates the new estimated value `y` from input slice `x`.
+func (af *filtBase) Predict(x []float64) (y float64) {
+	y = floats.Dot(af.w.RawRowView(0), x)
+	return y
+}
+
+//Adapt is just a method to satisfy the interface.
+//It is used by overriding.
+func (af *filtBase) Adapt(d float64, x []float64) {
+	//TODO
+}
+
+//Run is just a method to satisfy the interface.
+//It is used by overriding.
+func (af *filtBase) Run(d []float64, x [][]float64) ([]float64, []float64, [][]float64, error) {
+	//TODO
+	//measure the data and check if the dimension agree
+	N := len(x)
+	if len(d) != N {
+		return nil, nil, nil, errors.New("the length of slice d and x must agree")
+	}
+	af.n = len(x[0])
+
+	y := make([]float64, N)
+	e := make([]float64, N)
+	w := make([]float64, af.n)
+	wHist := make([][]float64, N)
+	//adaptation loop
+	for i := 0; i < N; i++ {
+		w = af.w.RawRowView(0)
+		y[i] = floats.Dot(w, x[i])
+		e[i] = d[i] - y[i]
+		copy(wHist[i], w)
+	}
+	return y, e, wHist, nil
+}
+
+//checkFloatParam check if the value of the given parameter
+//is in the given range and a float.
+func (af *filtBase) checkFloatParam(p, low, high float64, name string) (float64, error) {
+	if low <= p && p <= high {
+		return p, nil
+	} else {
+		err := fmt.Errorf("parameter %v is not in range <%v, %v>", name, low, high)
+		return 0, err
+	}
+}
+
+//checkIntParam check if the value of the given parameter
+//is in the given range and a int.
+func (af *filtBase) checkIntParam(p, low, high int, name string) (int, error) {
+	if low <= p && p <= high {
+		return p, nil
+	} else {
+		err := fmt.Errorf("parameter %v is not in range <%v, %v>", name, low, high)
+		return 0, err
+	}
+}
+
+//SetStepSize set a update step size mu.
+func (af *filtBase) SetStepSize(mu float64) error {
+	var err error
+	af.mu, err = af.checkFloatParam(mu, af.muMin, af.muMax, "mu")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//GetParams returns the parameters at the time this func is called.
+//parameters contains `n`: filter length, `mu`: filter update step size and `w`: filter weights.
+func (af *filtBase) GetParams() (int, float64, []float64) {
+	return af.n, af.mu, af.w.RawRowView(0)
+}
+
+//GetParams returns the name of ADF.
+func (af *filtBase) GetKindName() string {
+	return af.kind
+}
+
+func (af *filtBase) clone() AdaptiveFilter {
+	altaf := *af
+	return &altaf
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=lms.go,label=lms.go]
+package adf
+
+import (
+	"errors"
+
+	"gonum.org/v1/gonum/floats"
+)
+
+//FiltLMS is base struct for LMS filter.
+//Use NewFiltLMS to make instance.
+type FiltLMS struct {
+	filtBase
+	wHistory [][]float64
+}
+
+//NewFiltLMS is constructor of LMS filter.
+//This func initialize filter length `n`, update step size `mu` and filter weight `w`.
+func NewFiltLMS(n int, mu float64, w []float64) (AdaptiveFilter, error) {
+	var err error
+	p := new(FiltLMS)
+	p.kind = "LMS filter"
+	p.n = n
+	p.muMin = 0
+	p.muMax = 2
+	p.mu, err = p.checkFloatParam(mu, p.muMin, p.muMax, "mu")
+	if err != nil {
+		return nil, err
+	}
+	err = p.initWeights(w, n)
+	if err != nil {
+		return nil, err
+	}
+	return p, nil
+}
+
+//Adapt calculates the error `e` between desired value `d` and estimated value `y`,
+//and update filter weights according to error `e`.
+func (af *FiltLMS) Adapt(d float64, x []float64) {
+	w := af.w.RawRowView(0)
+	y := floats.Dot(w, x)
+	e := d - y
+	for i := 0; i < len(x); i++ {
+		w[i] += af.mu * e * x[i]
+	}
+}
+
+//Run calculates the errors `e` between desired values `d` and estimated values `y` in a row,
+//while updating filter weights according to error `e`.
+func (af *FiltLMS) Run(d []float64, x [][]float64) (y []float64, e []float64, wHist [][]float64, err error) {
+	//measure the data and check if the dimension agree
+	N := len(x)
+	if len(d) != N {
+		return nil, nil, nil, errors.New("the length of slice d and x must agree")
+	}
+	af.n = len(x[0])
+	af.wHistory = make([][]float64, N)
+	for i := 0; i < N; i++ {
+		af.wHistory[i] = make([]float64, af.n)
+	}
+
+	y = make([]float64, N)
+	e = make([]float64, N)
+	//adaptation loop
+	for i := 0; i < N; i++ {
+		w := af.w.RawRowView(0)
+		copy(af.wHistory[i], w)
+		y[i] = floats.Dot(w, x[i])
+		e[i] = d[i] - y[i]
+		for j := 0; j < af.n; j++ {
+			w[j] += af.mu * e[i] * x[i][j]
+		}
+	}
+	wHist = af.wHistory
+	return y, e, wHist, nil
+}
+
+func (af *FiltLMS) clone() AdaptiveFilter {
+	altaf := *af
+	return &altaf
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=nlms.go,label=nlms.go]
+package adf
+
+import (
+	"errors"
+
+	"gonum.org/v1/gonum/floats"
+)
+
+//FiltNLMS is base struct for NLMS filter.
+//Use NewFiltNLMS to make instance.
+type FiltNLMS struct {
+	filtBase
+	eps      float64
+	wHistory [][]float64
+}
+
+//NewFiltLMS is constructor of LMS filter.
+//This func initialize filter length `n`, update step size `mu` and filter weight `w`.
+func NewFiltNLMS(n int, mu float64, eps float64, w []float64) (AdaptiveFilter, error) {
+	var err error
+	p := new(FiltNLMS)
+	p.kind = "NLMS filter"
+	p.n = n
+	p.muMin = 0
+	p.muMax = 2
+	p.mu, err = p.checkFloatParam(mu, p.muMin, p.muMax, "mu")
+	if err != nil {
+		return nil, err
+	}
+	p.eps, err = p.checkFloatParam(eps, 0, 1, "eps")
+	if err != nil {
+		return nil, err
+	}
+	err = p.initWeights(w, n)
+	if err != nil {
+		return nil, err
+	}
+	return p, nil
+}
+
+//Adapt calculates the error `e` between desired value `d` and estimated value `y`,
+//and update filter weights according to error `e`.
+func (af *FiltNLMS) Adapt(d float64, x []float64) {
+	w := af.w.RawRowView(0)
+	y := floats.Dot(w, x)
+	e := d - y
+	nu := af.mu / (af.eps + floats.Dot(x, x))
+	for i := 0; i < len(x); i++ {
+		w[i] += nu * e * x[i]
+	}
+}
+
+//Run calculates the errors `e` between desired values `d` and estimated values `y` in a row,
+//while updating filter weights according to error `e`.
+func (af *FiltNLMS) Run(d []float64, x [][]float64) (y []float64, e []float64, wHist [][]float64, err error) {
+	//measure the data and check if the dimension agree
+	N := len(x)
+	if len(d) != N {
+		return nil, nil, nil, errors.New("the length of slice d and x must agree")
+	}
+	af.n = len(x[0])
+	af.wHistory = make([][]float64, N)
+	for i := 0; i < N; i++ {
+		af.wHistory[i] = make([]float64, af.n)
+	}
+
+	y = make([]float64, N)
+	e = make([]float64, N)
+	w := af.w.RawRowView(0)
+	//adaptation loop
+	for i := 0; i < N; i++ {
+		copy(af.wHistory[i], w)
+		y[i] = floats.Dot(w, x[i])
+		e[i] = d[i] - y[i]
+		nu := af.mu / (af.eps + floats.Dot(x[i], x[i]))
+		for j := 0; j < af.n; j++ {
+			w[j] += nu * e[i] * x[i][j]
+		}
+	}
+	wHist = af.wHistory
+	return y, e, af.wHistory, nil
+}
+
+func (af *FiltNLMS) clone() AdaptiveFilter {
+	altaf := *af
+	return &altaf
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=rls.go,label=rls.go]
+package adf
+
+import (
+	"errors"
+
+	"gonum.org/v1/gonum/floats"
+	"gonum.org/v1/gonum/mat"
+)
+
+//FiltRLS is base struct for RLS filter.
+//Use NewFiltRLS to make instance.
+type FiltRLS struct {
+	filtBase
+	wHist [][]float64
+	eps   float64
+	rMat  *mat.Dense
+}
+
+//NewFiltRLS is constructor of RLS filter.
+//This func initialize filter length `n`, update step size `mu`, small enough value `eps`, and filter weight `w`.
+func NewFiltRLS(n int, mu float64, eps float64, w []float64) (AdaptiveFilter, error) {
+	var err error
+	p := new(FiltRLS)
+	p.kind = "RLS filter"
+	p.n = n
+	p.muMin = 0
+	p.muMax = 1
+	p.mu, err = p.checkFloatParam(mu, p.muMin, p.muMax, "mu")
+	if err != nil {
+		return nil, err
+	}
+	p.eps, err = p.checkFloatParam(mu, 0, 1, "eps")
+	if err != nil {
+		return nil, err
+	}
+	err = p.initWeights(w, n)
+	if err != nil {
+		return nil, err
+	}
+	var Rs = make([]float64, n*n)
+	for i := 0; i < n; i++ {
+		Rs[i*(n+1)] = 1 / eps
+	}
+	p.rMat = mat.NewDense(n, n, Rs)
+	return p, nil
+}
+
+//Adapt calculates the error `e` between desired value `d` and estimated value `y`,
+//and update filter weights according to error `e`.
+func (af *FiltRLS) Adapt(d float64, x []float64) {
+	w := af.w.RawRowView(0)
+	R1 := mat.NewDense(af.n, af.n, nil)
+	var R2 float64
+	xVec := mat.NewDense(1, af.n, nil)
+	aux1 := mat.NewDense(af.n, 1, nil)
+	aux4 := mat.NewDense(1, af.n, nil)
+	var aux2 float64
+	aux3 := mat.NewDense(af.n, af.n, nil)
+	dwT := mat.NewDense(af.n, 1, nil)
+
+	y := floats.Dot(w, x)
+	e := d - y
+
+	xVec.SetRow(0, x)
+	aux1.Mul(af.rMat, xVec.T())
+	aux2 = floats.Dot(mat.Col(nil, 0, aux1), mat.Row(nil, 0, xVec))
+	R1 = mat.DenseCopyOf(af.rMat)
+	R1.Scale(aux2, R1)
+	aux4.Mul(xVec, af.rMat)
+
+	R2 = af.mu + mat.Dot(aux4.RowView(0), mat.DenseCopyOf(xVec.T()).ColView(0))
+	R1.Scale(1/R2, R1)
+	aux3.Sub(af.rMat, R1)
+	af.rMat.Scale(1/af.mu, aux3)
+	dwT.Mul(af.rMat, xVec.T())
+	dwT.Scale(e, dwT)
+
+	floats.Add(w, mat.Col(nil, 0, dwT))
+}
+
+//Run calculates the errors `e` between desired values `d` and estimated values `y` in a row,
+//while updating filter weights according to error `e`.
+func (af *FiltRLS) Run(d []float64, x [][]float64) (y []float64, e []float64, wHist [][]float64, err error) {
+	//measure the data and check if the dimension agree
+	N := len(x)
+	if len(d) != N {
+		return nil, nil, nil, errors.New("the length of slice d and x must agree")
+	}
+	af.n = len(x[0])
+	af.wHist = make([][]float64, N)
+	for i := 0; i < N; i++ {
+		af.wHist[i] = make([]float64, af.n)
+	}
+
+	y = make([]float64, N)
+	e = make([]float64, N)
+	w := af.w.RawRowView(0)
+	R1 := mat.NewDense(af.n, af.n, nil)
+	var R2 float64
+	xVec := mat.NewDense(1, af.n, nil)
+	aux1 := mat.NewDense(af.n, 1, nil)
+	aux4 := mat.NewDense(1, af.n, nil)
+	//aux2 := mat.NewDense(af.n, af.n, nil)
+	var aux2 float64
+	aux3 := mat.NewDense(af.n, af.n, nil)
+	dwT := mat.NewDense(af.n, 1, nil)
+	//adaptation loop
+	for i := 0; i < N; i++ {
+		copy(af.wHist[i], w)
+		y[i] = floats.Dot(w, x[i])
+		e[i] = d[i] - y[i]
+		xVec.SetRow(0, x[i])
+		aux1.Mul(af.rMat, xVec.T())
+		aux2 = floats.Dot(mat.Col(nil, 0, aux1), mat.Row(nil, 0, xVec))
+		R1 = mat.DenseCopyOf(af.rMat)
+		R1.Scale(aux2, R1)
+		//R1.Product(aux1.T(), xVec.T())
+		aux4.Mul(xVec, af.rMat)
+		R2 = af.mu + mat.Dot(aux4.RowView(0), mat.DenseCopyOf(xVec.T()).ColView(0))
+		//for j:=0;j<af.n;j++{
+		//	floats.AddConst(af.rMat.RawRowView(j))
+		//}
+		R1.Scale(1/R2, R1)
+		aux3.Sub(af.rMat, R1)
+		af.rMat.Scale(1/af.mu, aux3)
+		dwT.Mul(af.rMat, xVec.T())
+		dwT.Scale(e[i], dwT)
+		floats.Add(w, mat.Col(nil, 0, dwT))
+	}
+	wHist = af.wHist
+	return y, e, af.wHist, nil
+}
+
+func (af *FiltRLS) clone() AdaptiveFilter {
+	altaf := *af
+	return &altaf
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=fdadf/base.go,label=fdadf/base.go]
+package fdadf
+
+import (
+    "fmt"
+
+    "github.com/pkg/errors"
+    "github.com/tetsuzawa/go-adflib/misc"
+    "gonum.org/v1/gonum/mat"
+)
+
+// FDAdaptiveFilter is the basic Frequency Domain Adaptive Filter interface type.
+type FDAdaptiveFilter interface {
+    initWeights(w interface{}, n int) error
+
+    //Predict calculates the new estimated value `y` from input slice `x`.
+    Predict(x []float64) (y []float64)
+
+    //Adapt calculates the error `e` between desired value `d` and estimated value `y`,
+    //and update filter weights according to error `e`.
+    Adapt(d []float64, x []float64)
+
+    //Run calculates the errors `e` between desired values `d` and estimated values `y` in a row,
+    //while updating filter weights according to error `e`.
+    Run(d [][]float64, x [][]float64) ([][]float64, [][]float64, [][]float64, error)
+    checkFloatParam(p, low, high float64, name string) (float64, error)
+    checkIntParam(p, low, high int, name string) (int, error)
+    setStepSize(mu float64)
+
+    //GetParams returns the parameters at the time this func is called.
+    //parameters contains `n`: filter length, `mu`: filter update step size and `w`: filter weights.
+    GetParams() (int, float64, []float64)
+
+    //GetParams returns the name of FDADF.
+    GetKindName() (kind string)
+}
+
+//Must checks whether err is nil or not. If err in not nil, this func causes panic.
+func Must(af FDAdaptiveFilter, err error) FDAdaptiveFilter {
+    if err != nil {
+        panic(err)
+    }
+    return af
+}
+
+//PreTrainedRun use part of the data for few epochs of learning.
+//The arg `d` is desired values. rows are
+//`x` is input matrix. rows are samples and columns are features.
+//`nTrain` is train to test ratio, typical value is 0.5. (that means 50% of data is used for training).
+//`epochs` is number of training epochs, typical value is 1. This number describes how many times the training will be repeated.
+func PreTrainedRun(af FDAdaptiveFilter, d [][]float64, x [][]float64, nTrain float64, epochs int) (y, e [][]float64, w [][]float64, err error) {
+    var nTrainI = int(float64(len(d)) * nTrain)
+    //train
+    for i := 0; i < epochs; i++ {
+        _, _, _, err = af.Run(d[:nTrainI], x[:nTrainI])
+        if err != nil {
+            return nil, nil, nil, err
+        }
+    }
+    //run
+    y, e, w, err = af.Run(d[:nTrainI], x[:nTrainI])
+    if err != nil {
+        return nil, nil, nil, err
+    }
+    return y, e, w, nil
+}
+
+//ExploreLearning searches the `mu` with the smallest error value from the input matrix `x` and desired values `d`.
+//The arg `d` is desired value.
+//`x` is input matrix.
+//`muStart` is starting learning rate.
+//`muEnd` is final learning rate.
+//`steps` : how many learning rates should be tested between `muStart` and `muEnd`.
+//`nTrain` is train to test ratio, typical value is 0.5. (that means 50% of data is used for training)
+//`epochs` is number of training epochs, typical value is 1. This number describes how many times the training will be repeated.
+//`criteria` is how should be measured the mean error. Available values are "MSE", "MAE" and "RMSE".
+//`target_w` is target weights. If the slice is nil, the mean error is estimated from prediction error.
+// If an slice is provided, the error between weights and `target_w` is used.
+func ExploreLearning(af FDAdaptiveFilter, d [][]float64, x [][]float64, muStart, muEnd float64, steps int,
+    nTrain float64, epochs int, criteria string, targetW []float64) ([]float64, []float64, error) {
+    mus := misc.LinSpace(muStart, muEnd, steps)
+    es := make([]float64, len(mus))
+    zeros := make([]float64, int(float64(len(x))*nTrain))
+    ee := make([]float64, int(float64(len(x))*nTrain))
+    _, _, w := af.GetParams()
+    for i, mu := range mus {
+        //init
+        err := af.initWeights("zeros", len(w))
+        if err != nil {
+            return nil, nil, errors.Wrap(err, "failed to init weights at InitWights()")
+        }
+        af.setStepSize(mu)
+        //run
+        _, e, _, err := PreTrainedRun(af, d, x, nTrain, epochs)
+        if err != nil {
+            return nil, nil, errors.Wrap(err, "failed to pre train at PreTrainedRun()")
+        }
+        for i, sl := range e {
+            ee[i], err = misc.MSE(sl, make([]float64, len(sl)))
+        }
+        if err != nil {
+            return nil, nil, errors.Wrap(err, "failed to find MSE of e at misc.MSE()")
+        }
+        es[i], err = misc.GetMeanError(ee, zeros, criteria)
+        //fmt.Println(es[i])
+        if err != nil {
+            return nil, nil, errors.Wrap(err, "failed to get mean error at GetMeanError()")
+        }
+    }
+    return es, mus, nil
+}
+
+//filtBase is base struct for frequency domain adaptive filter structs
+//It puts together some functions used by all adaptive filters.
+type filtBase struct {
+    kind string
+    n    int
+    mu   float64
+    w    *mat.Dense
+}
+
+//NewFiltBase is constructor of base frequency domain adaptive filter only for development.
+func newFiltBase(n int, mu float64, w interface{}) (FDAdaptiveFilter, error) {
+    var err error
+    p := new(filtBase)
+    p.n = n
+    p.mu, err = p.checkFloatParam(mu, 0, 1000, "mu")
+    if err != nil {
+        return nil, err
+    }
+    err = p.initWeights(w, n)
+    if err != nil {
+        return nil, err
+    }
+    return p, nil
+}
+
+//initWeights initialises the adaptive weights of the filter.
+//The arg `w` is initial weights of filter.
+// Possible value "random":  create random weights with stddev 0.5 and mean is 0.
+// "zeros": create zero value weights.
+//`n` is size of filter. Note that it is often mistaken for the sample length.
+func (af *filtBase) initWeights(w interface{}, n int) error {
+    if n <= 0 {
+        n = af.n
+    }
+    switch v := w.(type) {
+    case string:
+        if v == "random" {
+            w := make([]float64, n)
+            for i := 0; i < n; i++ {
+                w[i] = misc.NewRandn(0.5, 0)
+            }
+            af.w = mat.NewDense(1, n, w)
+        } else if v == "zeros" {
+            w := make([]float64, n)
+            af.w = mat.NewDense(1, n, w)
+        } else {
+            return errors.New("impossible to understand the w")
+        }
+    case []float64:
+        if len(v) != n {
+            return errors.New("length of w is different from n")
+        }
+        af.w = mat.NewDense(1, n, v)
+    default:
+        return errors.New(`args w must be "random" or "zeros" or []float64{...}`)
+    }
+    return nil
+}
+
+//Predict calculates the new output value `y` from input array `x`.
+func (af *filtBase) Predict(x []float64) (y []float64) {
+    //TODO
+    //y = floats.Dot(af.w.RawRowView(0), x)
+    //return y
+    copy(y, x)
+    return
+}
+
+//Adapt is just a method to satisfy the interface.
+//It is used by overriding.
+func (af *filtBase) Adapt(d []float64, x []float64) {
+    //TODO
+}
+
+//Run is just a method to satisfy the interface.
+//It is used by overriding.
+func (af *filtBase) Run(d [][]float64, x [][]float64) ([][]float64, [][]float64, [][]float64, error) {
+    //TODO
+    return nil, nil, nil, nil
+}
+
+//checkFloatParam check if the value of the given parameter
+//is in the given range and a float.
+func (af *filtBase) checkFloatParam(p, low, high float64, name string) (float64, error) {
+    if low <= p && p <= high {
+        return p, nil
+    } else {
+        err := fmt.Errorf("parameter %v is not in range <%v, %v>", name, low, high)
+        return 0, err
+    }
+}
+
+//checkIntParam check if the value of the given parameter
+//is in the given range and a int.
+func (af *filtBase) checkIntParam(p, low, high int, name string) (int, error) {
+    if low <= p && p <= high {
+        return p, nil
+    } else {
+        err := fmt.Errorf("parameter %v is not in range <%v, %v>", name, low, high)
+        return 0, err
+    }
+}
+
+//setStepSize set a update step size mu.
+func (af *filtBase) setStepSize(mu float64) {
+    af.mu = mu
+}
+
+//GetParams returns the parameters at the time this func is called.
+//parameters contains `n`: filter length, `mu`: filter update step size and `w`: filter weights.
+func (af *filtBase) GetParams() (n int, mu float64, w []float64) {
+    return af.n, af.mu, af.w.RawRowView(0)
+}
+
+//GetParams returns the kind name of ADF.
+func (af *filtBase) GetKindName() (kind string) {
+    return af.kind
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=fblms.go,label=fblms.go]
+package fdadf
+
+import (
+	"math/cmplx"
+
+	"github.com/mjibson/go-dsp/fft"
+	"github.com/pkg/errors"
+	"gonum.org/v1/gonum/mat"
+)
+
+//FiltFBLMS is base struct for FBLMS filter
+//(Fast Block Least Mean Square filter).
+//Use NewFiltFBLMS to make instance.
+type FiltFBLMS struct {
+	filtBase
+	wHistory [][]float64
+	xMem     *mat.Dense
+}
+
+//NewFiltFBLMS is constructor of FBLMS filter.
+//This func initialize filter length `n`, update step size `mu` and filter weight `w`.
+func NewFiltFBLMS(n int, mu float64, w interface{}) (FDAdaptiveFilter, error) {
+	var err error
+	p := new(FiltFBLMS)
+	p.kind = "FBLMS filter"
+	p.n = n
+	p.mu, err = p.checkFloatParam(mu, 0, 1000, "mu")
+	if err != nil {
+		return nil, errors.Wrap(err, "Parameter error at checkFloatParam()")
+	}
+	err = p.initWeights(w, 2*n)
+	if err != nil {
+		return nil, err
+	}
+	p.xMem = mat.NewDense(1, n, make([]float64, n))
+	return p, nil
+}
+
+//Adapt calculates the error `e` between desired value `d` and estimated value `y`,
+//and update filter weights according to error `e`.
+func (af *FiltFBLMS) Adapt(d []float64, x []float64) {
+	zeros := make([]float64, af.n)
+	Y := make([]complex128, 2*af.n)
+	y := make([]float64, af.n)
+	e := make([]float64, af.n)
+	EU := make([]complex128, 2*af.n)
+
+	w := af.w.RawRowView(0)
+	// 1 compute the output of the filter for the block kM, ..., KM + M -1
+	W := fft.FFT(float64sToComplex128s(append(w[:af.n], zeros...)))
+	xSet := append(af.xMem.RawRowView(0), x...)
+	U := fft.FFT(float64sToComplex128s(xSet))
+	af.xMem.SetRow(0, x)
+	for i := 0; i < 2*af.n; i++ {
+		Y[i] = W[i] * U[i]
+	}
+	yc := fft.IFFT(Y)[af.n:]
+	for i := 0; i < af.n; i++ {
+		y[i] = real(yc[i])
+		e[i] = d[i] - y[i]
+	}
+
+	// 2 compute the correlation vector
+	aux1 := fft.FFT(float64sToComplex128s(append(zeros, e...)))
+	aux2 := fft.FFT(float64sToComplex128s(xSet))
+	for i := 0; i < 2*af.n; i++ {
+		EU[i] = aux1[i] * cmplx.Conj(aux2[i])
+	}
+	phi := fft.IFFT(EU)[:af.n]
+
+	// 3 update the parameters of the filter
+	aux1 = fft.FFT(float64sToComplex128s(append(w[:af.n], zeros...)))
+	aux2 = fft.FFT(append(phi, float64sToComplex128s(zeros)...))
+	for i := 0; i < 2*af.n; i++ {
+		W[i] = aux1[i] + complex(af.mu, 0)*aux2[i]
+	}
+	aux3 := fft.IFFT(W)
+	for i := 0; i < 2*af.n; i++ {
+		w[i] = real(aux3[i])
+	}
+}
+
+//Predict calculates the new output value `y` from input array `x`.
+func (af *FiltFBLMS) Predict(x []float64) (y []float64) {
+	zeros := make([]float64, af.n)
+	y = make([]float64, af.n)
+	Y := make([]complex128, 2*af.n)
+	W := fft.FFT(float64sToComplex128s(append(af.w.RawRowView(0)[:af.n], zeros...)))
+	U := fft.FFT(float64sToComplex128s(append(af.xMem.RawRowView(0), x...)))
+	for i := 0; i < 2*af.n; i++ {
+		Y[i] = W[i] * U[i]
+	}
+	yc := fft.IFFT(Y)[af.n:]
+	for i := 0; i < af.n; i++ {
+		y[i] = real(yc[i])
+	}
+	return
+}
+
+//Run calculates the errors `e` between desired values `d` and estimated values `y` in a row,
+//while updating filter weights according to error `e`.
+//The arg `x`: rows are samples sets, columns are input values.
+func (af *FiltFBLMS) Run(d [][]float64, x [][]float64) ([][]float64, [][]float64, [][]float64, error) {
+	//measure the data and check if the dimension agree
+	N := len(x)
+	if len(d) != N {
+		return nil, nil, nil, errors.New("the length of slice d and x must agree")
+	}
+	af.n = len(x[0])
+	af.wHistory = make([][]float64, N)
+	for i := range af.wHistory {
+		af.wHistory[i] = make([]float64, af.n)
+	}
+
+	zeros := make([]float64, af.n)
+	Y := make([]complex128, 2*af.n)
+	y := make([][]float64, N)
+	for i := range y {
+		y[i] = make([]float64, af.n)
+	}
+	e := make([][]float64, N)
+	for i := range e {
+		e[i] = make([]float64, af.n)
+	}
+
+	EU := make([]complex128, 2*af.n)
+
+	for k := 0; k < N; k++ {
+		w := af.w.RawRowView(0)
+		copy(af.wHistory[k], w)
+
+		// 1 compute the output of the filter for the block kM, ..., KM + M -1
+		W := fft.FFT(float64sToComplex128s(append(w[:af.n], zeros...)))
+		xSet := append(af.xMem.RawRowView(0), x[k]...)
+		U := fft.FFT(float64sToComplex128s(xSet))
+		af.xMem.SetRow(0, x[k])
+
+		for i := 0; i < 2*af.n; i++ {
+			Y[i] = W[i] * U[i]
+		}
+		yc := fft.IFFT(Y)[af.n:]
+		for i := 0; i < af.n; i++ {
+			y[k][i] = real(yc[i])
+			e[k][i] = x[k][i] - y[k][i]
+		}
+
+		// 2 compute the correlation vector
+		aux1 := fft.FFT(float64sToComplex128s(append(zeros, e[k]...)))
+		aux2 := fft.FFT(float64sToComplex128s(xSet))
+		for i := 0; i < 2*af.n; i++ {
+			EU[i] = aux1[i] * cmplx.Conj(aux2[i])
+		}
+		phi := fft.IFFT(EU)[:af.n]
+
+		// 3 update the parameters of the filter
+		aux1 = fft.FFT(float64sToComplex128s(append(w[:af.n], zeros...)))
+		aux2 = fft.FFT(append(phi, float64sToComplex128s(zeros)...))
+		for i := 0; i < 2*af.n; i++ {
+			W[i] = aux1[i] + complex(af.mu, 0)*aux2[i]
+		}
+		aux3 := fft.IFFT(W)
+		for i := 0; i < 2*af.n; i++ {
+			w[i] = real(aux3[i])
+		}
+	}
+
+	return y, e, af.wHistory, nil
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=misc.go,label=misc.go]
+package misc
+
+import (
+	"errors"
+	"math"
+	"math/rand"
+
+	"gonum.org/v1/gonum/floats"
+)
+
+func ElmAbs(fs []float64) []float64 {
+	fsAbs := make([]float64, len(fs))
+	for i, f := range fs {
+		fsAbs[i] = math.Abs(f)
+	}
+	return fsAbs
+}
+
+func LogSE(x1, x2 []float64) ([]float64, error) {
+	e, err := GetValidError(x1, x2)
+	if err != nil {
+		return nil, err
+	}
+	for i := 0; i < len(e); i++ {
+		e[i] = 10 * math.Log10(math.Pow(e[i], 2))
+	}
+	return e, nil
+
+}
+
+func MAE(x1, x2 []float64) (float64, error) {
+	e, err := GetValidError(x1, x2)
+	if err != nil {
+		return 0, err
+	}
+	return floats.Sum(ElmAbs(e)) / float64((len(e))), nil
+}
+
+func MSE(x1, x2 []float64) (float64, error) {
+	e, err := GetValidError(x1, x2)
+	if err != nil {
+		return 0, err
+	}
+	return floats.Dot(e, e) / float64(len(e)), nil
+}
+
+func RMSE(x1, x2 []float64) (float64, error) {
+	e, err := GetValidError(x1, x2)
+	if err != nil {
+		return 0, err
+	}
+	return math.Sqrt(floats.Dot(e, e)) / float64(len(e)), nil
+}
+
+func GetValidError(x1, x2 []float64) ([]float64, error) {
+	if len(x1) != len(x2) {
+		err := errors.New("length of two slices is different")
+		return nil, err
+	}
+	floats.Sub(x1, x2)
+	e := x1
+	return e, nil
+}
+
+func GetMeanError(x1, x2 []float64, fn string) (float64, error) {
+	switch fn {
+	case "MAE":
+		return MAE(x1, x2)
+	case "MSE":
+		return MSE(x1, x2)
+	case "RMSE":
+		return RMSE(x1, x2)
+	default:
+		err := errors.New(`The provided error function (fn) is not known.
+								Use "MAE", "MSE" or "RMSE"`)
+		return 0, err
+	}
+}
+
+// NewRandn returns random value. stddev 0.5, mean 0.
+func NewRandn(stddev, mean float64) float64 {
+	return rand.NormFloat64()*stddev + mean
+}
+
+func LinSpace(start, end float64, n int) []float64 {
+	res := make([]float64, n)
+	if n == 1 {
+		res[0] = end
+		return res
+	}
+	delta := (end - start) / (float64(n) - 1)
+	for i := 0; i < n; i++ {
+		res[i] = start + (delta * float64(i))
+	}
+	return res
+}
+
+func Floor(fs [][]float64) []float64 {
+	var fs1d = make([]float64, len(fs)*len(fs[0]))
+	for i, sl := range fs {
+		for j, v := range sl {
+			fs1d[len(fs[0])*i+j] = v
+		}
+	}
+	return fs1d
+}
+
+func NewRandSlice(n int) []float64 {
+	rs := make([]float64, n)
+	for i := 0; i < n; i++ {
+		rs[i] = rand.Float64()
+	}
+	return rs
+}
+
+func NewNormRandSlice(n int) []float64 {
+	rs := make([]float64, n)
+	for i := 0; i < n; i++ {
+		rs[i] = rand.NormFloat64()
+	}
+	return rs
+}
+
+// NewRand2dSlice make 2d slice.
+// the arg n is sample number and m is number of signals.
+func NewRand2dSlice(n, m int) [][]float64 {
+	rs2 := make([][]float64, m)
+	for j := 0; j < m; j++ {
+		rs2[j] = NewRandSlice(n)
+	}
+	return rs2
+}
+
+// NewRandNorm2dSlice make 2d slice.
+// the arg n is sample number and m is number of signals.
+func NewNormRand2dSlice(n, m int) [][]float64 {
+	rs2 := make([][]float64, m)
+	for j := 0; j < m; j++ {
+		rs2[j] = NewNormRandSlice(n)
+	}
+	return rs2
+}
+
+func Unset(s []float64, i int) []float64 {
+	if i >= len(s) {
+		return s
+	}
+	return append(s[:i], s[i+1:]...)
+}
+\end{lstlisting}
