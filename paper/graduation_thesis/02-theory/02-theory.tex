@@ -21,12 +21,10 @@
 ウィナーフィルタの入出力は次式で表される。
 
 \begin{equation}
-
 y_k = \bm{w}^H \bm{x}_k
-
 \end{equation}
 
-ここで、\(\bm{w}^H\) は次式で与えられるフィルタ係数ベクトルである。
+ここで、\( \bm{w}^H\) は次式で与えられるフィルタ係数ベクトルである。
 
 \begin{equation}
 
@@ -313,8 +311,8 @@ J &= \textbar\textbar{}\bm{w}*k -
 
 \end{equation}
 
-実際の運用では、入力信号のパワー\(||\bm{x}_k||^2\)が非常に小さいときに更新式が不安定になるのを防ぐため、\$
-1 / \textbar\textbar{}\bm{x}_k\textbar\textbar^2 \$
+実際の運用では、入力信号のパワー\(||\bm{x}_k||^2\)が非常に小さいときに更新式が不安定になるのを防ぐため、\(
+1 / \textbar\textbar{}\bm{x}_k\textbar\textbar^2 \)
 の分母に小さい正の定数 \(\alpha\) を加えた、次式を用いる。
 
 \begin{equation}
