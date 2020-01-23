@@ -3,30 +3,30 @@
 \
 \section{使用するソフトウェア・プログラムについて}\label{about-program}
 
-本研究ではシミュレーションとデータ処理のためのプログラムをPythonとGo言語を使用して製作した。
+本研究ではシミュレーションとデータ処理のためのプログラムをPythonとGo言語を使用して製作した. 
 
 \
 \subsection{Pythonについて}\label{about-python}
 
-Pythonは、汎用のプログラミング言語である。コードがシンプルで扱いやすく設計されており、C言語などに比べて、さまざまなプログラムを分かりやすく、少ないコード行数で書けるといった特徴がある。
+Pythonは, 汎用のプログラミング言語である. コードがシンプルで扱いやすく設計されており, C言語などに比べて, さまざまなプログラムを分かりやすく, 少ないコード行数で書けるといった特徴がある. 
 
-標準ライブラリやサードパーティ製のライブラリなど、さまざまな領域に特化した豊富で大規模なツール群が用意され、自らの使用目的に応じて機能を拡張していくことができる。
+標準ライブラリやサードパーティ製のライブラリなど, さまざまな領域に特化した豊富で大規模なツール群が用意され, 自らの使用目的に応じて機能を拡張していくことができる. 
 
-% このような特徴から、様々な試行をしながら行う開発に適している。本研究ではこの特性を活かし、予備実験・データ処理・グラフ作成にPythonを使用した。
+% このような特徴から, 様々な試行をしながら行う開発に適している. 本研究ではこの特性を活かし, 予備実験・データ処理・グラフ作成にPythonを使用した. 
 
 \
 \subsection{Go言語について}\label{about-go}
 
-Googleで開発された、汎用のプログラミング言語である。Goは、静的型付け、C言語の伝統に則ったコンパイル言語、メモリ安全性、ガベージコレクション、並行性などの特徴を持つ。また、軽量スレッディングのための機能、Pythonのような動的型付け言語のようなプログラミングの容易性、などの特徴もある。
+Googleで開発された, 汎用のプログラミング言語である. Goは, 静的型付け, C言語の伝統に則ったコンパイル言語, メモリ安全性, ガベージコレクション, 並行性などの特徴を持つ. また, 軽量スレッディングのための機能, Pythonのような動的型付け言語のようなプログラミングの容易性, などの特徴もある. 
 
-また、GoはPythonのようにシンプルな記法を有し、制作者によらず同じコードになりやすく学習しやすいため、研究用途に適した言語である。
+また, GoはPythonのようにシンプルな記法を有し, 制作者によらず同じコードになりやすく学習しやすいため, 研究用途に適した言語である. 
 
 \
 \subsection{プログラミング言語の使い分けについて}\label{about-proper-use}
 
-Pythonは\ref{about-python}節で述べた特徴から、様々な試行をしながら行う開発に適している。一方で、速度が遅く、リアルタイム処理には向かない。したがって、本研究ではこの特性を活かし、予備実験・データ処理・グラフ作成にPythonを使用した。
+Pythonは\ref{about-python}節で述べた特徴から, 様々な試行をしながら行う開発に適している. 一方で, 速度が遅く, リアルタイム処理には向かない. したがって, 本研究ではこの特性を活かし, 予備実験・データ処理・グラフ作成にPythonを使用した. 
 
-また、Goは言語仕様が現代的で、実行速度が速く、クロスコンパイルが可能といった特徴から、ADFライブラリの作成および実装に使用した。
+また, Goは言語仕様が現代的で, 実行速度が速く, クロスコンパイルが可能といった特徴から, ADFライブラリの作成および実装に使用した. 
 
 
 % \section{Pythonを使用した適応フィルタの予備実験}\label{python-experiment}
@@ -34,20 +34,21 @@ Pythonは\ref{about-python}節で述べた特徴から、様々な試行をし�
 \
 \section{音声ファイル処理およびグラフ作成プログラムの制作}\label{create-program}
 
-本節では後述の実験結果の処理に使用したプログラムの制作について述べる。
+本節では後述の実験結果の処理に使用したプログラムの制作について述べる. 
 
-音声ファイルの処理には行列演算が必要である。この処理には数値計算を効率的に行うための拡張モジュールであるNumPyを使用した。また、波形のプロットにはNumPyを基盤にしたグラフ描画ライブラリmatplotlibを使用した。
-音声ファイルの入出力には標準ライブラリであるwaveや外部ライブラリのPySoundFileを使用した。
+音声ファイルの処理には行列演算が必要である. この処理には数値計算を効率的に行うための拡張モジュールであるNumPyを使用した. また, 波形のプロットにはNumPyを基盤にしたグラフ描画ライブラリmatplotlibを使用した. 
+音声ファイルの入出力には標準ライブラリであるwaveや外部ライブラリのPySoundFileを使用した. 
 
 
 \subsection{Pythonで制作したプログラム}\label{python}
 
-\begin{itemize}
-\tightlist
+\begin{enumerate}
+\renewcommand{\labelenumi}{(\arabic{enumi})}
 \item
   モジュール
 
-  \begin{itemize}
+  \begin{enumerate}
+  \renewcommand{\labelenumi}{(\arabic{enumi})}
   \item
     波形プロット簡易化のモジュール \ref{plot\_tools.py}
 
@@ -57,12 +58,13 @@ Pythonは\ref{about-python}節で述べた特徴から、様々な試行をし�
   \item
     関数の実行時間計測・情報表示用デコレータ \ref{decorators.py}
 
-  \end{itemize}
+  \end{enumerate}
 
 \item
   ツール
 
-  \begin{itemize}
+  \begin{enumerate}
+  \renewcommand{\labelenumi}{(\arabic{enumi})}
   \item
     音声ファイル畳み込み用プログラム \ref{calc\_covolution\_wav.py}
 
@@ -93,17 +95,19 @@ Pythonは\ref{about-python}節で述べた特徴から、様々な試行をし�
   \item
     スペクトログラムを表示するプログラム \ref{plot\_spectrogram\_librosa.py}
 
-  \end{itemize}
-\end{itemize}
+  \end{enumerate}
+\end{enumerate}
 
 \subsection{Go言語で制作したプログラム}\label{go}
 
-\begin{itemize}
+\begin{enumerate}
+\renewcommand{\labelenumi}{(\arabic{enumi})}
 \tightlist
 
 \item
   ライブラリ \\
-  \begin{itemize}
+  \begin{enumerate}
+  \renewcommand{\labelenumi}{(\arabic{enumi})}
   \tightlist
   \item
     型変換処理 \ref{converter.go}
@@ -113,12 +117,13 @@ Pythonは\ref{about-python}節で述べた特徴から、様々な試行をし�
 
   \item
     ファイル入出力処理 \ref{filehandler.py}
-  \end{itemize}
+  \end{enumerate}
 
 \item
   プログラム
 
-  \begin{itemize}
+  \begin{enumerate}
+  \renewcommand{\labelenumi}{(\arabic{enumi})}
 
   \item
     指定した音圧差で音声を合成するプログラム \ref{calc\_noise\_mix}
@@ -139,15 +144,15 @@ Pythonは\ref{about-python}節で述べた特徴から、様々な試行をし�
     \ref{adf-practice}の実験で用いるADFの設定を記述したJSONファイルを生成するプログラム \ref{drone\_json\_generator}
 
   \item
-    csvファイルのデータから指定したサンプルの平均二乗誤差（MSE）を計算し、csvファイルに新たな列として追記するプログラム \ref{calc\_mse\_csv}
+    csvファイルのデータから指定したサンプルの平均二乗誤差（MSE）を計算し, csvファイルに新たな列として追記するプログラム \ref{calc\_mse\_csv}
 
   \item
     PortAudioを使用した多チャンネル収音用プログラム \ref{multirecord/main}
 
   \item
     DSBファイルからwavファイルに変換するプログラム \ref{wav\_to\_DSB/main}
-  \end{itemize}
-\end{itemize}
+  \end{enumerate}
+\end{enumerate}
 
 % \ref{TODO ディレクトリ構造
 
@@ -159,60 +164,60 @@ Pythonは\ref{about-python}節で述べた特徴から、様々な試行をし�
 
 % \subsection{既存のADFライブラリについて}\label{ready‐made-adflib}
 
-% pythonで記述された適応信号処理のライブラリとして\cite{https://matousc89.github.io/padasip/index.html\#padasip}{Padasip}というものが存在する。Padasipは信号のフィルタリング、予測、復元、分類といった適応信号処理を簡易化するために設計されたライブラリである。PadasipではLMS・NLMS、AP、RLSをはじめとする主要なアルゴリズムが一通り実装されている。
+% pythonで記述された適応信号処理のライブラリとして\cite{https://matousc89.github.io/padasip/index.html\#padasip}{Padasip}というものが存在する. Padasipは信号のフィルタリング, 予測, 復元, 分類といった適応信号処理を簡易化するために設計されたライブラリである. PadasipではLMS・NLMS, AP, RLSをはじめとする主要なアルゴリズムが一通り実装されている. 
 
 \section{ADFライブラリの制作}\label{create-adflib}
 
 \
 \subsection{ライブラリの設計}\label{design-adf}
 
-Pythonで記述された適応信号処理のライブラリとしてPadasip\cite{padasip}が公開されている。Padasipは信号のフィルタリング、予測、復元、分類といった適応信号処理を簡易化するために設計されたライブラリであり、LMS・NLMS、AP、RLSをはじめとする主要なアルゴリズムが一通り実装されている。
+Pythonで記述された適応信号処理のライブラリとしてPadasip\cite{padasip}が公開されている. Padasipは信号のフィルタリング, 予測, 復元, 分類といった適応信号処理を簡易化するために設計されたライブラリであり, LMS・NLMS, AP, RLSをはじめとする主要なアルゴリズムが一通り実装されている. 
 
-本研究で制作したADFライブラリはPadasipを参考に設計し、Go言語で実装した。
+本研究で制作したADFライブラリはPadasipを参考に設計し, Go言語で実装した. 
 
-ライブラリのコードを\ref{go-adflib_code}に示す。
+ライブラリのコードを\ref{go-adflib_code}に示す. 
 
-ライブラリの各関数にはユニットテストが書かれており、GitHub
-Actionsを利用して自動テストが行われるため、一定の質が担保されている。
+ライブラリの各関数にはユニットテストが書かれており, GitHub
+Actionsを利用して自動テストが行われるため, 一定の質が担保されている. 
 
-また、ライセンスはMITを採用しているため、使用、再配布、商用利用などが許可されている。%詳しくは\cite{https://raw.githubusercontent.com/tetsuzawa/go-adflib/master/LICENSE}{MIT LICENCE}を参照されたい。
+また, ライセンスはMITを採用しているため, 使用, 再配布, 商用利用などが許可されている. %詳しくは\cite{https://raw.githubusercontent.com/tetsuzawa/go-adflib/master/LICENSE}{MIT LICENCE}を参照されたい. 
 
 \
 \subsection{インストール方法}\label{how-to-install}
 
-製作したライブラリはGitHub\cite{go-adflib:online}で公開したため、次のコマンドを実行することでインストールすることができる。
+製作したライブラリはGitHub\cite{go-adflib:online}で公開したため, 次のコマンドを実行することでインストールすることができる. 
 
 \texttt{go\ get\ github.com/tetsuzawa/go-adflib/adf}
 
 \
 \subsection{使用方法}\label{how-to-use}
 
-以下に基本的なライブラリの使用方法を示す。
+以下に基本的なライブラリの使用方法を示す. 
 
 \begin{itemize}
 \tightlist
 \item
   \texttt{NewFilt***} \\ 
-  各アルゴリズムはGo言語の構造体として実装されている。このコードにより、構造体のインスタンスを生成することができる。
+  各アルゴリズムはGo言語の構造体として実装されている. このコードにより, 構造体のインスタンスを生成することができる. 
 \item
   フィルタ更新方法 \\
-  各アルゴリズムのインスタンスには次のメソッドが実装されている。用途によって実行方法を変えることができる。
+  各アルゴリズムのインスタンスには次のメソッドが実装されている. 用途によって実行方法を変えることができる. 
 
   \begin{itemize}
   \tightlist
   \item
     \texttt{Adapt} \\
-    リアルタイムで信号の入出力を行い、フィルタリング処理をする場合を使用する。
+    リアルタイムで信号の入出力を行い, フィルタリング処理をする場合を使用する. 
   \item
     \texttt{Run} \\
-    測定したデータなど、まとまったデータに対して後から処理する場合を使用する
+    測定したデータなど, まとまったデータに対して後から処理する場合を使用する
   \end{itemize}
 \item
   \texttt{ExploreLearning} \\
-  各アルゴリズムにはフィルタの更新速度を調整するステップサイズパラメータが存在する。このパラメータは信号によって最適な値が異なるため、効率よく処理を行うためには最適値を探索する必要がある。\texttt{ExploreLearning}を使用することで、指定した信号に対する最適なステップサイズを探すことができる。
+  各アルゴリズムにはフィルタの更新速度を調整するステップサイズパラメータが存在する. このパラメータは信号によって最適な値が異なるため, 効率よく処理を行うためには最適値を探索する必要がある. \texttt{ExploreLearning}を使用することで, 指定した信号に対する最適なステップサイズを探すことができる. 
 \item
   \texttt{GetParams} \\
-  フィルタの係数やステップサイズパラメータなどの情報を取得したい場合に使用する。
+  フィルタの係数やステップサイズパラメータなどの情報を取得したい場合に使用する. 
 \end{itemize}
 
-これら以外にも複数の関数が実装されている。詳しい使い方はGoDoc（Goのパッケージリファレンス）\cite{godoc:online}を参照されたい。
+これら以外にも複数の関数が実装されている. 詳しい使い方はGoDoc（Goのパッケージリファレンス）\cite{godoc:online}を参照されたい. 

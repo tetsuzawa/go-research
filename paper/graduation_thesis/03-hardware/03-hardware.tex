@@ -1,23 +1,18 @@
 \chapter{ハードウェアの製作}\label{hardware}
 
-この章では本研究で使用するドローン、マイク、Raspberry
-Piといったハードウェアの構成と製作について述べる。
-
-\
-\section{システムの外観}\label{system-overview}
-
-まず、ドローンの本体のシステムについて述べる。
+この章では本研究で使用するドローン, マイク, Raspberry
+Piといったハードウェアの構成と製作について述べる. 
 
 \
 \section{ドローンについて}\label{about-drone}
 
 ドローンはリンクスモーション株式会社の組み立て式ドローン (Hquad500)
-を使用した。このドローンは機体にカーボンファイバーを採用しており、軽量、高強度、高剛性を兼ね備えている。また、拡張性が高く、容易に機能の追加が可能で様々な研究用途に適した製品である。
+を使用した. このドローンは機体にカーボンファイバーを採用しており, 軽量, 高強度, 高剛性を兼ね備えている. また, 拡張性が高く, 容易に機能の追加が可能で様々な研究用途に適した製品である. 
 
 \
 \subsection{使用機器}\label{used-equipments-drone}
 
-使用機器を以下に示す。
+使用機器を以下に示す. 
 
 \begin{enumerate}
 \renewcommand{\labelenumi}{(\arabic{enumi})}
@@ -100,7 +95,7 @@ Piといったハードウェアの構成と製作について述べる。
 \
 \subsection{組み立ておよび動作確認}\label{assembly-drone}
 
-ドローンの組み立ておよび動作確認はフライトコントローラの説明書\cite{quadrino_nano_instruction:online}に従い、次のように行った。
+ドローンの組み立ておよび動作確認はフライトコントローラの説明書\cite{quadrino_nano_instruction:online}に従い, 次のように行った. 
 
 \begin{enumerate}
 \renewcommand{\labelenumi}{(\arabic{enumi})}
@@ -123,7 +118,7 @@ Piといったハードウェアの構成と製作について述べる。
 \centering
 \includegraphics[width=11cm]{figures/drone_block.pdf}
 \caption{ドローンのブロック図}
-\label{fig:drone_parts}
+\label{fig:drone_block}
 \end{figure}
 
 \
@@ -132,9 +127,9 @@ Piといったハードウェアの構成と製作について述べる。
 \
 \subsection{マイクについて}\label{about-mic}
 
-収音には、音像定位実験のために製作したバイノーラルマイクを流用した。
+収音には, 音像定位実験のために製作したバイノーラルマイクを流用した. 
 
-使用した素子は秋月電子のエレクトレットコンデンサマイクロホン（ECM）である。LRそれぞれエレクトレットコンデンサマイクをはんだ付けし、ロボットケーブルを経由してステレオミニプラグと接続して製作した。
+使用した素子は秋月電子のエレクトレットコンデンサマイクロホン（ECM）である. LRそれぞれエレクトレットコンデンサマイクをはんだ付けし, ロボットケーブルを経由してステレオミニプラグと接続して製作した. 
 
 \subsection{使用機器}\label{used-equipments-mic}
   \begin{enumerate}
@@ -188,10 +183,10 @@ Piといったハードウェアの構成と製作について述べる。
 \
 \section{Raspberry Piについて}\label{about-raspberry}
 
-Raspberry Piは英国のラズベリーパイ財団によって開発されている、ARMプロセッサを搭載したシングルボードコンピュータである。Raspberr
-Piは教育用として制作されたが、現在ではIoT製品開発などの業務や人工衛星のOBC (On Board Computer) にも使用されている。
+Raspberry Piは英国のラズベリーパイ財団によって開発されている, ARMプロセッサを搭載したシングルボードコンピュータである. Raspberr
+Piは教育用として制作されたが, 現在ではIoT製品開発などの業務や人工衛星のOBC (On Board Computer) にも使用されている. 
 
-Raspberry PiはLinux系のOSで動作するためソフトウェア開発に強みをもち、GPIOピンを通してSPI、I2C、I2Sなどの通信を行えるため、センサなどを用いた開発を容易に行える。また、USB端子を搭載し、Wi-Fi、Bluetooth接続も可能で、プロタイプ開発に適したデバイスとなっている。
+Raspberry PiはLinux系のOSで動作するためソフトウェア開発に強みをもち, GPIOピンを通してSPI, I2C, I2Sなどの通信を行えるため, センサなどを用いた開発を容易に行える. また, USB端子を搭載し, Wi-Fi, Bluetooth接続も可能で, プロタイプ開発に適したデバイスとなっている. 
 
 \subsection{OSの選定}\label{choose-os}
 
@@ -207,41 +202,41 @@ Raspberry Piで使用可能なOSには
   Microsoft Windows 10
 \end{itemize}
 
-などが存在する。
+などが存在する. 
 
-本研究では主にGPIOを使用して開発を行うため、Raspbianを使用した。なお、OSのバージョンは10.1
-Buster Liteである。また、カーネルのバージョンは4.19.75-v7である。
+本研究では主にGPIOを使用して開発を行うため, Raspbianを使用した. なお, OSのバージョンは10.1
+Buster Liteである. また, カーネルのバージョンは4.19.75-v7である. 
 
 \subsection{初期設定について}\label{about-setup}
 
-Raspberry Piを実験で使用する準備として、以下の手順で初期設定を行った。
+Raspberry Piを実験で使用する準備として, 以下の手順で初期設定を行った. 
 
 \begin{enumerate}
 \renewcommand{\labelenumi}{(\arabic{enumi})}
 \item
   OSのインストール
 \item
-  地域、言語の設定 \\
-  \ref{code:region}を実行し、Localization Optionsを選択して、地域を日本、言語を英語に設定した。
-  \begin{lstlisting}[caption=Raspberry Piのコンフィグレーションツールの起動コマンド, label=raspi_config]
+  地域, 言語の設定 \\
+  \ref{code:region}を実行し, Localization Optionsを選択して, 地域を日本, 言語を英語に設定した. 
+  \begin{lstlisting}[caption=Raspberry Piのコンフィグレーションツールの起動コマンド, label=raspi\_config]
   sudo raspi-config
   \end{lstlisting}
 \item
   sshの設定 \\
-  \ref{raspi\_config}を実行し、Interfacing Optionsを選択して、SSHを有効に設定した。
+  \ref{raspi\_config}を実行し, Interfacing Optionsを選択して, SSHを有効に設定した. 
 \item
   ネットワーク・プロキシに関する設定 \\
-  \texttt{/etc/wpa_supplicant/wpa_supplicant.conf, \\
+  \texttt{/etc/wpa\_supplicant/wpa\_supplicant.conf, \\
   /etc/apt/apt.conf, 
   /etc/dhcpcd.conf, 
   ~/.bashrc, 
   ~/.curlrc, 
   ~/.wgetrc
-  }を編集し、ネットワーク・プロキシに関する設定を行った。
+  }を編集し, ネットワーク・プロキシに関する設定を行った. 
 
 \item
   アップデート \\
-  \ref{update_command}を実行し、Raspberry Piを最新の状態に更新した。
+  \ref{update_command}を実行し, Raspberry Piを最新の状態に更新した. 
 
   \begin{lstlisting}[caption=Raspberry Piのアップデートコマンド,label=update_command]
   sudo apt update 
@@ -256,11 +251,11 @@ Raspberry Piを実験で使用する準備として、以下の手順で初期�
 \subsection{AD変換用の拡張ボードについて}\label{about-adc}
 
 Raspberry
-PiはADC（ADコンバータ）を搭載していないため、マイクからの入力信号を扱うにはADコンバータを導入する必要がある。
+PiはADC（ADコンバータ）を搭載していないため, マイクからの入力信号を扱うにはADコンバータを導入する必要がある. 
 
-本研究で用いたのはマルツエレック株式会社のPumpkin Pi\cite{pumpkin_pi:online}である。PumpkinPiは計測用とオーディオ用のデュアルA-Dコンバータを搭載しており、Raspberry Piにオーディオ入力、アナログ入力機能を加えることが可能となる。
+本研究で用いたのはマルツエレック株式会社のPumpkin Pi\cite{pumpkin_pi:online}である. PumpkinPiは計測用とオーディオ用のデュアルA-Dコンバータを搭載しており, Raspberry Piにオーディオ入力, アナログ入力機能を加えることが可能となる. 
 
-Pumpkin Piの仕様を以下に示す。
+Pumpkin Piの仕様を以下に示す. 
 
 \begin{itemize}
 \tightlist
@@ -296,14 +291,14 @@ Pumpkin Piの仕様を以下に示す。
 \subsection{初期設定}\label{adc-setup}
 
 PumpkinPiの初期設定はトランジスタ技術トランジスタ技術
-2017年1月号 オールDIPで1日製作!　音声認識ハイレゾPiレコーダ「PumpkinPi」\cite{transistor:online} にしたがって行った。以下に簡易的な手順を示す。
+2017年1月号 オールDIPで1日製作!　音声認識ハイレゾPiレコーダ「PumpkinPi」\cite{transistor:online} にしたがって行った. 以下に簡易的な手順を示す. 
 
 \begin{enumerate}
 \renewcommand{\labelenumi}{(\arabic{enumi})}
 \item
   Pumpkin Piを使用するためのRaspberry Pi固有の設定
 
-  まず適当な作業ディレクトリで以下のコマンドを実行する。
+  まず適当な作業ディレクトリで以下のコマンドを実行する. 
 
 \begin{lstlisting}[caption=PumpkinPiの設定ファイルダウンロードコマンド,label=]
 wget http://einstlab.web.fc2.com/RaspberryPi/PumpkinPi.tar
@@ -314,25 +309,25 @@ cd PumpkinPi
 \item
   カーネルとデバイス・ドライバのバージョンの確認
 
-  カーネルのバージョンとデバイス・ドライバのバージョンは同じである必要がある。カーネルのバージョンは\texttt{uname\ -r}で、デバイス・ドライバのバージョンは\texttt{modinfo\ snd\_soc\_pcm1808\_adc.ko}でそれぞれ確認できる。
+  カーネルのバージョンとデバイス・ドライバのバージョンは同じである必要がある. カーネルのバージョンは\texttt{uname\ -r}で, デバイス・ドライバのバージョンは\texttt{modinfo\ snd\_soc\_pcm1808\_adc.ko}でそれぞれ確認できる. 
 
 \item
   ADコンバータ用のデバイス・ドライバのインストール
 
-  次の2つのデバイス・ドライバをインストールする。
+  次の2つのデバイス・ドライバをインストールする. 
 
   \begin{enumerate}
   \def\labelenumii{\arabic{enumii}.}
   \tightlist
   \item
     pcm1808-adc.ko\\
-    PCM1808固有の動作を決定するドライバ。
+    PCM1808固有の動作を決定するドライバ. 
   \item
     snd\_soc\_pcm1808\_adc.ko\\
     Raspberry Piのサウンドとして属性を決定するドライバ
   \end{enumerate}
 
-  まず、ホームディレクトリにPumpkinPi.tarをダウンロードして展開する。
+  まず, ホームディレクトリにPumpkinPi.tarをダウンロードして展開する. 
 
 \begin{lstlisting}[caption=デバイス・ドライバダウンロードコマンド,label=pumpkin_pi_donwload]
 cd 
@@ -341,7 +336,7 @@ tar xvf PumpkinPi.tar
 cd PumpkinPi/Driver
 \end{lstlisting}
 
-  次にデバイス・ドライバをインストールする。
+  次にデバイス・ドライバをインストールする. 
 
 \begin{lstlisting}[caption=デバイス・ドライバのインストールコマンド,label=install_device_driver]
 sudo cp Backup/pcm1808-adc.bak/ /lib/modules/`uname -r`/kernel/sound/soc/codecs/pcm1808-adc.ko
@@ -349,13 +344,13 @@ sudo cp Backup/snd_soc_pcm1808_adc.bak /lib/modules/`uname -r`/kernel/sound/soc/
 sudo depmod -a  # 依存関係を調整
 \end{lstlisting}
 
-  OSのカーネル4.4以降ではデバイス・ツリー構造を導入してあるため、デバイス・ツリー情報ファイルをコピーする。
+  OSのカーネル4.4以降ではデバイス・ツリー構造を導入してあるため, デバイス・ツリー情報ファイルをコピーする. 
 
 \begin{lstlisting}[caption=デバイス・ツリー情報ファイルのコピーコマンド,label=device_tree]
 sudo cp pcm1808-adc.dtbo /boot/oberlays/
 \end{lstlisting}
 
-  最後にデバイス・ドライバが電源起動時に自動的に読み込まれるように\texttt{/boot/config.txt}に\texttt{dtoverlay=pcm1808-ad}を追加する。
+  最後にデバイス・ドライバが電源起動時に自動的に読み込まれるように\texttt{/boot/config.txt}に\texttt{dtoverlay=pcm1808-ad}を追加する. 
 
-  以上の作業を完了した後、再起動することで設定が適用される。
+  以上の作業を完了した後, 再起動することで設定が適用される. 
 \end{enumerate}
