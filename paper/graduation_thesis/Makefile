@@ -1,8 +1,13 @@
 all:
+	echo -e "\n\n\n************************** platex    -kanji=utf8 main *******************************\n\n\n"
 	platex    -kanji=utf8 main
+	echo -e "\n\n\n************************** pbibtex   -kanji=utf8 main *******************************\n\n\n"
 	pbibtex   -kanji=utf8 main
+	echo -e "\n\n\n************************** platex    -kanji=utf8 main *******************************\n\n\n"
 	platex    -kanji=utf8 main
+	echo -e "\n\n\n************************** platex    -kanji=utf8 main *******************************\n\n\n"
 	platex    -kanji=utf8 main
+	echo -e "\n\n\n************************** dvipdfmx  -p a4 main *******************************\n\n\n"
 	dvipdfmx  -p a4 main
 build:
 	platex    -kanji=utf8 main
