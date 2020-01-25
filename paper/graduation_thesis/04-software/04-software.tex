@@ -50,10 +50,10 @@ Pythonは\ref{about-python}節で述べた特徴から, 様々な試行をしな
   \begin{enumerate}
   \renewcommand{\labelenumi}{(\arabic{enumi})}
   \item
-    波形プロット簡易化のモジュール\ \ref{plot\_tools.py}
+    波形プロット簡易化のモジュール\ \ref{plot_tools.py}
 
   \item
-    音声ファイル入出力モジュール\  \ref{wave\_handler.py}
+    音声ファイル入出力モジュール\  \ref{wave_handler.py}
 
   \item
     関数の実行時間計測・情報表示用デコレータ\ \ref{decorators.py}
@@ -66,34 +66,34 @@ Pythonは\ref{about-python}節で述べた特徴から, 様々な試行をしな
   \begin{enumerate}
   \renewcommand{\labelenumi}{(\arabic{enumi})}
   \item
-    音声ファイル畳み込み用プログラム\ \ref{calc\_covolution\_wav.py}
+    音声ファイル畳み込み用プログラム\ \ref{calc_covolution_wav.py}
 
   \item
-    ステレオ音声ファイルをLRモノラル音声に分割するプログラム\ \ref{calc\_stereo2mono\_LR.py}
+    ステレオ音声ファイルをLRモノラル音声に分割するプログラム\ \ref{calc_stereo2mono_LR.py}
 
   \item
-    2つのwavファイル間の伝達関数を求めるプログラム\ \ref{calc\_pseudo\_ir\_between\_wav\_files.py}
+    2つのwavファイル間の伝達関数を求めるプログラム\ \ref{calc_pseudo_ir_between_wav_files.py}
 
   \item
-    csvファイルの各列のデータをそれぞれwavファイルに変換するプログラム\ \ref{csv\_to\_wav\_each\_column.py}
+    csvファイルの各列のデータをそれぞれwavファイルに変換するプログラム\ \ref{csv_to_wav_each_column.py}
 
   \item
-    目的の音声ファイルからノイズの音声ファイルに含まれる成分を取り除くプログラム（スペクトラムサブトラクション法）\ \ref{calc\_subtracted\_wav.py}
+    目的の音声ファイルからノイズの音声ファイルに含まれる成分を取り除くプログラム（スペクトラムサブトラクション法）\ \ref{calc_subtracted_wav.py}
 
   \item
-    指定秒数分の白色雑音をサンプリング周波数48kHzで生成するプログラム\ \ref{generate\_white\_noise\_as\_wav.py}
+    指定秒数分の白色雑音をサンプリング周波数48kHzで生成するプログラム\ \ref{generate_white_noise_as_wav.py}
 
   \item
-    csvファイルからmp4またはgif画像を生成するプログラム\ \ref{plot\_animation\_from\_csv.py}
+    csvファイルからmp4またはgif画像を生成するプログラム\ \ref{plot_animation_from_csv.py}
 
   \item
-    csvファイルから波形をプロットするプログラム\ \ref{plot\_from\_csv.py}
+    csvファイルから波形をプロットするプログラム\ \ref{plot_from_csv.py}
 
   \item
-    複数のwavファイルから一枚の図に波形をプロットするプログラム\ \ref{plot\_multiwave.py}
+    複数のwavファイルから一枚の図に波形をプロットするプログラム\ \ref{plot_multiwave.py}
 
   \item
-    スペクトログラムを表示するプログラム\ \ref{plot\_spectrogram\_librosa.py}
+    スペクトログラムを表示するプログラム\ \ref{plot_spectrogram_librosa.py}
 
   \end{enumerate}
 \end{enumerate}
@@ -126,31 +126,31 @@ Pythonは\ref{about-python}節で述べた特徴から, 様々な試行をしな
   \renewcommand{\labelenumi}{(\arabic{enumi})}
 
   \item
-    指定した音圧差で音声を合成するプログラム\ \ref{calc\_noise\_mix}
+    指定した音圧差で音声を合成するプログラム\ \ref{calc_noise_mix}
 
   \item
-    2つのwavファイルを畳み込むプログラム\ \ref{convolve\_wav}
+    2つのwavファイルを畳み込むプログラム\ \ref{convolve_wav}
 
   \item
-    2つのwavファイルを畳み込むプログラム（フーリエ変換を用いた高速版）\ \ref{convolve\_wav\_fast}
+    2つのwavファイルを畳み込むプログラム（フーリエ変換を用いた高速版）\ \ref{convolve_wav_fast}
 
   \item
-    2つのwavファイルもしくはcsvファイルを畳み込むプログラム（フーリエ変換を用いた高速版）\ \ref{convolve\_wav\_coef}
+    2つのwavファイルもしくはcsvファイルを畳み込むプログラム（フーリエ変換を用いた高速版）\ \ref{convolve_wav_coef}
 
   \item
-    csvファイルのデータからwavファイルを生成するプログラム\ \ref{csv\_to\_wav}
+    csvファイルのデータからwavファイルを生成するプログラム\ \ref{csv_to_wav}
 
   \item
-    \ref{adf-practice}の実験で用いるADFの設定を記述したJSONファイルを生成するプログラム\ \ref{drone\_json\_generator}
+    \ref{adf-practice}の実験で用いるADFの設定を記述したJSONファイルを生成するプログラム\ \ref{drone_json_generator}
 
   \item
-    csvファイルのデータから指定したサンプルの平均二乗誤差（MSE）を計算し, csvファイルに新たな列として追記するプログラム\ \ref{calc\_mse\_csv}
+    csvファイルのデータから指定したサンプルの平均二乗誤差（MSE）を計算し, csvファイルに新たな列として追記するプログラム\ \ref{calc_mse_csv}
 
   \item
     PortAudioを使用した多チャンネル収音用プログラム\ \ref{multirecord/main}
 
   \item
-    DSBファイルからwavファイルに変換するプログラム\ \ref{wav\_to\_DSB/main}
+    DSBファイルからwavファイルに変換するプログラム\ \ref{wav_to_DSB/main}
   \end{enumerate}
 \end{enumerate}
 
