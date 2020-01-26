@@ -122,7 +122,7 @@ J = \sum_{k=1}^{L_s} |\epsilon_k|^2 = \sum_{k=1}^{L_s} |d_k - \bm{w}^H \bm{x}_k|
 \hat{\bm{R}}_x \bm{w} = \hat{\bm{r}}_xd
 \end{equation}
 
-これより, LS法における最適解は, 次式のようになる. 
+これより, LS法における最適解は, 次式のようになる\cite{signal_processing_for_array}. 
 
 \begin{equation}
 \hat{\bm{w}}_{LS} = \hat{\bm{R}}_x^{-1} \hat{\bm{r}}_xd
@@ -171,7 +171,7 @@ e_k := d_k - \bm{w}_{k-1}^H \bm{x}_k
 \label{equ:prior_estimation_error}
 \end{equation}
 
-\equref{equ:w_complex}に\equref{equ:prior_estimation_error}を代入して, 次式を得る. 
+\equref{equ:w_complex}に\equref{equ:prior_estimation_error}を代入して, 次式を得る\cite{signal_processing_for_array}. 
 
 \begin{equation}
 \bm{w}_k = \bm{w}_{k-1} + \mu E[\bm{x}_k e_k^*]
@@ -190,11 +190,13 @@ e_k := d_k - \bm{w}_{k-1}^H \bm{x}_k
 \label{equ:w_update_lms_simple}
 \end{equation}
 
-また, \equref{equ:w_update_lms_simple}を入力のパワーで正規化したものは, 学習同定法（NLMS法）と呼ばれる. NLMS法は, 次式の拘束月最適化問題空導くことができる. 
+また, \equref{equ:w_update_lms_simple}を入力のパワーで正規化したものは, 学習同定法（NLMS法）と呼ばれる. NLMS法は, 次式の拘束付き最適化問題から導くことができる. 
 
 \begin{equation}
+\begin{split}
 min ||\bm{w}_k - \bm{w}_{k-1}||^2 \\
-subject \ to \ \bm{w}_k^H \bm{x}_k = d_k
+& \mbox{subject \ to} \ \bm{w}_k^H \bm{x}_k = d_k
+\end{split}
 \end{equation}
 
 この最適化問題は, ラグランジュの未定乗数法を用いて解くことができる. ラグランジュの未定乗数法では, 次式のコスト関数を最小化する. 
@@ -246,7 +248,7 @@ J &= ||\bm{w}_k - \bm{w}_{k-1}||^2  + Re(\lambda (d_k - \bm{w}_k^H \bm{x}_k)) \\
 
 実際の運用では, 入力信号のパワー\(||\bm{x}_k||^2\)が非常に小さいときに更新式が不安定になるのを防ぐため, \(
 1 / ||{}\bm{x}_k||^2 \)
-の分母に小さい正の定数 \(\alpha\) を加えた, 次式を用いる. 
+の分母に小さい正の定数 \(\alpha\) を加えた, 次式を用いる\cite{signal_processing_for_array}. 
 
 \begin{equation}
 \bm{w}_k = \bm{w}_{k-1} + \lambda \frac{1}{\alpha + ||\bm{x}_k||^2} \bm{x}_k e_k^*
@@ -257,8 +259,10 @@ J &= ||\bm{w}_k - \bm{w}_{k-1}||^2  + Re(\lambda (d_k - \bm{w}_k^H \bm{x}_k)) \\
 アフィン射影法は, NLMS法には, NLMS法における拘束付き最適化問題の拘束条件を次式のように複数に拡張することにより導くことができる. 
 
 \begin{equation}
+\begin{split}
 min ||\bm{w}_k - \bm{w}_{k-1}||^2 \\ 
-subject \ to \ \bm{w}_k^H \bm{X}_k = d_k
+\mbox{subject \ to} \ \bm{w}_k^H \bm{X}_k = d_k
+\end{split}
 \end{equation}
 
 
@@ -279,7 +283,7 @@ subject \ to \ \bm{w}_k^H \bm{X}_k = d_k
 
 拘束条件は, 次式の\(L_s\)個の拘束条件を行列・ベクトル形式で表したものである. 
 
-NLMS法と同様にラグランジュの未定乗数法を用いた, 最適解を導出により, 次式のフィルタ更新式が得られる. 
+NLMS法と同様にラグランジュの未定乗数法を用いた, 最適解を導出により, 次式のフィルタ更新式が得られる\cite{signal_processing_for_array}. 
 
 \begin{equation}
 \bm{w}_k = \bm{w}_{k-1} + \mu \bm{X}_k ( \alpha \bm{I} + \bm{X}_k^H \bm{X} )^{-1} e_k^H
@@ -336,7 +340,7 @@ NLMS法と同様にラグランジュの未定乗数法を用いた, 最適解�
 \label{equ:P_k_inv_R}
 \end{equation}
 
-\equref{equ:hat_r}, \equref{equ:P_k_inv_}
+\equref{equ:hat_r}, \equref{equ:P_k_inv_R}
 を用いて, 求めるべきフィルタ系ルウは, 次式のようになる. 
 
 \begin{equation}
@@ -377,7 +381,7 @@ NLMS法と同様にラグランジュの未定乗数法を用いた, 最適解�
 \end{equation}
 
 
-\equref{equ:P_k_flat}および\equref{equ:g_k_simple}を\equref{equ:w_k_simple}に代入することにより, フィルタ係数ベクトル\(\bm{w}_k\)の更新式は, 次式のように求まる. 
+\equref{equ:P_k_flat}および\equref{equ:g_k_simple}を\equref{equ:w_simple_rls}に代入することにより, フィルタ係数ベクトル\(\bm{w}_k\)の更新式は, 次式のように求まる. 
 
 \begin{equation}
 \begin{split}
@@ -388,14 +392,14 @@ NLMS法と同様にラグランジュの未定乗数法を用いた, 最適解�
 \end{equation}
 
 
-最後に, \equref{equ:w_k_complex}に\equref{equ:g_k_flat}を代入して, 次式の更新式を得る. 
+最後に, \equref{equ:w_k_complex}に\equref{equ:g_k_flat}を代入して, 次式の更新式を得る\cite{signal_processing_for_array}. 
 
 \begin{equation}
 \bm{w}_k = \bm{w}_{k-1} + \bm{g}_k e_k^*
 \end{equation}
 
 
-\subsubsection{適応アルゴリズムの比較}\label{algo-compare}
+\subsection{適応アルゴリズムの比較}\label{algo-compare}
 
 \tabref{tab:formula}は代表的な適応アルゴリズムの関係をニュートン法を使用して整理したものである. 
 
@@ -413,7 +417,9 @@ NLMS法と同様にラグランジュの未定乗数法を用いた, 最適解�
   \end{tabular}
 \end{table}
 
-\tabref{tab:formula}のアルゴリズムは下に行くほど予測に用いるサンプル数が増加する. これに伴い, 一般に収束速度も速くなる. 一方, この代償として計算量が増大する. したがって, 実装するハードウェアの規模や, 求められる収束速度などを考慮して, アルゴリズムを選択する必要がある. 
+\tabref{tab:formula}のアルゴリズムは下の手法ほど予測に用いるサンプル数が増加する. これに伴い, 一般に収束速度も速くなる. 一方, この代償として計算量が増大する. したがって, 実装するハードウェアの規模や, 求められる収束速度などを考慮して, アルゴリズムを選択する必要がある\cite{adaptive_filters}. 
+
+\newpage
 
 \
 \section{適応フィルタを使用した雑音低減の手法}\label{adf-noise-reduction}
@@ -427,7 +433,7 @@ ANCのブロック図を\figref{fig:anc_block}に示す.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=10cm]{figures/anc.png}
+\includegraphics[width=9cm]{figures/anc.png}
 \caption{ドローンの駆動音に対するANCの想定ブロック図}
 \label{fig:anc_block}
 \end{figure}
@@ -439,7 +445,7 @@ ANCのブロック図を\figref{fig:anc_block}に示す.
 \subsection{自動等化器}\label{automatic-equalizer}
 
 自動等化器はアクティブノイズコントロールとは異なり, 計算機内部で信号の処理を行う手法である. 
-一般に, 適応フィルタに対する入力信号は長期間で平均をとると, ドローンの駆動音に対して音声のエネルギーが小さい. 自動等化器では, フィルタの更新係数を小さくすることで係数がドローンの駆動音のみに適応することを利用し, フィルタ出力\(y_k\)との誤差\(e_k\)を目的信号の予測値として取り出す手法である. 
+一般に, 適応フィルタに対する入力信号は長時間で平均をとると, ドローンの駆動音に対して音声のエネルギーが小さい. 自動等化器では, フィルタの更新係数を小さくすることでフィルタ係数がドローンの駆動音のみに適応することを利用し, フィルタ出力\(y_k\)との誤差\(e_k\)を目的信号の予測値として取り出す手法である. 
 
 自動等化器のブロック図を\figref{equ:automatic_equlizer_block}に示す. 
 

@@ -1,4 +1,3 @@
-\
 \chapter{駆動音低減のための予備実験}\label{noise-pre-experiment}
 
 \
@@ -16,9 +15,9 @@
 
 収音はドローンとバイノーラルマイクを使用し, \figref{fig:pre-ex_block}のブロック図の構成で行った. 
 
-ただし, 前述のバイノーラルマイクのみでは十分な入力電圧が得られないため, 収音にはマイクロフォンアンプを使用する必要がある. 本実験では株式会社オーディオテクニカのマイクロフォンアンプAT-MA2を使用した. 
+ただし, 前述のバイノーラルマイクのみでは十分な入力電圧が得られないため, 収音にはマイクロフォンアンプを使用する必要がある. 
 
-なお, 本研究では室内でサンプル収音を行ったため, 据え置き型のマイクロフォンアンプを使用したが, 実際にドローンに搭載する際は別途小型のマイクロフォンアンプが必要と推察される. 
+なお, 本研究では室内でサンプル収音を行ったため, 据え置き型のマイクロフォンアンプ（オーディオテクニカ, AT-MA2）を使用したが, 実際にドローンに搭載する際は別途小型のマイクロフォンアンプが必要と推察される. 
 \begin{figure}[H]
 \centering
 \includegraphics[width=10cm]{figures/pre-ex_block.pdf}
@@ -29,13 +28,13 @@
 \
 \subsubsection{収音に使用するソフトウェアについて}\label{software-for-record}
 
-音声の収録にはGo言語で記述した自作の収音用コマンドラインツール（\ref{code:multirecord}）を使用した. 
+音声の収録にはGo言語で記述した自作の収音用コマンドラインツール（付録\ref{multirecord/main}）を使用した. 
 このプログラムはSoX（コマンドラインベースの音声編集ソフトウェア)\cite{sox:online}の\texttt{rec}コマンドを参考に設計した. 
 オーディオ入出力APIのPortAudio\cite{portaudio:online}を利用しており, 多チャンネルでの収音に対応している他, 独自の機能として音声データを本研究で主に使用されている形式（.DSB - 符号付き整数型16bitバイナリファイル）で保存することが可能となっている. 
 
 本実験では自作のソフトウェアを使用したが, .wavなどの一般的な音声データ形式を使用する場合, 前述のSoXを利用しても同様に収音が可能である. また, 同じくPortAudioをベースとしたGUIの音声編集ソフトウェアであるAudacity\cite{audacity:online}も有力な候補となる. いずれのソフトウェアも無料で使用可能である. 
 
-\subsection{使用機器}\label{used-equipments-drone}
+\subsection{使用機器}\label{used-equipments-record}
 
 使用機器を以下に示す. 
 
@@ -46,31 +45,30 @@
   \ref{about-drone}節を参照. 
 \item
   マイク \\
-  \ref{binaural-mic}節のバイノーラルマイクを1chのみ使用した. 詳細は\ref{binaural-mic}を参照. 
+  \ref{binaural-mic}節のバイノーラルマイクを1chのみ使用した. 詳細は\ref{binaural-mic}節を参照. 
 \item
   マイクロフォンアンプ AT-MA2 株式会社オーディオテクニカ
-  \begin{figure}[H]
-  \centering
-  \includegraphics[width=13cm]{figures/at-ma2.jpg}
-  \caption{マイクロフォンアンプ}
-  \label{fig:at-ma2}
-  \end{figure}
+  % \begin{figure}[H]
+  % \centering
+  % \includegraphics[width=13cm]{figures/at-ma2.jpg}
+  % \caption{マイクロフォンアンプ}
+  % \label{fig:at-ma2}
+  % \end{figure}
 
 \item
   オーディオインターフェース ローランド株式会社 DUO-CAPTURE EX S/N.Z6C6056
-  \cite{audio_interface:online}
-  \begin{figure}[H]
-  \centering
-  \includegraphics[width=13cm]{figures/duo-capture.jpg}
-  \caption{オーディオインターフェース}
-  \label{fig:duo-capture}
-  \end{figure}
+  % \begin{figure}[H]
+  % \centering
+  % \includegraphics[width=13cm]{figures/duo-capture.jpg}
+  % \caption{オーディオインターフェース}
+  % \label{fig:duo-capture}
+  % \end{figure}
 \end{enumerate}
 
 \
 \subsection{実験結果}\label{result-drone}
 
-収録したドローンの駆動音の波形を\ref{plot_multiwave.py}のプログラムを使用し, 描画した図を\figref{fig:drone_raw}に示す. また, \ref{plot_spectrogram_librosa}のプログラムを使用し, 周波数特性を解析した. 駆動音のスペクトログラムを\figref{fig:drone_raw_spectrogram}に示す. 
+収録したドローンの駆動音の波形を付録\ref{plot_multiwave.py}のプログラムを使用し, 描画した図を\figref{fig:drone_raw}に示す. また, 付録\ref{plot_spectrogram_librosa.py}のプログラムを使用し, 周波数特性を解析した. 駆動音のスペクトログラムを\figref{fig:drone_raw_spectrogram}に示す. 
 
 \begin{figure}[H]
 \centering
@@ -86,9 +84,9 @@
 \label{fig:drone_raw_spectrogram}
 \end{figure}
 
-\figref{fig:drone_raw}, \figref{fig:drone_raw_spectrogram}における最初および最後の区間はドローンを停止させた無音区間となっている. しかしながら, 無音区間に定常な雑音が存在することが明らかなため純粋なドローンの駆動音を解析するためには, この定常雑音を取り除く必要がある. 
+\figref{fig:drone_raw}, \figref{fig:drone_raw_spectrogram}における0\textasciitilde10[sec]および70[sec]以降の区間はドローンを停止させた無音区間となっている. しかしながら, 無音区間に何らかの定常な雑音が存在するためドローンの駆動音のみを解析するためには, この定常雑音を取り除く必要がある. 
 
-そこで, \ref{calc_subtracted_wav}のプログラムを使用し, スペクトラルサブトラクション法\cite{spectral_subtraction}により, 無音区間の周波数成分の平均を全体から取り除いた. 
+そこで, 付録\ref{calc_subtracted_wav.py}のプログラムを使用し, スペクトラルサブトラクション法\cite{spectral_subtraction}により, 無音区間の周波数成分の平均を全体から取り除いた. 
 スペクトラルサブトラクション法適用後の波形を\figref{fig:drone_subtracted}に, スペクトログラムを\figref{fig:drone_subtracted_spectrogram}に示す. 
 
 \begin{figure}[H]
@@ -109,9 +107,11 @@
 \
 \subsection{考察}\label{consideration-drone}
 
-\figref{fig:drone_subtracted_spectrogram}より, 駆動音は100Hz付近の低域成分とその倍音成分, 5kHz付近の中域成分, 18kHz付近の高域成分を合わせた周波数特性を示すことがわかる. このうち, 低域と中域の成分はドローンの羽音およびモータの回転音によるものであると思われる. また, 高域成分はブラシレスモータの回転数を制御するインバータ回路によるものと思われる. 
+\figref{fig:drone_subtracted_spectrogram}より, 駆動音は100Hz付近の低域成分とその倍音成分, 5kHz付近の中域成分, 18kHz付近の高域成分を合わせた周波数特性を示すことがわかる. このうち, 低域と中域の成分はドローンの羽音およびモータの回転音によるもの, また, 高域成分はブラシレスモータの回転数を制御するインバータ回路によるものと思われる. 
 
-以上, ドローンの駆動音を有色性の周波数特性を持つことが確認できた. 
+上記より, ドローンの駆動音を有色性の周波数特性を持つことが確認できた. 
+
+\newpage
 
 \
 \section{信号の有色性に対するADFの性能への影響}\label{adf-color-effect}
@@ -122,6 +122,7 @@
 本節ではADFに対する参照信号を\ref{record-drone}節で収音したドローンの駆動音とした場合と白色雑音とした場合の収束に要するサンプル数（収束速度）, 収束した後の精度（推定精度）を比較する. 
 これにより, 各適応アルゴリズムの信号の有色性に対する収束性能への影響を評価することを目的とする. 
 
+
 \
 \subsection{実験方法}\label{instruction-color}
 
@@ -129,11 +130,10 @@
 
 \begin{enumerate}
 \renewcommand{\labelenumi}{(\arabic{enumi})}
-\tightlist
 \item
   \ref{record-drone}節で収音した雑音処理完了後の音声（以下, 駆動音とする）に対して, ADFの各アルゴリズムにおける最適なステップサイズを求める. 
 \item
-  1で求めたADFに対して, 駆動音を参照信号, 駆動音に白色雑音を加えたものを目的信号として十分な時間フィルタリングを実行
+  (a)で求めたADFに対して, 駆動音を参照信号, 駆動音に白色雑音を加えたものを目的信号として十分な時間フィルタリングを実行
 \item
   同様に, 白色雑音を参照信号, 白色雑音にの別の白色雑音を加えたものを目的信号として十分な時間フィルタリングを実行
 \item
@@ -162,11 +162,13 @@
 \end{figure}
 
 \
-\subsection{考察}\label{consideration-color}
+\subsection{考察}\label{consideration-benchmark}
 
 \figref{fig:drone_algo_convergence}, \figref{fig:white_algo_convergence}より, 信号に駆動音を使用した場合, 理論通り収束性能が低下していることがわかる. 特にRLSアルゴリズムの場合, 収束時のMSEが約80dBから約50dBとなり, 収束するまでに必要なサンプル数も約300,000サンプル程度まで増加していることがわかる. サンプリング周波数は48kHzであるので収束までに約6秒かかることになる. 一方, NLMSアルゴリズムとAPアルゴリズムは収束時のMSEは10dBほど悪化しているが, RLSアルゴリズムほど大きい性能低下は見られなかった. 
 
-以上より, リアルタイム処理を目的とする場合NLMS・APアルゴリズムの使用が適していると思われる. 
+以上より, リアルタイム処理を目的とする場合NLMS・APアルゴリズムの使用が適していると思われる. 
+
+\newpage
 
 \
 \section{ADFライブラリのベンチマーク}\label{benchmark}
@@ -198,6 +200,7 @@ Go言語ではテストファイルに\texttt{func\ BenchmarkXxx(b\ *testing.B)}
 1サンプルあたりのフィルタ係数更新・次サンプルの予測にかかる演算時間とメモリ使用量の測定結果を\tabref{tab:benchmark_raspi}, \tabref{tab:benchmark_mac}に示す. 
 
 \begin{table}[H]
+  \centering
   \caption{ADFライブラリのベンチマーク測定結果（Raspberry Pi）}
   \label{tab:benchmark_raspi}
   \begin{tabular}{|c|c|c|}
@@ -210,6 +213,7 @@ Go言語ではテストファイルに\texttt{func\ BenchmarkXxx(b\ *testing.B)}
 \end{table}
 
 \begin{table}[H]
+  \centering
   \caption{ADFライブラリのベンチマーク測定結果（MacBook Pro）}
   \label{tab:benchmark_mac}
   \begin{tabular}{|c|c|c|}
@@ -221,29 +225,29 @@ Go言語ではテストファイルに\texttt{func\ BenchmarkXxx(b\ *testing.B)}
   \end{tabular}
 \end{table}
 \
-\subsection{考察}\label{consideration-color}
+\subsection{考察}
 
-\
 \subsubsection{メモリ使用量について}\label{about-memory}
 
 \tabref{tab:benchmark_raspi}, \tabref{tab:benchmark_mac}より, 各アルゴリズムのメモリ使用量はNLMSアルゴリズムが一番少なく, APアルゴリズム, RLSアルゴリズムと多くなっている. これは理論式に即した物となっており, 妥当な値である. 
 
-Go言語にはガーベッジコレクションが実装されており, メモリセーフである. また, Raspberry
+Go言語にはガーベッジコレクションが実装されており, メモリセーフである. また, Raspberry
 Pi 3 Model
 Bのメモリは1GBと潤沢であるため, 使用メモリに関しては実用範囲内であると思われる. 
 
-\
 \subsubsection{演算時間について}\label{about-time}
 
-\tabref{tab:benchmark_raspi}, \tabref{tab:benchmark_mac}より, NLMSアルゴリズムの演算時間はAP・RLSに比べて数十倍高速であることがわかる. 一方, Raspberry
-Piの演算時間はMacBook Proに比べるて十倍程度長いことがわかる. 
+\tabref{tab:benchmark_raspi}, \tabref{tab:benchmark_mac}より, NLMSアルゴリズムの演算時間はAP・RLSに比べて数十倍高速であることがわかる. 一方, Raspberry Piの演算時間はMacBook Proに比べるて十倍程度長いことがわかる. 
 
 ここで, これらのアルゴリズムをアクティブノイズコントロールに適用することを考える. 
-参照信号用のマイクと目的信号用のマイクの距離が30cmであることを仮定すると, 音波が2つのマイク間を移動するためにかかる時間は約0.88msである（音速は340m/sとした). 
-したがって, ADFのフィルタ実行時間以外を無視した理想条件で最低でも0.88ms/op以上の演算速度が必要なことになる. 
-また, これはフィルタ長が約43タップに相当する距離である. 実験で用いたフィルタ長は8タップであるため, 全くフィルタ長が足りず, システムの同定が不可能であることを示す. 
+音速が340m/s、参照信号用のマイクと目的信号用のマイクの距離が30cmであることを仮定すると, 音波が2つのマイク間を伝播するために要する時間は
+\begin{equation}
+  \frac{0.3}{340} \approx 0.88 [\si{\milli \second}]
+\end{equation}
+である. したがって, ADFのフィルタ実行時間以外の遅延を無視した理想条件で最低でも0.88ms/op以上の演算速度が必要なことになる. 
+また, これはフィルタ長が約43タップに相当する距離である. 実験で用いたフィルタ長は8タップであるため, フィルタ長が不十分で, システムの同定が不可能であることを示す. 
 したがって, 本実験の条件でのアクティブノイズコントロールの実装は, 制作したライブラリを使用する場合には現実的でないことが結論づけられる. 
-なお, 実現に向けての改善策としては, プログラムの実行速度を上げる, 計算機の性能を高くする, サンプリング周波数を低くするなどが挙げられる. 
+なお, 実現に向けての改善策としては, プログラムの実行速度を上げる, 計算機の性能を高くする, 許容範囲内でサンプリング周波数を低くするなどが挙げられる. 
 
 % 一方, 自動等化器の実装には空間的制約が無いため, 本研究のシステムを想定すると人間が音の遅延を知覚できると言われている20msまで許容できる. 
 

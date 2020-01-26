@@ -6,8 +6,7 @@ Piといったハードウェアの構成と製作について述べる.
 \
 \section{ドローンについて}\label{about-drone}
 
-ドローンはリンクスモーション株式会社の組み立て式ドローン (Hquad500)
-を使用した. このドローンは機体にカーボンファイバーを採用しており, 軽量, 高強度, 高剛性を兼ね備えている. また, 拡張性が高く, 容易に機能の追加が可能で様々な研究用途に適した製品である. 
+ドローンはLynxmotion株式会社の組み立て式ドローン (HQuad500) を使用した. このドローンは機体にカーボンファイバーを採用しており, 軽量, 高強度, 高剛性を兼ね備えている. また, 拡張性が高く, 容易に機能の追加が可能で様々な研究用途に適した製品である. 
 
 \
 \subsection{使用機器}\label{used-equipments-drone}
@@ -18,75 +17,74 @@ Piといったハードウェアの構成と製作について述べる.
 \renewcommand{\labelenumi}{(\arabic{enumi})}
 \item
   ドローンの機体 HQuad500 Hardware kit Lynxmotion株式会社
-  \cite{hquad500_hardware:online}
-
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/hquad500_hardware.jpg}
+  \includegraphics[width=10cm]{figures/hquad500_hardware.jpg}
   \caption{ドローンの機体}
   \label{fig:hquad500}
   \end{figure}
+
+
 \item
   ESC (Electronic Speed Controller) 12A ESC (SimonK) Lynxmotion株式会社
-  \cite{esc:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/esc.jpg}
+  \includegraphics[width=10cm]{figures/esc.jpg}
   \caption{ESC}
   \label{fig:esc}
   \end{figure}
+
 \item
   ブラシレスモータ Brushless Motor 28x30 1000kv Lynxmotion株式会社
-  \cite{motor:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/brushless_motor.jpg}
+  \includegraphics[width=10cm]{figures/brushless_motor.jpg}
   \caption{ブラシレスモータ}
   \label{fig:motor}
   \end{figure}
+
 \item
   フライトコントローラ Quadrino Nano Lynxmotion株式会社
-  \cite{quadrino_nano:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/quadrino_nano.jpg}
+  \includegraphics[width=10cm]{figures/quadrino_nano.jpg}
   \caption{フライトコントローラ}
   \label{fig:quadrino_nano}
   \end{figure}
+
 \item
   リポバッテリー充電器 18W LiPo Battery Charger Lynxmotion株式会社
-  \cite{lipo_charger:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/lipo_charger.jpg}
+  \includegraphics[width=10cm]{figures/lipo_charger.jpg}
   \caption{リポバッテリー充電器}
   \label{fig:lipo_charger}
   \end{figure}
+
 \item
   リポバッテリー 11.1V (3S), 3500mAh 30C LiPo Battery Pack Lynxmotion株式会社
-  \cite{lipo_battery:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/lipo_battery.jpg}
+  \includegraphics[width=10cm]{figures/lipo_battery.jpg}
   \caption{リポバッテリー}
   \label{fig:lipo_battery}
   \end{figure}
+
 \item
   ラジオレシーバ R9DS 10 channels 2.4GHz DSSS FHSS Receiver
   RadioLink株式会社
-  \cite{r9ds:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/r9ds.jpg}
+  \includegraphics[width=10cm]{figures/r9ds.jpg}
   \caption{ラジオレシーバ}
   \label{fig:radio_reciever}
   \end{figure}
+
 \item
   トランスミッタ AT9S 2.4GHz 10CH transmitter RadioLink株式会社
-  \cite{at9s:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/at9s.jpg}
+  \includegraphics[width=10cm]{figures/at9s.jpg}
   \caption{トランスミッタ}
   \label{fig:transmitter}
   \end{figure}
@@ -121,43 +119,44 @@ Piといったハードウェアの構成と製作について述べる.
 \label{fig:drone_block}
 \end{figure}
 
+\newpage
+
 \
 \section{バイノーラルマイクの製作}\label{binaural-mic}
 
 \
 \subsection{マイクについて}\label{about-mic}
 
-収音には, 音像定位実験のために製作したバイノーラルマイクを流用した. 
+収音には他の研究で行った, 音像定位実験のために製作したバイノーラルマイクを流用した. 
 
-使用した素子は秋月電子のエレクトレットコンデンサマイクロホン（ECM）である. LRそれぞれエレクトレットコンデンサマイクをはんだ付けし, ロボットケーブルを経由してステレオミニプラグと接続して製作した. 
+使用した素子は秋月電子のエレクトレットコンデンサマイクロホン（SPL (Hong Kong) Limited, XCM6035）である. 左右用にそれぞれエレクトレットコンデンサマイクはロボットケーブルとはんだ付けし, ケーブルの端をステレオミニプラグと接続して製作した. 
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm]{figures/binaural_mic.png}
+    \caption{バイノーラルマイク}
+    \label{fig:binaural_mic}
+  \end{figure}
 
 \subsection{使用機器}\label{used-equipments-mic}
   \begin{enumerate}
   \renewcommand{\labelenumi}{(\arabic{enumi})}
   \item
     エレクトレットコンデンサマイク XCM6035 株式会社秋月電子通商
-    \cite{XCM6035:online} x2
-    \begin{figure}[H]
-      \centering
-      \includegraphics[width=13cm]{figures/microphone.jpg}
-      \caption{エレクトレットコンデンサマイク}
-      \label{fig:microphone}
-    \end{figure}
     % \begin{figure}[H]
     %   \centering
-    %   \includegraphics[width=13cm]{figures/microphone_size.jpg}
-    %   \caption{エレクトレットコンデンサマイクの大きさ}
-    %   \label{fig:microphone_size}
+    %   \includegraphics[width=13cm]{figures/microphone.jpg}
+    %   \caption{エレクトレットコンデンサマイク}
+    %   \label{fig:microphone}
     % \end{figure}
   \item
     シールドスリムロボットケーブル KRT-SW 株式会社秋月電子通商
-    \cite{sield_slim_robot_cable:online}
-    \begin{figure}[H]
-      \centering
-      \includegraphics[width=13cm]{figures/sielded_robot_cable.jpg}
-      \caption{シールドスリムロボットケーブル}
-      \label{fig:sield_slim_robot_cable}
-    \end{figure}
+    % \begin{figure}[H]
+    %   \centering
+    %   \includegraphics[width=13cm]{figures/sielded_robot_cable.jpg}
+    %   \caption{シールドスリムロボットケーブル}
+    %   \label{fig:sield_slim_robot_cable}
+    % \end{figure}
     % \begin{figure}[H]
     %   \centering
     %   \includegraphics[width=13cm]{figures/sielded_robot_cable_size.jpg}
@@ -166,12 +165,12 @@ Piといったハードウェアの構成と製作について述べる.
     % \end{figure}
   \item
     3.5mmステレオミニプラグ MP-319 株式会社秋月電子通商
-    \begin{figure}[H]
-      \centering
-      \includegraphics[width=13cm]{figures/mini_plug.jpg}
-      \caption{3.5mmステレオミニプラグ}
-      \label{fig:mini_plug}
-    \end{figure}
+    % \begin{figure}[H]
+    %   \centering
+    %   \includegraphics[width=13cm]{figures/mini_plug.jpg}
+    %   \caption{3.5mmステレオミニプラグ}
+    %   \label{fig:mini_plug}
+    % \end{figure}
     % \begin{figure}[H]
     %   \centering
     %   \includegraphics[width=13cm]{figures/mini_plug_size.jpg}
@@ -180,13 +179,15 @@ Piといったハードウェアの構成と製作について述べる.
     % \end{figure}
   \end{enumerate}
 
+\newpage
+
 \
 \section{Raspberry Piについて}\label{about-raspberry}
 
 Raspberry Piは英国のラズベリーパイ財団によって開発されている, ARMプロセッサを搭載したシングルボードコンピュータである. Raspberr
-Piは教育用として制作されたが, 現在ではIoT製品開発などの業務や人工衛星のOBC (On Board Computer) にも使用されている. 
+Piは教育用として製作されたが, 現在ではIoT製品開発などの業務や人工衛星のOBC (On Board Computer) にも使用されている. 
 
-Raspberry PiはLinux系のOSで動作するためソフトウェア開発に強みをもち, GPIOピンを通してSPI, I2C, I2Sなどの通信を行えるため, センサなどを用いた開発を容易に行える. また, USB端子を搭載し, Wi-Fi, Bluetooth接続も可能で, プロタイプ開発に適したデバイスとなっている. 
+Raspberry PiはLinux系のOSで動作するためソフトウェア開発に強みをもち, GPIOピンを通してSPI, I2C, I2Sなどの通信を行えるため, センサなどを用いた開発を容易に行える. また, USB端子を搭載し, Wi-Fi, Bluetooth接続も可能で, プロタイプ開発に適したデバイスである. 
 
 \subsection{OSの選定}\label{choose-os}
 
@@ -217,21 +218,21 @@ Raspberry Piを実験で使用する準備として, 以下の手順で初期設
   OSのインストール
 \item
   地域, 言語の設定 \\
-  \ref{code:region}を実行し, Localization Optionsを選択して, 地域を日本, 言語を英語に設定した. 
-  \begin{lstlisting}[caption=Raspberry Piのコンフィグレーションツールの起動コマンド, label=raspi\_config]
+  \ref{raspi_config}を実行し, Localization Optionsを選択して, 地域を日本, 言語を英語に設定した. 
+  \begin{lstlisting}[caption=Raspberry Piのコンフィグレーションツールの起動コマンド, label=raspi_config]
   sudo raspi-config
   \end{lstlisting}
 \item
   sshの設定 \\
-  \ref{raspi\_config}を実行し, Interfacing Optionsを選択して, SSHを有効に設定した. 
+  \ref{raspi_config}を実行し, Interfacing Optionsを選択して, SSHを有効に設定した. 
 \item
   ネットワーク・プロキシに関する設定 \\
   \texttt{/etc/wpa\_supplicant/wpa\_supplicant.conf, \\
   /etc/apt/apt.conf, 
   /etc/dhcpcd.conf, 
-  ~/.bashrc, 
-  ~/.curlrc, 
-  ~/.wgetrc
+  \textasciitilde/.bashrc, \\
+  \textasciitilde/.curlrc, 
+  \textasciitilde/.wgetrc
   }を編集し, ネットワーク・プロキシに関する設定を行った. 
 
 \item
@@ -250,10 +251,9 @@ Raspberry Piを実験で使用する準備として, 以下の手順で初期設
 \
 \subsection{AD変換用の拡張ボードについて}\label{about-adc}
 
-Raspberry
-PiはADC（ADコンバータ）を搭載していないため, マイクからの入力信号を扱うにはADコンバータを導入する必要がある. 
+Raspberry PiはADC（ADコンバータ）を搭載していないため, マイクからの入力信号を扱うにはADコンバータを導入する必要がある. 
 
-本研究で用いたのはマルツエレック株式会社のPumpkin Pi\cite{pumpkin_pi:online}である. PumpkinPiは計測用とオーディオ用のデュアルA-Dコンバータを搭載しており, Raspberry Piにオーディオ入力, アナログ入力機能を加えることが可能となる. 
+本研究で用いたのはマルツエレック株式会社のPumpkin Piである. PumpkinPiは計測用とオーディオ用のデュアルA-Dコンバータを搭載しており, Raspberry Piにオーディオ入力, アナログ入力機能を加えることが可能となる. 
 
 Pumpkin Piの仕様を以下に示す. 
 
@@ -271,7 +271,7 @@ Pumpkin Piの仕様を以下に示す.
 \item
   オーディオコネクタ φ3.5mmステレオミニジャック
 \item
-  オーディオ入力 量子化ビット数=24,サンプリング周波数=48/96KHz
+  オーディオ入力 量子化ビット数=24,サンプリング周波数=48/96kHz
 \item
   計測用AD変換 2チャンネル,16ビット
 \item
@@ -291,7 +291,7 @@ Pumpkin Piの仕様を以下に示す.
 \subsection{初期設定}\label{adc-setup}
 
 PumpkinPiの初期設定はトランジスタ技術トランジスタ技術
-2017年1月号 オールDIPで1日製作!　音声認識ハイレゾPiレコーダ「PumpkinPi」\cite{transistor:online} にしたがって行った. 以下に簡易的な手順を示す. 
+2017年1月号\cite{transistor:online}にしたがって行った. 以下に簡易的な手順を示す. 
 
 \begin{enumerate}
 \renewcommand{\labelenumi}{(\arabic{enumi})}
