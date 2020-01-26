@@ -1,20 +1,12 @@
-all:
-	echo -e "\n\n\n************************** platex    -kanji=utf8 main *******************************\n\n\n"
-	platex    -kanji=utf8 main
-	echo -e "\n\n\n************************** pbibtex   -kanji=utf8 main *******************************\n\n\n"
-	pbibtex   -kanji=utf8 main
-	echo -e "\n\n\n************************** platex    -kanji=utf8 main *******************************\n\n\n"
-	platex    -kanji=utf8 main
-	echo -e "\n\n\n************************** platex    -kanji=utf8 main *******************************\n\n\n"
-	platex    -kanji=utf8 main
-	echo -e "\n\n\n************************** dvipdfmx  -p a4 main *******************************\n\n\n"
-	dvipdfmx  -p a4 main
+.PHONY:	build
 build:
 	platex    -kanji=utf8 main
 	pbibtex   -kanji=utf8 main
 	platex    -kanji=utf8 main
 	platex    -kanji=utf8 main
 	dvipdfmx  -p a4 main
+
+.PHONY:	clean
 clean:
 	/bin/rm -f *~ *.log *.dvi *.blg *.aux *.out *.bbl *.lot *.toc *.lof *.fdb_latexmk *.fls
 	/bin/rm -f 00-abstract/*.aux
@@ -26,7 +18,11 @@ clean:
 	/bin/rm -f 06-adf/*.aux
 	/bin/rm -f 07-conclusion/*.aux
 	/bin/rm -f 99-misc/*.aux
+
+.PHONY:	dvi
 dvi:
 	dvipdfmx  -p a4 main
 
-
+all:
+	build
+	clean

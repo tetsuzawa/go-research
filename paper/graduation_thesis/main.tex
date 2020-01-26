@@ -18,7 +18,7 @@
 \usepackage{multirow}
 \usepackage{url}
 
-% **************** made by takizawa ******************
+% **************** added by takizawa ******************
 
 \usepackage{longtable}
 \usepackage{here}
@@ -30,8 +30,9 @@
 \usepackage{siunitx}
 \usepackage{bm}
 
+% **** ソースコードの表示に関する設定 **** 
 \usepackage{listings,jlisting} %日本語のコメントアウトをする場合jlistingが必要
-%ここからソースコードの表示に関する設定
+
 \lstset{
   basicstyle={\ttfamily},
   identifierstyle={\small},
@@ -56,7 +57,7 @@
     \renewcommand*{\thelstlisting}{\arabic{chapter}.\arabic{section}.\arabic{subsection}-\arabic{lstlisting}}
     \@addtoreset{lstlisting}{section}}
 \makeatother
-%ここまでソースコードの表示に関する設定
+% **** ソースコードの表示に関する設定 **** 
 
 \newcommand{\tabref}[1]{表\ref{#1}}
 \newcommand{\equref}[1]{(\ref{#1})式}
@@ -77,9 +78,10 @@
 \makeatother
 
 \def\tightlist{\itemsep1pt\parskip0pt\parsep0pt}
-% **************** made by takizawa ******************
+% **************** added by takizawa ******************
 
 
+% bibtexの参照設定
 % \bibliographystyle{jplain}  % アルファベット順
 \bibliographystyle{junsrt}  % 引用順
 
@@ -92,41 +94,36 @@
 \juniv      {苫小牧工業高等専門学校}                  % 大学名
 \jfaculty   {電気電子工学科 第16期生 18番}               % 学部、学科
 \jauthor    {瀧澤 哲}                       % 著者
-\jhyear     {1}                                   % 平成○年度
+\jhyear     {1}                                   % 令和○年度
 \jsyear     {2020}                                 % 西暦○年度
 \jkeyword   { }     % 論文のキーワード
 \jproject   {指導教員  工藤 彰洋} %プロジェクト名
 \jdate      { }
 
+
+% メインのドキュメント
 \begin{document}
 
 \jmaketitle    % 表紙（日本語）
 
-\include{00-abstract/00-abstract}  % アブストラクト。要独自コマンド、include先参照のこと
+\include{00-abstract}  % アブストラクト。要独自コマンド、include先参照のこと
 
 \tableofcontents  % 目次
 \listoffigures    % 表目次
 \listoftables    % 図目次
 
-\pagenumbering{arabic}
+\pagenumbering{arabic}  % ページ番号
 
-\include{01-introduction/01-introduction}  
-\include{02-theory/02-theory}  
-\include{03-hardware/03-hardware}  
-\include{04-software/04-software}  
-\include{05-preliminary-experiment/05-preliminary-experiment}  
-\include{06-adf/06-adf}  
-\include{07-conclusion/07-conclusion}  
+\include{01-introduction}  
+\include{02-theory}  
+\include{03-hardware}  
+\include{04-software}  
+\include{05-preliminary-experiment}  
+\include{06-adf}  
+\include{07-conclusion}  
 
-\include{99-misc/91-bibliography}  % 参考文献。要独自コマンド、include先参照のこと
-% \begin{bib}[100]
-%     % BibTeXを使う場合
-%     \bibliography{main.bib}
-% \end{bib}
-
-\include{99-misc/92-acknowledgment}  % 謝辞。要独自コマンド、include先参照のこと
-\include{99-misc/93-appendix}  
-%\appendix
-%\include{92_appendix}    % 付録
+\include{91-bibliography}  % 参考文献。要独自コマンド、include先参照のこと
+\include{92-acknowledgment}  % 謝辞。要独自コマンド、include先参照のこと
+\include{93-appendix}  
 
 \end{document}
