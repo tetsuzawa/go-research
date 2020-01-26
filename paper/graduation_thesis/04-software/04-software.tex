@@ -42,63 +42,114 @@ Pythonは\ref{about-python}節で述べた特徴から, 様々な試行をしな
 
 \subsection{Pythonで制作したプログラム}\label{python}
 
-\begin{enumerate}
-\renewcommand{\labelenumi}{(\arabic{enumi})}
-\item
-  モジュール
+Pythonで制作したプログラムを\tabref{tab:program_python}に示す。
 
-  \begin{enumerate}
-  \renewcommand{\labelenumi}{(\arabic{enumi})}
-  \item
-    波形プロット簡易化のモジュール\ \ref{plot_tools.py}
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[H]
+  \centering
+  \caption{Pythonで制作したプログラム}
+  \label{tab:program_python}
+  \begin{tabular}{|c|l|c|}
+  \hline
+  種類                     & \multicolumn{1}{c|}{用途}           & 参照       \\ \hline
+  \multirow{3}{*}{モジュール} & 波形プロット簡易化                         & 付録 1.1.1-1  \\ \cline{2-3} 
+                         & 音声ファイル入出力                         & 付録 1.1.1-2  \\ \cline{2-3} 
+                         & 関数の実行時間計測・情報表示                    & 付録 1.1.1-3  \\ \hline
+  \multirow{10}{*}{ツール}  & 音声ファイル畳み込み                        & 付録 1.1.2-4  \\ \cline{2-3} 
+                         & ステレオ音声ファイルをLRモノラル音声に分割            & 付録 1.1.2-5  \\ \cline{2-3} 
+                         & 2つのwavファイル間の伝達関数を計算               & 付録 1.1.2-6  \\ \cline{2-3} 
+                         & csvファイルの各列のデータをそれぞれwavファイルに変換     & 付録 1.1.2-7  \\ \cline{2-3} 
+                         & 目的の音声ファイルからノイズの音声ファイルに含まれる成分を取り除く & 付録 1.1.2-8  \\ \cline{2-3} 
+                         & 指定秒数分の白色雑音をサンプリング周波数48kHzで生成      & 付録 1.1.2-9  \\ \cline{2-3} 
+                         & csvファイルからmp4またはgif画像を生成           & 付録 1.1.2-10 \\ \cline{2-3} 
+                         & csvファイルから波形をプロット                  & 付録 1.1.2-11 \\ \cline{2-3} 
+                         & 複数のwavファイルから一枚の図に波形をプロット          & 付録 1.1.2-12 \\ \cline{2-3} 
+                         & スペクトログラムを表示                       & 付録 1.1.2-13 \\ \hline
+  \end{tabular}
+  \end{table}
 
-  \item
-    音声ファイル入出力モジュール\  \ref{wave_handler.py}
+% \begin{enumerate}
+% \renewcommand{\labelenumi}{(\arabic{enumi})}
+% \item
+%   モジュール
 
-  \item
-    関数の実行時間計測・情報表示用デコレータ\ \ref{decorators.py}
+%   \begin{enumerate}
+%   \renewcommand{\labelenumi}{(\arabic{enumi})}
+%   \item
+%     波形プロット簡易化のモジュール\ \ref{plot_tools.py}
 
-  \end{enumerate}
+%   \item
+%     音声ファイル入出力モジュール\  \ref{wave_handler.py}
 
-\item
-  ツール
+%   \item
+%     関数の実行時間計測・情報表示用デコレータ\ \ref{decorators.py}
 
-  \begin{enumerate}
-  \renewcommand{\labelenumi}{(\arabic{enumi})}
-  \item
-    音声ファイル畳み込み用プログラム\ \ref{calc_covolution_wav.py}
+%   \end{enumerate}
 
-  \item
-    ステレオ音声ファイルをLRモノラル音声に分割するプログラム\ \ref{calc_stereo2mono_LR.py}
+% \item
+%   ツール
 
-  \item
-    2つのwavファイル間の伝達関数を求めるプログラム\ \ref{calc_pseudo_ir_between_wav_files.py}
+%   \begin{enumerate}
+%   \renewcommand{\labelenumi}{(\arabic{enumi})}
+%   \item
+%     音声ファイル畳み込み用プログラム\ \ref{calc_covolution_wav.py}
 
-  \item
-    csvファイルの各列のデータをそれぞれwavファイルに変換するプログラム\ \ref{csv_to_wav_each_column.py}
+%   \item
+%     ステレオ音声ファイルをLRモノラル音声に分割するプログラム\ \ref{calc_stereo2mono_LR.py}
 
-  \item
-    目的の音声ファイルからノイズの音声ファイルに含まれる成分を取り除くプログラム（スペクトラムサブトラクション法）\ \ref{calc_subtracted_wav.py}
+%   \item
+%     2つのwavファイル間の伝達関数を求めるプログラム\ \ref{calc_pseudo_ir_between_wav_files.py}
 
-  \item
-    指定秒数分の白色雑音をサンプリング周波数48kHzで生成するプログラム\ \ref{generate_white_noise_as_wav.py}
+%   \item
+%     csvファイルの各列のデータをそれぞれwavファイルに変換するプログラム\ \ref{csv_to_wav_each_column.py}
 
-  \item
-    csvファイルからmp4またはgif画像を生成するプログラム\ \ref{plot_animation_from_csv.py}
+%   \item
+%     目的の音声ファイルからノイズの音声ファイルに含まれる成分を取り除くプログラム（スペクトラムサブトラクション法）\ \ref{calc_subtracted_wav.py}
 
-  \item
-    csvファイルから波形をプロットするプログラム\ \ref{plot_from_csv.py}
+%   \item
+%     指定秒数分の白色雑音をサンプリング周波数48kHzで生成するプログラム\ \ref{generate_white_noise_as_wav.py}
 
-  \item
-    複数のwavファイルから一枚の図に波形をプロットするプログラム\ \ref{plot_multiwave.py}
+%   \item
+%     csvファイルからmp4またはgif画像を生成するプログラム\ \ref{plot_animation_from_csv.py}
 
-  \item
-    スペクトログラムを表示するプログラム\ \ref{plot_spectrogram_librosa.py}
+%   \item
+%     csvファイルから波形をプロットするプログラム\ \ref{plot_from_csv.py}
 
-  \end{enumerate}
-\end{enumerate}
+%   \item
+%     複数のwavファイルから一枚の図に波形をプロットするプログラム\ \ref{plot_multiwave.py}
+
+%   \item
+% スペクトログラムを表示するプログラム\ \ref{plot_spectrogram_librosa.py}
+
+  % \end{enumerate}
+% \end{enumerate}
 
 \subsection{Go言語で制作したプログラム}\label{go}
+
+Pythonで制作したプログラムを\tabref{tab:program_go}に示す。
+
+\begin{table}[H]
+  \centering
+  \caption{Go言語でで制作したプログラム}
+  \label{tab:program_go}
+  \begin{tabular}{|c|l|c|}
+  \hline
+  種類                     & \multicolumn{1}{c|}{用途}                                  & 参照       \\ \hline
+  \multirow{3}{*}{ライブラリ} & 型変換処理                                                    & 付録 1.2.1-2  \\ \cline{2-3} 
+                         & 計算処理                                                     & 付録 1.2.1-3  \\ \cline{2-3} 
+                         & ファイル入出力処理                                                & 付録 1.2.1-4  \\ \hline
+  \multirow{9}{*}{ツール}   & 指定したSN比で音声を合成                                            & 付録 1.2.1-5  \\ \cline{2-3} 
+                         & 2つのwavファイルを畳み込み                                          & 付録 1.2.1-6  \\ \cline{2-3} 
+                         & 2つのwavファイルを畳み込み （フーリエ変換を用いた高速版）                          & 付録 1.2.1-7  \\ \cline{2-3} 
+                         & 2つのwavファイルもしくはcsvファイルを畳み込み（フーリエ変換を用いた高速版）                & 付録 1.2.1-8  \\ \cline{2-3} 
+                         & csvファイルのデータからwavファイルを生成する                                & 付録 1.2.1-9  \\ \cline{2-3} 
+                         & \ref{adf-practice}の実験で用いるADFの設定を記述したJSONファイルを生成          & 付録 1.2.1-10 \\ \cline{2-3} 
+                         & csvファイルのデータから指定したサンプルの平均二乗誤差（MSE）を計算し, csvファイルに新たな列として追記 & 付録 1.2.1-11 \\ \cline{2-3} 
+                         & PortAudioを使用した多チャンネル収音用                                  & 付録 1.2.1-12 \\ \cline{2-3} 
+                         & DSBファイルからwavファイルに変換                                      & 付録 1.2.1-13 \\ \hline
+  \end{tabular}
+  \end{table}
 
 \begin{enumerate}
 \renewcommand{\labelenumi}{(\arabic{enumi})}
@@ -113,10 +164,10 @@ Pythonは\ref{about-python}節で述べた特徴から, 様々な試行をしな
     型変換処理\ \ref{converter.go}
 
   \item
-    計算処理\  \ref{calculator.py}
+    計算処理\  \ref{calculator.go}
 
   \item
-    ファイル入出力処理\ \ref{filehandler.py}
+    ファイル入出力処理\ \ref{filehandler.go}
   \end{enumerate}
 
 \item
