@@ -42,7 +42,7 @@
 
 2つのマイク間の疑似伝達関数を計算するためにはそれぞれのマイクで駆動音を収音する必要がある. 収音は\ref{record-drone}節の構成を2chに拡張して行った. 
 
-疑似伝達関数は2つの駆動音をフーリエ変換し, 除算したものを逆フーリエ変換することで得られる. この処理は\ref{calc\_pseudo\_ir\_between\_wav\_files.py}を実行して行った. 
+疑似伝達関数は2つの駆動音をフーリエ変換し, 除算したものを逆フーリエ変換することで得られる. この処理は付録\ref{calc_pseudo_ir_between_wav_files.py}のプログラムを実行して行った. 
 
 \begin{figure}[H]
 \centering
@@ -53,12 +53,12 @@
 \
 \subsubsection{駆動音と音声信号それぞれで参照信号と目的信号用の伝達関数を畳み込み}\label{convolve-each}
 
-\ref{observation-tf}, \ref{pseudo-tf}で各伝達関数を求めたので, 駆動音・音声信号それぞれ\ref{calc\_convolve\_fast}のプログラムを実行して伝達関数を畳込み, 参照信号と目的信号を生成した. 
+\ref{observation-tf}, \ref{pseudo-tf}で各伝達関数を求めたので, 駆動音・音声信号をそれぞれ付録\ref{convolve_wav_coef}のプログラムを実行して伝達関数と畳込み, 参照信号と目的信号を生成した. 
 
 \
 \subsubsection{指定したSN比で駆動音と音声信号を合成}\label{mix-snr}
 
-\ref{calc\_noise\_mix}を実行し, -40dBから0dBまで5dB刻みで駆動音と音声信号を合成した. 
+付録\ref{calc_noise_mix}のプログラムを実行し, -40dBから0dBまで5dB刻みで駆動音と音声信号を合成した. 
 
 \
 \subsubsection{合成した参照信号と目的信号でADFを実行}\label{exec-adf}
@@ -72,8 +72,8 @@ SN比を-40dB, -20dB, 0dB, フィルタ長を4, 64, 256とした場合の各ア�
 \begin{figure}[H]
 \centering
 \includegraphics[width=13cm]{figures/onepage_legend_label.png}
-\label{fig:onepage}
 \caption{種々のSN比とフィルタにおける各アルゴリズムの収束特性}
+\label{fig:onepage}
 \end{figure}
 
 \
@@ -86,13 +86,13 @@ SN比を-40dB, -20dB, 0dB, フィルタ長を4, 64, 256とした場合の各ア�
 \begin{figure}[H]
 \centering
 \includegraphics[width=13cm]{figures/onepage_8kHz_label.png}
-\label{fig:onepage_8kHz}
 \caption{種々のSN比とフィルタ長における各アルゴリズムの収束特性（8kHz以下）}
+\label{fig:onepage_8kHz}
 \end{figure}
 
 \figref{fig:onepage_8kHz}から分かる通り, 周波数帯域を8kHz以下に限定しても収束特性がほとんど変化しないことがわかる. したがって, 波形に現れたのは8kHz以下の雑音であると推測される. 
 
-NLMSフィルタが有効な結果を得られなかった理由について考察する. 本実験で使用したマイクは無指向性である. また, マイクの配置は参照信号と目的信号の収音を模擬した簡易的なものであった. ここで, \ref{mix-snr}で合成した参照信号と目的信号を比較する. 参照信号と目的信号を\figref{fig:compare_x_d}に示す. 
+NLMSフィルタが有効な結果を得られなかった理由について考察する. 本実験で使用したマイクは無指向性である. また, マイクの配置は参照信号と目的信号の収音を模擬した簡易的なものであった. ここで, \ref{mix-snr}節で合成した参照信号と目的信号を比較する. 参照信号と目的信号を\figref{fig:compare_x_d}に示す. 
 
 \begin{figure}[H]
 \centering
