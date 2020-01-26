@@ -1,4 +1,3 @@
-\
 \chapter{駆動音低減のための予備実験}\label{noise-pre-experiment}
 
 \
@@ -35,7 +34,7 @@
 
 本実験では自作のソフトウェアを使用したが, .wavなどの一般的な音声データ形式を使用する場合, 前述のSoXを利用しても同様に収音が可能である. また, 同じくPortAudioをベースとしたGUIの音声編集ソフトウェアであるAudacity\cite{audacity:online}も有力な候補となる. いずれのソフトウェアも無料で使用可能である. 
 
-\subsection{使用機器}\label{used-equipments-drone}
+\subsection{使用機器}\label{used-equipments-record}
 
 使用機器を以下に示す. 
 
@@ -58,7 +57,6 @@
 
 \item
   オーディオインターフェース ローランド株式会社 DUO-CAPTURE EX S/N.Z6C6056
-  \cite{audio_interface:online}
   % \begin{figure}[H]
   % \centering
   % \includegraphics[width=13cm]{figures/duo-capture.jpg}
@@ -113,6 +111,8 @@
 
 上記より, ドローンの駆動音を有色性の周波数特性を持つことが確認できた. 
 
+\newpage
+
 \
 \section{信号の有色性に対するADFの性能への影響}\label{adf-color-effect}
 
@@ -121,6 +121,7 @@
 
 本節ではADFに対する参照信号を\ref{record-drone}節で収音したドローンの駆動音とした場合と白色雑音とした場合の収束に要するサンプル数（収束速度）, 収束した後の精度（推定精度）を比較する. 
 これにより, 各適応アルゴリズムの信号の有色性に対する収束性能への影響を評価することを目的とする. 
+
 
 \
 \subsection{実験方法}\label{instruction-color}
@@ -161,11 +162,13 @@
 \end{figure}
 
 \
-\subsection{考察}\label{consideration-color}
+\subsection{考察}\label{consideration-benchmark}
 
 \figref{fig:drone_algo_convergence}, \figref{fig:white_algo_convergence}より, 信号に駆動音を使用した場合, 理論通り収束性能が低下していることがわかる. 特にRLSアルゴリズムの場合, 収束時のMSEが約80dBから約50dBとなり, 収束するまでに必要なサンプル数も約300,000サンプル程度まで増加していることがわかる. サンプリング周波数は48kHzであるので収束までに約6秒かかることになる. 一方, NLMSアルゴリズムとAPアルゴリズムは収束時のMSEは10dBほど悪化しているが, RLSアルゴリズムほど大きい性能低下は見られなかった. 
 
 以上より, リアルタイム処理を目的とする場合NLMS・APアルゴリズムの使用が適していると思われる. 
+
+\newpage
 
 \
 \section{ADFライブラリのベンチマーク}\label{benchmark}
@@ -222,9 +225,8 @@ Go言語ではテストファイルに\texttt{func\ BenchmarkXxx(b\ *testing.B)}
   \end{tabular}
 \end{table}
 \
-\subsection{考察}\label{consideration-color}
+\subsection{考察}
 
-\
 \subsubsection{メモリ使用量について}\label{about-memory}
 
 \tabref{tab:benchmark_raspi}, \tabref{tab:benchmark_mac}より, 各アルゴリズムのメモリ使用量はNLMSアルゴリズムが一番少なく, APアルゴリズム, RLSアルゴリズムと多くなっている. これは理論式に即した物となっており, 妥当な値である. 
@@ -233,7 +235,6 @@ Go言語にはガーベッジコレクションが実装されており, メモ�
 Pi 3 Model
 Bのメモリは1GBと潤沢であるため, 使用メモリに関しては実用範囲内であると思われる. 
 
-\
 \subsubsection{演算時間について}\label{about-time}
 
 \tabref{tab:benchmark_raspi}, \tabref{tab:benchmark_mac}より, NLMSアルゴリズムの演算時間はAP・RLSに比べて数十倍高速であることがわかる. 一方, Raspberry Piの演算時間はMacBook Proに比べるて十倍程度長いことがわかる. 

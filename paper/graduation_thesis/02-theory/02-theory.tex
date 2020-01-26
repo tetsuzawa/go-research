@@ -399,7 +399,7 @@ NLMS法と同様にラグランジュの未定乗数法を用いた, 最適解�
 \end{equation}
 
 
-\subsubsection{適応アルゴリズムの比較}\label{algo-compare}
+\subsection{適応アルゴリズムの比較}\label{algo-compare}
 
 \tabref{tab:formula}は代表的な適応アルゴリズムの関係をニュートン法を使用して整理したものである. 
 
@@ -419,6 +419,8 @@ NLMS法と同様にラグランジュの未定乗数法を用いた, 最適解�
 
 \tabref{tab:formula}のアルゴリズムは下の手法ほど予測に用いるサンプル数が増加する. これに伴い, 一般に収束速度も速くなる. 一方, この代償として計算量が増大する. したがって, 実装するハードウェアの規模や, 求められる収束速度などを考慮して, アルゴリズムを選択する必要がある\cite{adaptive_filters}. 
 
+\newpage
+
 \
 \section{適応フィルタを使用した雑音低減の手法}\label{adf-noise-reduction}
 
@@ -431,7 +433,7 @@ ANCのブロック図を\figref{fig:anc_block}に示す.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=10cm]{figures/anc.png}
+\includegraphics[width=9cm]{figures/anc.png}
 \caption{ドローンの駆動音に対するANCの想定ブロック図}
 \label{fig:anc_block}
 \end{figure}

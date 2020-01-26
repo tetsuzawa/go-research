@@ -17,11 +17,9 @@ Piといったハードウェアの構成と製作について述べる.
 \renewcommand{\labelenumi}{(\arabic{enumi})}
 \item
   ドローンの機体 HQuad500 Hardware kit Lynxmotion株式会社
-  \cite{hquad500_hardware:online}
-
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/hquad500_hardware.jpg}
+  \includegraphics[width=10cm]{figures/hquad500_hardware.jpg}
   \caption{ドローンの機体}
   \label{fig:hquad500}
   \end{figure}
@@ -29,50 +27,45 @@ Piといったハードウェアの構成と製作について述べる.
 
 \item
   ESC (Electronic Speed Controller) 12A ESC (SimonK) Lynxmotion株式会社
-  \cite{esc:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/esc.jpg}
+  \includegraphics[width=10cm]{figures/esc.jpg}
   \caption{ESC}
   \label{fig:esc}
   \end{figure}
 
 \item
   ブラシレスモータ Brushless Motor 28x30 1000kv Lynxmotion株式会社
-  \cite{motor:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/brushless_motor.jpg}
+  \includegraphics[width=10cm]{figures/brushless_motor.jpg}
   \caption{ブラシレスモータ}
   \label{fig:motor}
   \end{figure}
 
 \item
   フライトコントローラ Quadrino Nano Lynxmotion株式会社
-  \cite{quadrino_nano:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/quadrino_nano.jpg}
+  \includegraphics[width=10cm]{figures/quadrino_nano.jpg}
   \caption{フライトコントローラ}
   \label{fig:quadrino_nano}
   \end{figure}
 
 \item
   リポバッテリー充電器 18W LiPo Battery Charger Lynxmotion株式会社
-  \cite{lipo_charger:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/lipo_charger.jpg}
+  \includegraphics[width=10cm]{figures/lipo_charger.jpg}
   \caption{リポバッテリー充電器}
   \label{fig:lipo_charger}
   \end{figure}
 
 \item
   リポバッテリー 11.1V (3S), 3500mAh 30C LiPo Battery Pack Lynxmotion株式会社
-  \cite{lipo_battery:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/lipo_battery.jpg}
+  \includegraphics[width=10cm]{figures/lipo_battery.jpg}
   \caption{リポバッテリー}
   \label{fig:lipo_battery}
   \end{figure}
@@ -80,20 +73,18 @@ Piといったハードウェアの構成と製作について述べる.
 \item
   ラジオレシーバ R9DS 10 channels 2.4GHz DSSS FHSS Receiver
   RadioLink株式会社
-  \cite{r9ds:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/r9ds.jpg}
+  \includegraphics[width=10cm]{figures/r9ds.jpg}
   \caption{ラジオレシーバ}
   \label{fig:radio_reciever}
   \end{figure}
 
 \item
   トランスミッタ AT9S 2.4GHz 10CH transmitter RadioLink株式会社
-  \cite{at9s:online}
   \begin{figure}[H]
   \centering
-  \includegraphics[width=11cm]{figures/at9s.jpg}
+  \includegraphics[width=10cm]{figures/at9s.jpg}
   \caption{トランスミッタ}
   \label{fig:transmitter}
   \end{figure}
@@ -128,6 +119,8 @@ Piといったハードウェアの構成と製作について述べる.
 \label{fig:drone_block}
 \end{figure}
 
+\newpage
+
 \
 \section{バイノーラルマイクの製作}\label{binaural-mic}
 
@@ -150,7 +143,6 @@ Piといったハードウェアの構成と製作について述べる.
   \renewcommand{\labelenumi}{(\arabic{enumi})}
   \item
     エレクトレットコンデンサマイク XCM6035 株式会社秋月電子通商
-    \cite{XCM6035:online}
     % \begin{figure}[H]
     %   \centering
     %   \includegraphics[width=13cm]{figures/microphone.jpg}
@@ -159,7 +151,6 @@ Piといったハードウェアの構成と製作について述べる.
     % \end{figure}
   \item
     シールドスリムロボットケーブル KRT-SW 株式会社秋月電子通商
-    \cite{sield_slim_robot_cable:online}
     % \begin{figure}[H]
     %   \centering
     %   \includegraphics[width=13cm]{figures/sielded_robot_cable.jpg}
@@ -188,6 +179,7 @@ Piといったハードウェアの構成と製作について述べる.
     % \end{figure}
   \end{enumerate}
 
+\newpage
 
 \
 \section{Raspberry Piについて}\label{about-raspberry}
@@ -261,7 +253,7 @@ Raspberry Piを実験で使用する準備として, 以下の手順で初期設
 
 Raspberry PiはADC（ADコンバータ）を搭載していないため, マイクからの入力信号を扱うにはADコンバータを導入する必要がある. 
 
-本研究で用いたのはマルツエレック株式会社のPumpkin Pi\cite{pumpkin_pi:online}である. PumpkinPiは計測用とオーディオ用のデュアルA-Dコンバータを搭載しており, Raspberry Piにオーディオ入力, アナログ入力機能を加えることが可能となる. 
+本研究で用いたのはマルツエレック株式会社のPumpkin Piである. PumpkinPiは計測用とオーディオ用のデュアルA-Dコンバータを搭載しており, Raspberry Piにオーディオ入力, アナログ入力機能を加えることが可能となる. 
 
 Pumpkin Piの仕様を以下に示す. 
 

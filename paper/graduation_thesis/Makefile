@@ -16,7 +16,7 @@ build:
 	platex    -kanji=utf8 main
 	dvipdfmx  -p a4 main
 clean:
-	/bin/rm -f *~ *.log *.dvi *.blg *.aux *.out *.bbl *.lot *.toc *.lof *.pdf
+	/bin/rm -f *~ *.log *.dvi *.blg *.aux *.out *.bbl *.lot *.toc *.lof *.fdb_latexmk *.fls
 	/bin/rm -f 00-abstract/*.aux
 	/bin/rm -f 01-introduction/*.aux
 	/bin/rm -f 02-theory/*.aux

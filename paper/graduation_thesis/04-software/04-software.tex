@@ -31,6 +31,8 @@ Pythonは\ref{about-python}節で述べた特徴から, 様々な試行をしな
 
 % \section{Pythonを使用した適応フィルタの予備実験}\label{python-experiment}
 
+\newpage
+
 \
 \section{音声ファイル処理およびグラフ作成プログラムの制作}\label{create-program}
 
@@ -60,7 +62,7 @@ Pythonで制作したプログラムを\tabref{tab:program_python}に示す。
                          & ステレオ音声ファイルをLRモノラル音声に分割            & 1.1.2-5  \\ \cline{2-3} 
                          & 2つのwavファイル間の伝達関数を計算               & 1.1.2-6  \\ \cline{2-3} 
                          & csvファイルの各列のデータをそれぞれwavファイルに変換     & 1.1.2-7  \\ \cline{2-3} 
-                         & \begin{tabular}{c}目的の音声ファイルからノイズの音声ファイル\\に含まれる成分を取り除く\end{tabular} & 1.1.2-8  \\ \cline{2-3} 
+                         & \begin{tabular}{l}目的の音声ファイルからノイズの音声ファイル\\に含まれる成分を取り除く\end{tabular} & 1.1.2-8  \\ \cline{2-3} 
                          & 指定秒数分の白色雑音をサンプリング周波数48kHzで生成      & 1.1.2-9  \\ \cline{2-3} 
                          & csvファイルからmp4またはgif画像を生成           & 1.1.2-10 \\ \cline{2-3} 
                          & csvファイルから波形をプロット                  & 1.1.2-11 \\ \cline{2-3} 
@@ -141,11 +143,11 @@ Pythonで制作したプログラムを\tabref{tab:program_go}に示す。
                          & ファイル入出力処理                                                & 1.2.1-4  \\ \hline
   \multirow{9}{*}{ツール}   & 指定したSN比で音声を合成                                            & 1.2.1-5  \\ \cline{2-3} 
                          & 2つのwavファイルを畳み込み                                          & 1.2.1-6  \\ \cline{2-3} 
-  & \begin{tabular}{c}2つのwavファイルを畳み込み\\（フーリエ変換を用いた高速版）\end{tabular}                          & 1.2.1-7  \\ \cline{2-3} 
-                         & \begin{tabular}{c}2つのwavファイルもしくはcsvファイルを畳み込み\\（フーリエ変換を用いた高速版）\end{tabular}                 & 1.2.1-8  \\ \cline{2-3} 
+  & \begin{tabular}{l}2つのwavファイルを畳み込み\\（フーリエ変換を用いた高速版）\end{tabular}                          & 1.2.1-7  \\ \cline{2-3} 
+                         & \begin{tabular}{l}2つのwavファイルもしくはcsvファイルを畳み込み\\（フーリエ変換を用いた高速版）\end{tabular}                 & 1.2.1-8  \\ \cline{2-3} 
                          & csvファイルのデータからwavファイルを生成する                                & 1.2.1-9  \\ \cline{2-3} 
-                         & \begin{tabular}{c}\ref{adf-practice}章の実験で用いるADFの設定を記述した\\JSONファイルを生成\end{tabular}           & 1.2.1-10 \\ \cline{2-3} 
-                         & \begin{tabular}{c}csvファイルのデータから指定したサンプルの\\平均二乗誤差（MSE）を計算し, \\ csvファイルに新たな列として追記\end{tabular}  & 1.2.1-11 \\ \cline{2-3} 
+                         & \begin{tabular}{l}第\ref{adf-practice}章の実験で用いるADFの設定を記述した\\JSONファイルを生成\end{tabular}           & 1.2.1-10 \\ \cline{2-3} 
+                         & \begin{tabular}{l}csvファイルのデータから指定したサンプルの\\平均二乗誤差（MSE）を計算し, \\ csvファイルに新たな列として追記\end{tabular}  & 1.2.1-11 \\ \cline{2-3} 
                          & PortAudioを使用した多チャンネル収音用                                  & 1.2.1-12 \\ \cline{2-3} 
                          & DSBファイルからwavファイルに変換                                      & 1.2.1-13 \\ \hline
   \end{tabular}
@@ -205,6 +207,7 @@ Pythonで制作したプログラムを\tabref{tab:program_go}に示す。
 %   \end{enumerate}
 % \end{enumerate}
 
+\newpage
 
 \section{ADFライブラリの制作}\label{create-adflib}
 
