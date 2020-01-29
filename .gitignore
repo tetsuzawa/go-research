@@ -15,3 +15,6 @@ venv
 *.code-workspace
 *.aup
 
+sofafiles/
+*.sofa
+
