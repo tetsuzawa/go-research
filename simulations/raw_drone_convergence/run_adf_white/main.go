@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/tetsuzawa/go-adflib/adf"
-	research "github.com/tetsuzawa/go-research/ADF/raw_drone_convergence"
+	research "github.com/tetsuzawa/graduation-research/ADF/raw_drone_convergence"
 )
 
 const (
