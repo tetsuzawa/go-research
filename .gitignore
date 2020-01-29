@@ -38,6 +38,25 @@ slide/
 bin/
 build/
 
+__chche__
+*chche*
+__pycache__
+*.wav
+*.DDA
+*.DDB
+*.DSB
+*.csv
+*.dba
+.*
+venv
+.ipynb_checkpoints
+*.png
+*.jpg
+*.code-workspace
+*.aup
+*.sofa
+
+
 
 #######################################################################################
 ##                                                                                   ##
@@ -329,3 +348,4 @@ TSWLatexianTemp*
 # option is specified. Footnotes are the stored in a file with suffix Notes.bib.
 # Uncomment the next line to have this generated file ignored.
 #*Notes.bib
+
