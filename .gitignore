@@ -54,6 +54,7 @@ venv
 *.jpg
 *.code-workspace
 *.aup
+*.sofa
 
 
 
