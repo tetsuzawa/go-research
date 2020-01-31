@@ -1,0 +1,875 @@
+ＣＡＬＳＡＴ３２　衛星情報ファイル
+
+＠OSCAR-3
+-
+-
+-
+Uplink:   145.9750 - 146.0250 MHz SSB/CW
+Downlink: 144.3250 - 144.3750 MHz SSB/CW
+打ち上げ日 : March 09, 1965
+
+＠AO-5
+-
+-
+-
+Telemetry Beacons: 144.0500 MHz CW
+                    29.4500 MHz CW
+打ち上げ日 : January 23, 1970
+
+＠AO-07
+ 29.502   CW
+145.900   USB
+ 29.450   USB
+Uplink:   145.850 to 145.950 MHz CW/USB Mode A
+          432.125 to 432.175 MHz CW/LSB Mode B
+Downlink:  29.400 to 29.500 MHz CW/USB Mode A (1W PEP)
+          145.975 to 145.925 MHz CW/USB Mode B (8W PEP)
+          145.975 to 145.925 MHz CW/USB Mode C (2W PEP)
+Beacons:   29.502 MHz
+          145.972 MHz
+          435.100 MHz
+         2304.100 MHz
+打ち上げ日 : November 15, 1974
+http://www.amsat.org/amsat/sats/n7hpr/ao7.html
+
+＠AO-07[A]
+ 29.502   CW
+145.900   USB
+ 29.450   USB
+Uplink:   145.850 to 145.950 MHz CW/USB Mode A
+          432.125 to 432.175 MHz CW/LSB Mode B
+Downlink:  29.400 to 29.500 MHz CW/USB Mode A (1W PEP)
+          145.975 to 145.925 MHz CW/USB Mode B (8W PEP)
+          145.975 to 145.925 MHz CW/USB Mode C (2W PEP)
+Beacons:   29.502 MHz
+          145.972 MHz
+          435.100 MHz
+         2304.100 MHz
+打ち上げ日 : November 15, 1974
+http://www.amsat.org/amsat/sats/n7hpr/ao7.html
+
+＠AO-07[B]
+145.972   CW
+432.150   LSB
+145.950   USB
+Uplink:   145.850 to 145.950 MHz CW/USB Mode A
+          432.125 to 432.175 MHz CW/LSB Mode B
+Downlink:  29.400 to 29.500 MHz CW/USB Mode A (1W PEP)
+          145.975 to 145.925 MHz CW/USB Mode B (8W PEP)
+          145.975 to 145.925 MHz CW/USB Mode C (2W PEP)
+Beacons:   29.502 MHz
+          145.972 MHz
+          435.100 MHz
+         2304.100 MHz
+打ち上げ日 : November 15, 1974
+http://www.amsat.org/amsat/sats/n7hpr/ao7.html
+
+＠AO-8
+-
+-
+-
+Mode V/U (J) Linear Transponder (Non-Inverting): Non-Operational
+ Uplink: 	145.9000 - 146.0000 MHz SSB/CW
+ Downlink 	435.1990 - 435.2000 MHz SSB/CW
+Mode V/U (J) TLM Beacon: Non-Operational
+ Downlink 	435.0950 MHz CW
+Mode V/A (A) Linear Transponder (Non-Inverting): Non-Operational
+ Uplink: 	145.8500 - 145.9000 MHz SSB/CW
+ Downlink 	 29.4000 -  29.5000 MHz SSB/CW
+Mode V/A (A) TLM Beacon: Non-Operational
+ Downlink 	29.4020 MHz CW
+
+＠AO-10
+145.810   CW
+435.105   LSB
+145.900   USB
+MODE-B
+Uplink:   435.030 to 435.180 MHz CW/LSB
+Downlink: 145.975 to 145.825 MHz CW/USB
+Beacon:   145.810 MHz (unmodulated carrier)
+打ち上げ日 : June 16, 1983
+http://www.cstone.net/~w4sm/AO-10.html
+
+＠AO-16
+-
+145.900   FM
+437.025   USB 
+Uplink: 145.900 FM 1200-baud Manchester FSK (reserved)
+        145.920 FM VOICE
+        145.940 FM 1200-baud Manchester FSK (reserved)
+        145.960 FM 1200-baud Manchester FSK (reserved)
+Downlink: 437.026 MHz SSB (1200-baud PSK)
+Mode-S Beacon: 2401.1428 MHz
+Mode and Antenna Polarization:
+ U: RC 437.050 MHz RHCP
+   PSK 437.025 MHz LHCP
+ V: Linear
+Broadcast Callsign: PACSAT-11
+BBS: PACSAT-12
+打ち上げ日: January 22, 1990
+http://www.amsat.org/amsat/sats/n7hpr/ao16.html
+
+＠AO-27
+-
+145.850   FM
+436.795   FM
+Uplink:   145.850 MHz FM
+Downlink: 436.795 MHz FM
+Mode and Antenna Polarization:
+V: Linear
+U: Linear
+日照時間のみ利用可能
+打ち上げ日: September 26, 1993
+http://www.ao27.org/
+
+＠AO-37
+-
+145.820   FM
+436.500   FM
+打ち上げ日: January 27, 2000
+
+＠AO-40
+145.323   USB     +2256.000
+-
+-
+ﾋﾞｰｺﾝ : G.B           M.B           E.B
+ V       -          145.898MHz       -
+ U    435.438MHz    435.588MHz    435.838MHz 
+ S1  2400.188MHz   2400.338MHz   2400.588MHz 
+ S2  2401.168MHz   2401.323MHz   2401.568MHz
+ X  10450.975MHz  10451.125MHz  10451.375MHz 
+ K  24047.885MHz  24048.035MHz  24048.285MHz 
+ 赤外レーザ         360    THz
+ｱｯﾌﾟﾘﾝｸ：
+ V       145.840 -  145.990MHz
+ U       435.550 -  435.800MHz
+ L1     1269.250 - 1269.500MHz
+ L2     1268.325 - 1268.575MHz
+ S1     2400.350 - 2400.600MHz
+ﾀﾞｳﾝﾘﾝｸ：
+ S2     2401.225 - 2401.475MHz
+ K     24048.010 -24048.060MHz
+ RUDAK  2401.74MHz（主に9600bps FSK）
+打ち上げ日: November 16, 2000
+http://www.amsat-dl.org/journal/adlj-p3d.htm
+
+＠AO-49
+-
+435.275   FM
+145.825   USB
+Uplink 435.275 1200-baud AFSK
+Downlink 145.825 9600-baud FSK
+(optional voice message)
+Broadcast callsign: DP0AIS
+打ち上げ日 : December 20, 2002
+http://amend.gmxhome.de
+
+＠AO-51
+-
+145.920   FM
+435.300   FM
+Analog voice downlink: 435.300 MHz FM
+                       435.150 MHz FM
+                      2401.200 Mhz FM
+Analog voice uplink:   145.880 MHZ FM
+                       145.880 MHz USB
+                       145.920 MHz FM 67Hz PL tone
+                      1268.700 MHz FM 67Hz PL tone
+Digital Downlinks:     435.150 MHz FM, 38k4 Digital, PBP, 1 watt output
+                      2401.200 MHz FM 38k4 bps, AX.25
+Digital Uplink:        145.860 MHz FM, 9k6 Digital, Pacsat Broadcast
+Protocol              1268.700 MHz FM, 9k6 PBP Digital
+Mode and Antenna Polarization:  
+ T: Linear
+ V: Linear
+ U: TX A (usually digital)LHCP
+    TX B (usually analog) RHCP
+ L: Linear
+ S: Linear
+Broadcast: PECHO-11
+BBS: PECHO-12
+打ち上げ日 : Jun 29, 2004
+http://www.amsat.org/amsat-new/echo/
+
+＠AO-51[UVU]
+435.150   FM
+145.920   FM
+435.300   FM
+
+＠AO-51[OVU]
+-
+145.880   USB
+435.300   FM
+
+＠AO-51[OLS]
+-
+1268.700  FM
+145.200   FM      +2256
+2401.2MHzを145.2MHzで受信するコンバータを使用する場合
+
+＠AO-51[OSU]
+-
+144.700   USB     +1124
+435.300   FM
+144.7MHzを1268.7MHzにアップコンバートして送信する場合
+
+＠CUTE-I[CW]
+436.8375  CW
+-
+-
+その他のﾋﾞｰｺﾝ : 437.470MHz FSK AX.25 or SRLL 1200bps
+打ち上げ日 : June 30,2003
+http://lss.mes.titech.ac.jp/ssp/spacerium/cute1blog/
+
+＠CUTE-I[FSK]
+437.470   FM
+-
+-
+その他のﾋﾞｰｺﾝ : 436.8375MHz CW
+打ち上げ日 : June 30,2003
+http://lss.mes.titech.ac.jp/ssp/spacerium/cute1blog/
+
+＠DO-17
+-
+-
+145.825   FM
+Downlink: Downlink 145.825 MHz FM 1200 Baud AFSK
+Beacon: 2401.220 MHz
+打ち上げ日: January 22, 1990
+http://www.amsat.org/amsat/sats/n7hpr/do17.html
+
+＠DO-64
+145.870   CW
+435.550   LSB
+145.900   USB
+Telemetry: 145.870 MHz
+Downlink: 145.880 to 145.920 MHz
+Uplink:   435.530 to 435.570 MHz
+Launch Date: April 28, 2008
+http://www.amsat.org.uk/iaru/finished_detail.asp?serial=68
+
+＠FO-12
+-
+-
+-
+Mode V/U (J) Linear Transponder (Inverting): Non-Operational
+Uplink: 	145.9000 - 146.0000 MHz SSB/CW
+Downlink 	435.8000 - 435.9000 MHz SSB/CW
+Mode V/U (J) Packet: Non-Operational
+Uplink: 	145.8500 MHz MFSK 1200 BPS
+Uplink: 	145.8700 MHz MFSK 1200 BPS
+Uplink: 	145.8900 MHz MFSK 1200 BPS
+Uplink: 	145.9100 MHz MFSK 1200 BPS
+Downlink 	435.9100 MHz PSK 1200 BPS
+Telemetry Beacon: 435.7950 MHz SSB/CW
+打ち上げ日 : August 12, 1986
+
+＠FO-20
+435.795   CW         
+145.9476  LSB
+435.850   USB
+MODE-JA
+ ﾋﾞｰｺﾝ   : 435.795MHz CW         
+ ｱｯﾌﾟﾘﾝｸ : 146.000 - 145.900MHz CW/LSB
+ ﾀﾞｳﾝﾘﾝｸ : 435.800 - 435.900MHz CW/USB
+MODE-JD
+ ｱｯﾌﾟﾘﾝｸ : 145.85/87/89/91MHz 1200BPS AFSK
+ ﾀﾞｳﾝﾘﾝｸ : 435.910MHz         1200BPS BPSK
+打ち上げ日 : February 07, 1990
+http://www.jarl.or.jp/Japanese/3_Fuji/jasmenu.htm
+
+＠FO-29
+435.795   CW         
+145.9522  LSB
+435.850   USB
+Voice/CW Mode JA
+Uplink:   145.90 to 146.00 MHz CW/LSB
+Downlink: 435.80 to 435.90 MHz CW/USB
+Beacon:   435.795 MHz
+Digital Mode JD
+Uplink:   145.850 145.870 145.910 MHz FM
+Downlink: 435.910 MHz 1200-baud BPSK or 9600-baud FSK
+Callsign: 8J1JCS
+Digitalker: 435.910 MHz
+Mode and Antenna Polarization:
+V: RHCP
+U: RHCP
+打ち上げ日 : August 17, 1996
+http://www.jarl.or.jp/Japanese/3_Fuji/jasmenu.htm
+
+＠GO-32
+435.325   FM
+145.890   FM
+435.225   FM
+Downlink: 435.225 MHz FM (9600-baud FSK)
+          435.325 Mhz - Not Available - temperature problems
+Uplinks:  145.850 FM
+          145.890 FM
+          145.930 FM
+         1269.700 FM
+         1269.800 FM
+         1269.900 FM
+Broadcast Callsign: 4XTECH-11
+BBS Callsign: 4XTECH-12
+打ち上げ日: July 10, 1998
+http://www.iarc.org/techsat/techsat.html
+
+＠HO-59
+435.275   CW
+-
+-
+Mode: /u
+Telemetry Downlink: 437.4250 MHz AFSK 1200 BPS
+Beacon:             437.2750 MHz CW
+Callsign: JR8YJT
+打ち上げ日 : September 22, 2006
+
+＠HO-68
+435.790   CW
+145.950   LSB
+435.740   USB
+Uplinks:   145.8250 MHz FM, PL 67.0 Hz.
+           145.9250 - 145.9750 MHz SSB/CW
+           145.8250 MHz AFSK 1200 BPS
+Downlinks: 435.6750 MHz FM
+           435.7650 - 435.7150 MHz SSB/CW
+           435.6750 MHz AFSK 1200 BPS
+Beacon:    435.7900 MHz CW
+Mode and Antenna Polarization:
+V: LHCP 2.0dBi max
+U: RHCP 3.0dBi max
+Launch Date: December 15, 2009
+http://www.amsat.org.uk/iaru/formal_detail.asp?serial=108
+
+＠IO-26
+-
+145.900   FM
+435.808   USB
+Uplinks:  145.875 MHz FM 1200-baud
+          145.900 MHz FM 1200-baud
+          145.925 MHz FM 1200-baud
+          145.950 MHz FM 1200-baud
+Downlink: 435.808 MHz PSK
+Broadcast Callsign: ITMSAT-11
+BBS: ITMSAT-12
+打ち上げ日 : September 26, 1993
+http://www.itamsat.org
+
+＠ISS
+-
+437.800   FM
+145.800   FM
+Digital/APRS:
+Worldwide packet uplink:   145.990 MHz FM
+Worldwide packet downlink: 145.800 Mhz FM
+Voice:
+ Region 1 voice uplink:   145.200 MHz FM
+ Region 2/3 voice uplink: 144.490 MHz FM
+ Worldwide downlink:      145.800 MHz FM
+SSTV TESTING:
+ Worldwide Reported Downlink: 145.800 MHz FM
+ Crossband Repeater:
+ Repeater Uplink:   437.800 MHz FM
+ Repeater Downlink: 145.800 MHz FM
+Mode and Antenna Polarization:
+ V: Linear
+ U: Linear
+Callsigns:
+ German:  DP0ISS
+ Russian: RS0ISS, RZ3DZR
+ USA: NA1SS
+ Packet Mailbox: RS0ISS-11
+ Packet Keyboard: RS0ISS-3
+ Digipeater callsign: ARISS
+http://www.jarl.or.jp/ariss/
+
+＠KO-23
+-
+145.850   FM
+435.175   FM
+Uplink:   145.900 MHz FM (9600-baud FSK)
+Downlink: 435.170 MHz FM
+Broadcast Callsign: HLO1-11
+BBS: HLO1-12
+打ち上げ日: August 10, 1992
+http://www.amsat.org/amsat/sats/n7hpr/ko23.html
+
+＠KO-25
+-
+145.870   FM
+436.500   FM
+Uplink:   145.980 MHz FM 9600-baud FSK
+Downlink: 436.500 MHz FM
+Broadcast Callsign: HL02-11
+BBS: HL02-12
+打ち上げ日: September 26, 1993
+http://www.amsat.org/amsat/sats/n7hpr/ko25.html
+
+＠LIBERTAD-1
+-
+-
+-
+Callsign: 5K3L
+Uplink:   145.825 MHz 1200 AFSK ax25 APRS
+Downlink: 437.399 MHz 1200 AFSK ax25 APRS
+Telemetry Beacon: 437.4050 MHz 1200 AFSK ax25
+
+＠LO-19
+-
+145.840   FM
+437.150   USB
+Uplinks:          145.840 MHz 1200-baud Manchester FSK
+                  145.860 MHz 1200-baud Manchester FSK
+                  145.880 MHz 1200-baud Manchester FSK
+                  145.900 MHz 1200-baud Manchester FSK
+CW downlink:      437.125 MHz
+Digital downlink: 437.150 MHz SSB (RC-BPSK 1200-baud PSK)
+Broadcast Callsign: LUSAT-11
+BBS: LUSAT-12o
+打ち上げ日: January 22, 1990
+http://www.amsat.org/amsat/sats/n7hpr/lo19.html
+
+＠MO-46
+-
+145.850   FM
+437.325   FM
+Uplinks:   145.850 MHz
+           145.925 MHz 9600-baud FSK
+Downlink:  437.325 MHz
+Broadcast callsign: MYSAT3-11
+BBS:                MYSAT3-12
+打ち上げ日: September 26, 2000
+http://www.amsat.org/amsat/sats/n7hpr/tiungsat1.html
+
+＠NCUBE-2
+-
+-
+-
+Proposed Callsign: TBA
+Proposed Transmit Frequency:  437.305MHz
+                             2407.250MHz
+打ち上げ日：October 27, 2005
+http://www.ncube.no
+
+＠NO-44
+-
+-
+-
+General Usage Uplink/Downlink:145.827 MHz 1200 Baud
+Special Usage Downlink: 144.390 Mhz 1200 Baud
+打ち上げ日: September 30, 2001
+http://pcsat.aprs.org
+
+＠NO-45
+-
+145.945   FM
+437.095   FM
+Downlink: 437.095 MHz 1200 baud AX-25 AFSK
+Uplink: 145.945 MHz UI Digipeater
+Digi Callsign: KE6QMD
+打ち上げ日: September 30, 2001
+http://web.usna.navy.mil/~bruninga/pcsat/contract.txt
+
+＠NO-60
+-
+-
+-
+Main Downlink:      145.825 Mhz FM APRS AX25
+APRS Uplink:        145.825 MHz FM APRS AX25
+Voice/PSK31 Uplink:  28.120 MHz
+Packet to Voice ID: RAFT
+打ち上げ日 : December 21, 2006
+
+＠NO-61
+-
+-
+-
+Uplink/Downlink: 145.825 Mhz FM APRS AX25
+打ち上げ日 : December 21, 2006
+
+＠NOAA-10
+-
+-
+-
+打ち上げ日: September 17, 1986
+
+＠NOAA-11
+-
+-
+-
+打ち上げ日: September 24, 1988
+http://www.oso.noaa.gov/poesstatus/spacecraftStatusSummary.asp?spacecraft=11
+
+＠NOAA-12
+137.50    FM
+-
+-
+打ち上げ日: May 14, 1991
+http://www.oso.noaa.gov/poesstatus/spacecraftStatusSummary.asp?spacecraft=12
+
+＠NOAA-14
+137.62    FM
+-
+-
+打ち上げ日: December 30, 1994
+http://www.oso.noaa.gov/poesstatus/spacecraftStatusSummary.asp?spacecraft=14
+
+＠NOAA-15
+137.50    FM
+-
+-
+打ち上げ日: May 13, 1998
+http://www.oso.noaa.gov/poesstatus/spacecraftStatusSummary.asp?spacecraft=15
+
+＠NOAA-16
+1702.5    FM
+-
+-
+打ち上げ日: Sep 21, 2000
+http://www.oso.noaa.gov/poesstatus/spacecraftStatusSummary.asp?spacecraft=16
+
+＠NOAA-17
+137.62    FM
+-
+-
+打ち上げ日: Jun 24, 2002
+http://www.oso.noaa.gov/poesstatus/spacecraftStatusSummary.asp?spacecraft=17
+
+＠NOAA-18
+137.9125  FM
+-
+-
+打ち上げ日: Feb 06, 2005
+http://www.oso.noaa.gov/poesstatus/spacecraftStatusSummary.asp?spacecraft=18
+
+＠NOAA-19
+137.10    FM
+-
+-
+打ち上げ日: Jun 2, 2009
+http://www.oso.noaa.gov/poesstatus/spacecraftStatusSummary.asp?spacecraft=19
+
+＠OO-38
+-
+-
+437.100   FM
+Mode U TLM Beacon
+Downlink: 437.1000 MHz 9600 FSK
+
+＠PCSAT-2
+-
+-
+-
+Voice Digital Uplink:    145.990 MHz
+Voice response Downlink: 437.975 MHz
+Digital Downlink:        435.275 MHz
+Digital Uplink:          145.825 MHz
+ISS digipeater uplink:   145.990 MHz
+PSK-31 Downlink:         435.275 MHz
+PSK-31 Uplink:            29.401 MHz
+CALLSIGN: pcsat2
+打ち上げ日：August 1, 2005
+http://web.usna.navy.mil/~bruninga/pcsat2.html
+
+＠PO-28
+-
+145.925   FM
+435.075   FM
+Downlink: 429.950
+Uplink: Not until handover back to Amatuer usage
+Broadcast callsign: POSAT1-11
+BBS callsign:       POSAT1-12
+打ち上げ日：September 25, 1993
+http://www.ee.surrey.ac.uk/SSC/CSER/UOSAT/missions/posat1.html
+
+＠PO-34
+436.500   FM
+-
+-
+Uplink/downlink: 436.500 MHz
+打ち上げ日: October 30, 1998
+http://www.sp.nps.navy.mil/pansat/
+
+＠RS-10/11
+ 29.357   CW
+145.885   USB
+ 29.375   USB
+MODE-A
+ ﾋﾞｰｺﾝ   :  29.357MHz CW
+ ｱｯﾌﾟﾘﾝｸ : 145.865 - 145.905MHz CW/USB
+ ﾀﾞｳﾝﾘﾝｸ :  29.350 -  29.400MHz CW/USB
+http://www.amsat.org/amsat/sats/n7hpr/rs1011.html
+
+＠RS-12
+ 29.408   CW
+145.930   USB
+ 29.430   USB
+Uplink:   21.210 to 21.250 MHz CW/USB
+Downlink: 29.410 to 29.450 MHz CW/USB
+Beacon:   29.408 MHz
+Robot:    29.454 MHz
+打ち上げ日 : February 5, 1991
+http://www.amsat.org/amsat/sats/n7hpr/rs1213.html
+
+＠RS-13
+145.860   CW
+ 21.280   USB
+145.880   USB
+Uplink: 21.260 to 21.300 MHz CW/USB
+Downlink: 145.860 to 145.900 MHz CW/USB
+Beacon: 145.860 MHz
+Robot: 145.908 MHz
+打ち上げ日 : February 5, 1991
+http://www.amsat.org/amsat/sats/n7hpr/rs1213.html
+
+＠RS-12/13
+ 29.408   CW
+145.930   USB
+ 29.430   USB
+MODE-A(RS-12)
+ ﾋﾞｰｺﾝ   :  29.408MHz CW
+ ｱｯﾌﾟﾘﾝｸ : 145.910 - 145.950MHz CW/USB
+ ﾀﾞｳﾝﾘﾝｸ :  29.410 -  29.450MHz CW/USB
+MODE-K(RS-12)
+ ﾋﾞｰｺﾝ   :  29.408MHz CW
+ ｱｯﾌﾟﾘﾝｸ :  21.210 - 21.250 MHz CW/USB 
+ ﾀﾞｳﾝﾘﾝｸ :  29.410 - 29.450 MHz CW/USB
+MODE-T(RS-13)
+ ﾋﾞｰｺﾝ   : 145.860MHz CW
+ ｱｯﾌﾟﾘﾝｸ :  21.260 -  21.300MHz CW/USB
+ ﾀﾞｳﾝﾘﾝｸ : 145.860 - 145.900MHz CW/USB
+ROBOT
+ ｱｯﾌﾟﾘﾝｸ :  21.129 and 145.830 MHz 
+ ﾀﾞｳﾝﾘﾝｸ :  29.408 or 29.454 MHz and 145.912
+            or 145.958 (Beacon frequencies) 
+打ち上げ日 : February 5, 1991
+http://www.amsat.org/amsat/sats/n7hpr/rs1213.html
+
+＠RS-15
+ 29.352   CW
+145.978   USB
+ 29.374   USB
+MODE-A
+ Uplink:   145.858 to 145.898 MHz CW/USB
+ Downlink:  29.354 to  29.394 MHz CW/USB
+ Beacon 1:  29.352 MHz (intermittent)
+ Beacon 2:  29.398 MHz
+SSB meeting frequency: 29.380 MHz (unofficial)
+打ち上げ日 : December 26, 1994
+http://www.amsat.org/amsat/sats/n7hpr/rs15.html
+
+＠RS-16
+ 29.408   CW  
+145.932   USB
+ 29.432   USB
+MODE-A  
+ ﾋﾞｰｺﾝ   :  29.408/451MHz CW
+           435.504/548MHz CW  
+ ｱｯﾌﾟﾘﾝｸ : 145.915 - 145.948MHz CW/USB
+ ﾀﾞｳﾝﾘﾝｸ :  29.415 -  29.448MHz CW/USB
+
+＠RS-20
+435.319   CW
+-
+-
+その他のﾋﾞｰｺﾝ : 145.828MHz CW
+打ち上げ日 : November 28, 2002
+http://www.amsat.org/amsat/news/wsr.html#rs-20
+
+＠RS-22
+435.3520  CW
+-
+-
+Beacon: 435.3520 MHz CW
+打ち上げ日 : September 27, 2004
+
+＠SO-33
+437.910   FM
+-
+-
+Downlink: 437.910 MHz FM (9600-baud FSK)
+打ち上げ日: October 24, 1998
+http://seds.uah.edu/projects/sedsat/sedsat.htm
+
+＠SO-35
+-
+436.291   FM
+145.825   FM
+Downlink: Mode B Repeater: 436.291 MHz
+Mode J Digipeater:         436.250 MHz
+Uplinks: Mode B Repeater:  145.825 MHz
+Mode J Digipeater:         145.825 MHz
+                           145.900 MHz
+打ち上げ日: February 23, 1999
+http://esl.ee.sun.ac.za/projects/sunsat/
+
+＠SO-41
+-
+145.850   FM
+436.775   FM
+Uplink:   145.850 MHz
+Downlink: 436.775 MHz
+Broadcast Callsign: SASAT1-11
+BBS:                SASAT1-12
+打ち上げ日: September 26, 2000
+http://www.amsat.org/amsat/sats/n7hpr/so41.html
+
+＠SO-42
+-
+-
+436.775   FM
+Downlink: 437.075 MHz
+Broadcast Callsign: SASAT2-11
+BBS:                SASAT2-12
+打ち上げ日: September 26, 2000
+http://www.amsat.org/amsat/sats/n7hpr/so42.html
+
+＠SO-50
+-
+145.850   FM
+436.795   FM
+Uplink:   145.850 MHz (67.0 Hz PL tone)
+Downlink: 436.795 MHz
+Mode and Antenna Polarization:
+V: Linear
+U: Linear
+74.4Hzのﾄｰﾝを送ると中継器が10分間作動
+打ち上げ日 : December 20, 2002
+http://saudisat.kacst.edu.sa/index.shtml
+
+＠SO-67
+-
+145.875   FM
+435.345   FM
+Callsign: ZS0SUM
+Uplink:   145.875MHz FM tone 233.6 Hz
+Downlink: 435.345MHz FM
+Mode and Antenna Polarization:
+V: Linear
+U: Linear
+Launch Date: September 17, 2009
+http://www.amsatsa.org.za/
+
+＠TO-31
+-
+145.925   FM
+436.925   FM
+Uplink:   145.925 MHz 9600 baud FSK
+Downlink: 436.925 MHz 9600 baud FSK
+Broadcast callsign: TMSAT1-11
+BBS: TMSAT1-12
+打ち上げ日: July 10, 1998
+http://www.ee.surrey.ac.uk/CSER/UOSAT/missions/tmsat/index.html
+
+＠UO-11
+-
+-
+145.826   USB
+Telemetry Downlink: 145.826 MHz. FM (1200-baud AFSK).
+ approx. 10 days ON, 10 days OFF
+Mode-S Beacon: 2401.500 MHz. ... OFF
+UHFBeacon: 435.025 MHz. ... OFF
+Mode and Antenna Polarization:
+ V: RHCP
+ S: LHCP
+打ち上げ日: March 1, 1984
+http://www.users.zetnet.co.uk/clivew/
+
+＠UO-14
+-
+145.975   FM
+435.070   FM
+MODE-JFM
+Uplink:   145.975 MHz FM
+Downlink: 435.070 MHz FM
+打ち上げ日: January 22, 1990
+http://jp.uo14.net/
+
+＠UO-22
+-
+145.900   FM
+435.120   FM
+Uplink:   145.900 FM 9600-baud FSK
+Downlink: 435.120 MHz FM
+Broadcast Callsign: UOSAT5-11
+BBS: UOSAT5-12
+打ち上げ日: July 17, 1991
+http://www.ee.surrey.ac.uk/CSER/UOSAT/missions/uosat5.html
+
+＠UO-36
+-
+145.960   FM
+437.025   FM
+Uplink:    145.960 MHz (9600-baud FSK)
+Downlinks: 437.025 MHz
+           437.400 MHz
+Broadcast Callsign: UO121-11
+BBS: UO121-12
+打ち上げ日: April 21, 1999
+http://www.jamsat.or.jp/oscar/uosat12/index.html
+
+＠UWE-1
+435.505   USB
+-
+-
+Mode U Telemetry
+Downlink: 437.5050 MHz 9600 AFSK
+打ち上げ日 : October 27, 2005
+
+＠VO-52
+145.940   CW
+435.250   LSB
+145.900   USB
+Indian transponder:
+ Uplink:   435.220 MHz to 435.280 MHz LSB/CW
+ Downlink: 145.870 MHz to 145.930 MHz USB/CW
+ Beacom  : 145.859330 MHZ CW
+Dutch transponder:
+ Uplink:   435.225MHz to 435.275MHz LSB/CW
+ Downlink: 145.875MHz to 145.925MHz USB/CW
+ Beacon  : 145.860MHz 12WPM with CW message
+Mode and Antenna Polarization:
+ V: LHCP
+ U: RHCP
+打ち上げ日: May 5, 2005
+http://www.amsatindia.org/hamsat.htm
+
+＠WO-18
+-
+-
+437.104   USB
+Downlink: 437.104 MHz SSB 1200 Baud PSK AX.25
+打ち上げ日: January 22, 1990
+http://www.amsat.org/amsat/sats/n7hpr/wo18.html
+
+＠XI-IV[CW]
+436.8475  CW
+-
+-
+その他のﾋﾞｰｺﾝ : 437.490MHz FSK AX.25 1200bps
+打ち上げ日: June 30, 2006
+http://www.space.t.u-tokyo.ac.jp/cubesat/index.html
+
+＠XI-IV[FSK]
+437.490   FM
+-
+-
+その他のﾋﾞｰｺﾝ : 436.8475MHz CW
+打ち上げ日: June 30, 2006
+http://www.space.t.u-tokyo.ac.jp/cubesat/index.html
+
+＠XO-53
+-
+-
+-
+Voice Uplink:        437.250MHz FM 67Hz CTCSS
+Voice Downlink:     2401.835MHz FM
+Packet Up/Downlink:  437.250MHz 9k6 packet
+Packet Downlink     2401.835MHz 38k4 packet
+打ち上げ日: October 27, 2005
+http://sseti.gte.tuwien.ac.at/WSW4/
+
+＠終わり(SATINFO)
+
+以下は､コメント｡
+

@@ -1,0 +1,100 @@
+Satellite	Status	NORAD	Uplink	Downlink	Beacon	Mode	Callsign	Reports	Info	IARU freq coord	Telemetry Decoder
+UGUISU	ACTIVE	tbd	.		437.375	CW, 4k8 FSK	JG6YLE	latest report	details	YES	
+NEPALISAT-1	ACTIVE	tbd	.		437.375	CW, 4k8 FSK	JG6YLF	latest report	details	YES	
+RAAVANA-1	ACTIVE	tbd	.		437.375	CW, 4k8 FSK	JG6YLG	latest report	details	YES	
+AISTECHSAT-3	ACTIVE	44103			436.730	9k6 GFSK  (ASM+Golay)		latest report	details	NO	
+M6P	ACTIVE	44109			437.265	9k6 FSK		latest report	details	NO *)	
+MYSAT-1	ACTIVE	44045			435.775	1k2 BPSK	A68MY	latest report	details	YES	
+DELPHINI	ACTIVE	44030			437.500	9k6 GMSK		latest report	details	YES	
+AstroCast 0.1	ACTIVE	43798			437.150	1k2 FSK	HB9GSF	latest report	details	YES	
+iSAT	ACTIVE	43879	437.325	435.525	435.700	4k8 GMSK  Mobitex	DP2GOS	latest report	details	NO	
+D-STAR ONE SPARROW	ACTIVE	43881	437.325	435.525	435.700	4k8 GMSK  Mobitex/D-STAR	DP1GOS	latest report	details	NO	
+AISTECHSAT-2	ACTIVE	43768			436.730	9k6 GFSK  (ASM+Golay)		latest report	details	NO	
+CHOMPTT	ACTIVE	43855			437.560	1k2 AFSK AX.25	WI2XVT	latest report	details	YES	
+Reaktor Hello World	ACTIVE	43743		2410.000	437.775	9k6 2GFSK,CW	OH2RHW1	latest report	details	YES	
+Al-Farabi-2	ACTIVE	43805			436.500	4k8 GMSK,CW	UN1GWA	latest report	details	NO	
+FacSat-1	ACTIVE	43721			437.350	9k6 GMSK		latest report	details	YES	
+EAGLET-1	ACTIVE	43790			435.200	1k2 BPSK		latest report	details	NO	
+Suomi100	ACTIVE	43804			437.775	9k6 GMSK	.	latest report	details	YES	
+ESEO	ACTIVE	43792	1263.500		437.000	9k6 GFSK	IW4DUL	latest report	details	YES	
+CSIM-FD	ACTIVE	43793			437.250	19k2 FSK	.	latest report	details	YES	
+PW-Sat2	ACTIVE	43814			435.275	9k6 BPSK	.	latest report	details	YES	
+SnugLite	ACTIVE	43786			437.275	9k6 FSK	.	latest report	details	YES	
+KNACKSAT	ACTIVE	tbd			435.635	1k2 FSK	HS0K	latest report	details	YES	
+IRVINE01	ACTIVE	43693			437.800	CW	KK6CVB-1	latest report	details	YES	
+TEN-KOH	ACTIVE	43677			437.390	CW,9k6 GMSK AX.25	JG6YKY	latest report	details	YES	
+CubeBel-1	ACTIVE	43666	436.200	436.200	436.990	9k6 FSK  4k8 GMSK (Mobitex)	EU10S	latest report	details	YES	
+ELFIN-A	ACTIVE	43617			437.450	9k6 FSK AX.25	WJ2XNX	latest report	details	YES	
+ELFIN-B	ACTIVE	43616			437.475	9k6 FSK AX.25	WJ2XOX	latest report	details	YES	
+CP-7 (DAVE)	ACTIVE	43615			437.150	9k6 FSK AX.25	WI2XNR	latest report	details	YES	
+SiriusSat-1	ACTIVE	43595			435.570	4k8 FSK AX.25	RS13S	latest report	details	NO	
+SiriusSat-2	ACTIVE	43596			435.670	4k8 FSK AX.25	RS14S	latest report	details	NO	
+Tanusha-3	ACTIVE	43597			437.050	voice  1k2 AFSK AX.25	RS8S	latest report	details	NO	.
+BIRD-BT (BHUTAN-1)	ACTIVE	43591			437.375	CW	JG6YKL	latest report	details	YES	
+BIRD-PH (MAYA-1)	ACTIVE	43590			437.375	CW	JG6YKM	latest report	details	YES	
+BIRD-MY (UiTMSat-1)	ACTIVE	43589			437.375	CW	JG6YKN	latest report	details	YES	
+EQUISat	ACTIVE	53552			435.550	4k8 4FSK	WL9XZE	latest report	details	YES	.
+E1P-U2	ACTIVE	37855			437.300	1k2 AFSK (USB)	.	latest report	details	YES	
+Irazu	ACTIVE	43468			436.500	9k6 FSK AX.25	TI0IRA	latest report	details	YES	
+FMN-1	ACTIVE	43192	145.945	435.350	435.350	9k6 BPSK	FMN-1	latest report	details	YES	
+ZHOU ENLAI	ACTIVE	43156			437.640	9k6 BPSK	BI4ST	latest report	details	YES*	
+S-NET A	ACTIVE	43186			435.950	1k2 FFSK	DP0TBB	latest report	details	YES	
+AoXiang-1	ACTIVE	42735	.	.	436.150	9k6 BPSK	NPUAX1	latest report	details	YES	.
+SHAONIAN-XING (Juvenile 1F)	ACTIVE	43199	.	.	436.375	9k6 BPSK	MXSAT-1	latest report	details	YES	.
+TianYi 2 (TY-2)	ACTIVE	43155			435.350	9k6 FSK	.	latest report	details	YES	
+KAIDUN-1	ACTIVE	41915			437.600	1k2 BPSK	AXNWPU-4	latest report	details	NO	
+INS-1C	ACTIVE	43116			435.080	1k2 Manchester	INDUSR-10	latest report	details	NO	
+CAS-2T	ACTIVE	41847	.		435.712	CW	.	latest report	details	NO	
+SUCHAI	ACTIVE	42788			437.225	CW  GMSK 2k4	SUCHAI	latest report	details	YES	
+ROBUSTA-1B	ACTIVE	42792			437.325	CW / 1k2 AFSK	.	latest report	details	YES	
+NIUSAT	ACTIVE	42766			436.000	1k2 FSK	NIUGSR	latest report	details	NO	
+VZLUSAT-1	ACTIVE	42790			437.240	CW/4k8 MSK	ON02CZ	latest report	details	YES	
+AALTO-1	ACTIVE	42775			437.220	CW/9k6 FSK AX.25	OH2A1S	latest report	details	YES	
+URSA MAIOR	ACTIVE	42776			435.950	9k6 FSK	ON02IT	latest report	details	YES	in progress
+NSIGHT-1	ACTIVE	42726			435.900	9k6 FSK	ON02AZ	latest report	details	YES	
+NJUST-1	ACTIVE	42722			436.570	1k2/9k6 BPSK	ON03CN	latest report	details	YES	
+FalconSAT-3	ACTIVE	30776	145.840	435.103	435.103	9k6 FSK	PFS3-11	latest report	details	YES	
+ZA-AEROSAT	ACTIVE	42713			437.200	9k6 FSK	ON01AZ	latest report	details	YES	
+AlSat-1N	ACTIVE	41789	.	.	437.650	9k6 FSK	.	latest report	details	YES	
+LAPAN-A3	ACTIVE	41603	.	.	437.325	1k2 FFSK	.	latest report	details	NO	
+NUSAT-2	ACTIVE	41558	.	.	437.445	40k0 GFSK	.	latest report	details	YES	
+MINXSS-1	ACTIVE	41474	.	.	437.345	9k6 FSK	MINXSS	latest report	details	YES	
+AIST-2D	ACTIVE	41465	.	435.3065 – 435.3235 435.3565 – 435.3735	435.315	4k8 PSK, CW	RS-48	latest report	details	NO	
+AAUSAT-4	ACTIVE	41460	.	.	437.425	GFSK	OZ4CUB	latest report	details	YES	
+e-st@r-II	ACTIVE	41459	.	437.485	437.485	1k2 AFSK CW	ESTAR-2	latest report	details	YES	
+ChubuSat-2	ACTIVE	41338	145.815	437.100	437.100	9k6 FSK, CW	JJ2YPN	latest report	details	YES	
+ChubuSat-3	ACTIVE	41339	145.840	437.425	437.425	9k6 FSK, CW	JJ2YPO	latest report	details	YES	
+PolyITAN-2-SAU	ACTIVE	42732	.	.	436.600	9k6 BFSK	QBUA01	latest report	details	NO	
+BisonSat	ACTIVE	40968	.	.	437.375	9k6 FSK, FM	.	latest report	details	YES	
+TW-1A (Shangkeda-2)	ACTIVE	40928	.	.	435.645	4k8/9k6 GMSK	.	latest report	details	YES	
+TW-1B (NJUST-1)	ACTIVE	40927	.	.	437.645	4k8/9k6 GMSK	.	latest report	details	YES	
+TW-1C (NJFA-1)	ACTIVE	40926	.	.	435.645	4k8/9k6 GMSK	.	latest report	details	YES	
+IO-86 (LAPAN-A2/ORARI)	ACTIVE	40931	435.880 145.825.	145.880 145.825	437.425	FM transponder APRS digipeater.	.	latest report	details	YES	
+LilacSat-2	ACTIVE	40908	144.350	437.200	437.225	9k6 RRC-BPSK 4k8 GFSK	BJ1SI	latest report	details	YES	
+DX-1	ACTIVE	40071	.	.	438.225	9k6 FSK	.	latest report	details	NO	
+BugSat-1	ACTIVE	40014	.	.	437.445	9k6 FSK (non AX.25)	LU7AA	latest report	details	YES	
+UniSat-6	ACTIVE	40012	.	.	437.426	9k6 FSK	II0US	latest report	details	YES	
+TigriSat	ACTIVE	40043	.	.	435.000	9k6 FSK	HNATIG	latest report	details	NO	
+SPROUT	ACTIVE	39770	437.600	437.600	437.525	1k2 AFSK, CW, SSTV	JQ1ZJQ	latest report	details	YES	
+RS-22 (Mozhayets)	ACTIVE	27939	.	.	435.352	CW		latest report	details	NO	
+FO-29 (JAS-2)	ACTIVE	24278	145.900 – 999	435.900 – 800	435.796	SSB,CW	8J1JCS	latest report	details	.	
+ISS	ACTIVE	25544	437.550	437.550	437.550	APRS	RS0ISS	latest report	details	.	
+CO-55 (CUTE-I)	ACTIVE	27844	.	437.470	436.838	1k2 AFSK	JQ1YCY	latest report	details	YES	
+CO-57 (XI-IV)	ACTIVE	27848	.	437.490	436.848	1k2 AFSK,CW	JQ1YCW	latest report	details	YES	
+CO-58 (XI-V)	ACTIVE	28895	.	437.345	437.465	1k2 AFSK,CW	JQ1YGW	latest report	details	YES	
+CUTE1.7+APDII	ACTIVE	32785	.	437.475	437.275	1k2 AFSK,CW	JQ1YTC	latest report	details	YES	
+AAUSAT-II	ACTIVE	32788	.	437.432	437.432	1k2 FFSK/MSK	OZ2CUB	latest report	details	YES	
+CO-66 (SEEDS-II)	ACTIVE	32791	.	437.485	437.485	1k2 FM, CW, Talker	JQ1YGU	latest report	details	YES	
+PRISM (HITOMI)	ACTIVE	33493	.	437.425	437.250	AFSK, GMSK, CW	JQ1YCX	latest report	details	YES	
+SwissCube-1	ACTIVE	35932	.	437.505	437.505	1k2 AFSK (LSB),CW	HB9EG/1	latest report	details	YES	
+BEESAT-4	ACTIVE	35933	.	436.000	436.000	9k6/4k8 GMSK	DP0BEE	latest report	details	YES	
+GOMX-1	ACTIVE	39430	.	.	437.255	2k4/4k8* GMSK CW	.	latest report	details	YES	
+ITUpSat-1	ACTIVE	35935	.	437.325	437.325	19k2 GFSK,CW		latest report	details	YES	
+AENEAS	ACTIVE	38760	.	437.600	437.600	1k2 AFSK	KE6YFA-1	latest report	details	YES	
+STRaND-1	ACTIVE	39090	.	437.568	437.568	9k6 FSK (non AX.25)		latest report	details	YES	
+BEESAT-2	ACTIVE	39136	.	435.950	435.950	4k8 GMSK	DP0BEF	latest report	details	YES	
+SOMP	ACTIVE	39134	.	437.504	437.504	CW, 1k2 FSK	DP0TUD	latest report	details	YES	
+CubeBug-1	ACTIVE	39153	.	437.438	437.438	1k2 AFSK	CUBEB1	latest report	details	YES	
+ZACube-1	ACTIVE	39417	.	.	437.345	CW, 1k2 AFSK	.	latest report	details	YES	
+LO-74 (CubeBug-2)	ACTIVE	39440	.	.	437.445	1k2 AFSK, 9k6 FSK	.	latest report	details	YES	
+MCubed-2	ACTIVE	90710	.	.	437.485	9k6 FSK	NOCALL	latest report	details	YES	
