@@ -4,6 +4,8 @@
 
 卒業論文（[Raspbery Piを使用したドローンの駆動音低減法の検討](https://github.com/tetsuzawa/graduation-research/files/4184001/_.pdf)）
 
+論文に載っているプログラムは[research-tools](https://github.com/tetsuzawa/research-tools)に置いてあります。
+
 # directory structure
 
 - documents
