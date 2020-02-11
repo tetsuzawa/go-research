@@ -24,6 +24,7 @@
 *.JPG
 *.gif
 *.json
+*.mp4
 
 # Useless
 *.idea/
