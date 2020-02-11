@@ -1,15 +1,21 @@
 # graduation-research
 
-5年の卒業研究に使用したもの
+5年の卒業研究に使用したリポジトリ
 
-# memo
+卒業論文（[Raspbery Piを使用したドローンの駆動音低減法の検討](https://github.com/tetsuzawa/graduation-research/files/4184001/_.pdf)）
 
-ところどころディレクトリ名と実験内容が噛み合って無いところがある。  
+# directory structure
 
-プログラムを書き換えるのが面倒なので放置している
-
-
-# directory
+- documents
+  引き継ぎ資料や回路図
+- paper
+  論文や発表予稿
+- playground
+  実験的に作成したプログラムの置き場（研究と関係なし）
+- slides
+  パワーポイントで作成した発表資料
+- space-academia
+  スペースアカデミア関係の資料
 
 - simulations
     - automatic_equalizer
